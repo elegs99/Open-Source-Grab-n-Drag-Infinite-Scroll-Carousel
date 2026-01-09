@@ -17,7 +17,7 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 
 ![Demo GIF of Infinite Scrolling Carousel](docs/demo.gif)
 <!-- Replace the above with an actual GIF (e.g., demo/demo.gif) after creating a screen capture -->
-View the interactive [demo page](docs/index.html) for live examples and usage.
+View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
 
 ## Quickstart
 
@@ -329,7 +329,7 @@ And then:
 #### Tip
 
 - You can use *any* content inside `.infinite-scroll-item`—icons, images, cards, links, etc.
-- You can stack multiple carousels with different IDs and provide tailored styles for each.
+- You can stack multiple carousels with different IDs and provide tailored styles for each. [See Demo 🠚](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)
 
 For more advanced interactivity, combine with your JS events or frameworks—just ensure you keep the core class structure for the carousel JavaScript to work.
 
