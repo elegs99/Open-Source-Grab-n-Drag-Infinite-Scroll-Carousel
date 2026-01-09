@@ -10,8 +10,8 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 - **Responsive** - Automatically recalculates on window resize
 - **Pause on Hover** - Optional pause when hovering over the carousel
 - **Zero Dependencies** - Pure vanilla JavaScript, no jQuery or frameworks required
-- **Lightweight** - ~8KB minified, works in all modern browsers
-- **Accessible** - Maintains keyboard navigation and screen reader compatibility
+- **Lightweight** - Works in all modern browsers
+- **HTML Accessible** - Maintains keyboard navigation and screen reader compatibility
 
 ## Demo
 View the interactive [demo page](demo/index.html) for live examples and usage.
@@ -80,17 +80,20 @@ new InfiniteScrollCarousel(container, options)
 - **container** (`HTMLElement` or `string`) - The container element or CSS selector. Must contain direct children that will be scrolled.
 - **options** (`Object`, optional) - Configuration object
 
-#### Options
 
-| Option             | Type      | Default     | Description                                                                                                  |
-|--------------------|-----------|-------------|--------------------------------------------------------------------------------------------------------------|
-| `speed`            | `number`  | `50`        | Automatic scroll speed (pixels per second). Use a negative value for reverse direction, or `0` to disable.   |
-| `pauseOnHover`     | `boolean` | `true`      | Whether to pause automatic scrolling when the mouse enters the container.                                    |
-| `responsive`       | `boolean` | `true`      | Whether to recalculate carousel dimensions on window resize.                                                 |
-| `momentumDecay`    | `number`  | `0.95`      | Momentum decay factor (`0.5`–`0.99`). Higher values allow momentum to last longer.                           |
-| `maxMomentumSpeed` | `number`  | `2.0`       | Maximum momentum speed in pixels per millisecond (`0.5`–`25`).                                               |
-| `fadeColor`        | `string`  | `#ffffff`   | Edge fade gradient color (hex, rgb, or rgba). Use `'transparent'` to disable the fading effect.              |
-| `copies`           | `number`  | `3`         | Number of times the set of items is duplicated for seamless looping. Raise this when you notice gaps.        |
+### Options
+
+| Option | Type | Default | Description |
+|------|------|---------|-------------|
+| `speed` | number | `50` | Auto-scroll speed (pixels/sec).<br>Set to `0` to disable. |
+| `reverseDirection` | boolean | `false` | Scroll direction.<br>`false`: right → left<br>`true`: left → right |
+| `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer enters the container. |
+| `responsive` | boolean | `true` | Recalculate dimensions on window resize. |
+| `momentumDecay` | number | `0.95` | Drag momentum decay factor.<br>Range: `0.5–0.99` |
+| `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed (px/ms).<br>Range: `0.5–25` |
+| `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`).<br>Use `transparent` to disable. |
+| `copies` | number | `3` | Number of duplicated item sets for seamless looping. |
+
 
 ### Methods
 

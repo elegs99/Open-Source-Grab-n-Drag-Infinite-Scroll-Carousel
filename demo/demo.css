@@ -103,14 +103,14 @@ header p {
     width: 80px;
     height: 80px;
     margin-right: 15px;
-    background: #ff6b6b;
+    border: 1px solid #ff6b6b;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2rem;
     font-weight: bold;
-    color: white;
+    color: #ff6b6b;
     box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
 }
 
@@ -158,6 +158,101 @@ footer a:hover {
     text-decoration: underline;
 }
 
+/* Code Dropdown Styles */
+.code-dropdown {
+    margin-top: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.code-toggle {
+    width: 100%;
+    padding: 12px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.code-toggle:hover {
+    background: #5568d3;
+}
+
+.code-content {
+    display: none;
+    background: white;
+}
+
+.code-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f9fa;
+}
+
+.code-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.code-tab:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.code-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: white;
+}
+
+.code-block {
+    display: none;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.code-block.active {
+    display: block;
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.code-block code {
+    display: block;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    overflow-x: auto;
+    white-space: pre;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #333;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     body {
@@ -199,6 +294,19 @@ footer a:hover {
     .tech-item {
         padding: 10px 18px;
         font-size: 0.9rem;
+    }
+
+    .code-block {
+        padding: 15px;
+    }
+
+    .code-block code {
+        font-size: 0.75rem;
+    }
+
+    .code-tab {
+        padding: 8px 15px;
+        font-size: 0.85rem;
     }
 }
 

@@ -10,7 +10,7 @@
 <body>
     <div class="demo-container">
         <header>
-            <h1>Grab & Drag Infinite Scroll Carousel</h1>
+            <h1>Grab-n-Drag Infinite Scrolling Carousel</h1>
             <p>A lightweight, dependency-free infinite scrolling carousel with grab-and-drag interaction</p>
         </header>
 
@@ -22,24 +22,55 @@
                     <div class="infinite-scroll-item">Item 1</div>
                     <div class="infinite-scroll-item">Item 2</div>
                     <div class="infinite-scroll-item">Item 3</div>
-                    <div class="infinite-scroll-item">Item 4</div>
-                    <div class="infinite-scroll-item">Item 5</div>
-                    <div class="infinite-scroll-item">Item 6</div>
-                    <div class="infinite-scroll-item">Item 7</div>
-                    <div class="infinite-scroll-item">Item 8</div>
-                    <div class="infinite-scroll-item">Item 9</div>
-                    <div class="infinite-scroll-item">Item 10</div>
+                </div>
+            </div>
+            <div class="code-dropdown">
+                <button class="code-toggle" onclick="toggleCode(this)">Show Code ▼</button>
+                <div class="code-content">
+                    <div class="code-tabs">
+                        <button class="code-tab" onclick="switchTab(this, 'html1')">HTML</button>
+                        <button class="code-tab" onclick="switchTab(this, 'css1')">CSS</button>
+                        <button class="code-tab active" onclick="switchTab(this, 'js1')">JavaScript</button>
+                    </div>
+                    <div class="code-block" id="html1">
+                        <pre><code>&lt;div class="infinite-scroll-wrapper"&gt;
+    &lt;div class="infinite-scroll-container" id="carousel1"&gt;
+        &lt;div class="infinite-scroll-item"&gt;Item 1&lt;/div&gt;
+        &lt;div class="infinite-scroll-item"&gt;Item 2&lt;/div&gt;
+        &lt;div class="infinite-scroll-item"&gt;Item 3&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <div class="code-block" id="css1">
+                        <pre><code>#carousel1 .infinite-scroll-item {
+    padding: 15px 30px;
+    margin-right: 20px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+}</code></pre>
+                    </div>
+                    <div class="code-block active" id="js1">
+                        <pre><code>const carousel1 = new InfiniteScrollCarousel('#carousel1', {
+    speed: 50,
+    reverseDirection: true,
+    pauseOnHover: true,
+    copies: 4,
+});</code></pre>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Example 2: Icon Cards -->
         <section class="demo-section">
-            <h2>Example 2: Icon Cards (Faster Speed, Transparent Fade Gradient)</h2>
+            <h2>Example 2: Icon Cards</h2>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel2">
                     <div class="infinite-scroll-item card">
-                        <div class="icon">1🚀</div>
+                        <div class="icon">🚀</div>
                         <span>Rocket</span>
                     </div>
                     <div class="infinite-scroll-item card">
@@ -72,11 +103,71 @@
                     </div>
                 </div>
             </div>
+            <div class="code-dropdown">
+                <button class="code-toggle" onclick="toggleCode(this)">Show Code ▼</button>
+                <div class="code-content">
+                    <div class="code-tabs">
+                        <button class="code-tab" onclick="switchTab(this, 'html2')">HTML</button>
+                        <button class="code-tab" onclick="switchTab(this, 'css2')">CSS</button>
+                        <button class="code-tab active" onclick="switchTab(this, 'js2')">JavaScript</button>
+                    </div>
+                    <div class="code-block" id="html2">
+                        <pre><code>&lt;div class="infinite-scroll-wrapper"&gt;
+    &lt;div class="infinite-scroll-container" id="carousel2"&gt;
+        &lt;div class="infinite-scroll-item card"&gt;
+            &lt;div class="icon"&gt;🚀&lt;/div&gt;
+            &lt;span&gt;Rocket&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="infinite-scroll-item card"&gt;
+            &lt;div class="icon"&gt;⭐&lt;/div&gt;
+            &lt;span&gt;Star&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;!-- More items... --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <div class="code-block" id="css2">
+                        <pre><code>.card {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin-right: 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    min-width: 120px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card .icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.card span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}</code></pre>
+                    </div>
+                    <div class="code-block active" id="js2">
+                        <pre><code>const carousel2 = new InfiniteScrollCarousel('#carousel2', {
+    speed: 60,
+    pauseOnHover: true,
+    fadeColor: 'transparent'
+});</code></pre>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Example 3: Numbered Boxes -->
         <section class="demo-section">
-            <h2>Example 3: Numbered Boxes (Slower Speed, No Pause on Hover)</h2>
+            <h2>Example 3: Numbered Boxes</h2>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel3">
                     <div class="infinite-scroll-item box">1</div>
@@ -181,15 +272,60 @@
                     <div class="infinite-scroll-item box">100</div>
                 </div>
             </div>
+            <div class="code-dropdown">
+                <button class="code-toggle" onclick="toggleCode(this)">Show Code ▼</button>
+                <div class="code-content">
+                    <div class="code-tabs">
+                        <button class="code-tab" onclick="switchTab(this, 'html3')">HTML</button>
+                        <button class="code-tab" onclick="switchTab(this, 'css3')">CSS</button>
+                        <button class="code-tab active" onclick="switchTab(this, 'js3')">JavaScript</button>
+                    </div>
+                    <div class="code-block" id="html3">
+                        <pre><code>&lt;div class="infinite-scroll-wrapper"&gt;
+    &lt;div class="infinite-scroll-container" id="carousel3"&gt;
+        &lt;div class="infinite-scroll-item box"&gt;1&lt;/div&gt;
+        &lt;div class="infinite-scroll-item box"&gt;2&lt;/div&gt;
+        &lt;div class="infinite-scroll-item box"&gt;3&lt;/div&gt;
+        &lt;!-- More items... --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <div class="code-block" id="css3">
+                        <pre><code>.box {
+    width: 80px;
+    height: 80px;
+    margin-right: 15px;
+    border: 1px solid #ff6b6b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff6b6b;
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}</code></pre>
+                    </div>
+                    <div class="code-block active" id="js3">
+                        <pre><code>const carousel3 = new InfiniteScrollCarousel('#carousel3', {
+    speed: 30,
+    reverseDirection: true,
+    pauseOnHover: false,
+    maxMomentumSpeed: 25,
+    momentumDecay: 0.98,
+});</code></pre>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Example 4: Technology Stack -->
         <section class="demo-section">
-            <h2>Example 4: Technology Stack (Green Fade Gradient)</h2>
+            <h2>Example 4: Technology Stack</h2>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel4">
                     <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">1🌐</div>
+                        <div class="tech-icon">🌐</div>
                         <span class="tech-name">HTML</span>
                     </div>
                     <div class="infinite-scroll-item tech-item">
@@ -230,6 +366,62 @@
                     </div>
                 </div>
             </div>
+            <div class="code-dropdown">
+                <button class="code-toggle" onclick="toggleCode(this)">Show Code ▼</button>
+                <div class="code-content">
+                    <div class="code-tabs">
+                        <button class="code-tab" onclick="switchTab(this, 'html4')">HTML</button>
+                        <button class="code-tab" onclick="switchTab(this, 'css4')">CSS</button>
+                        <button class="code-tab active" onclick="switchTab(this, 'js4')">JavaScript</button>
+                    </div>
+                    <div class="code-block" id="html4">
+                        <pre><code>&lt;div class="infinite-scroll-wrapper"&gt;
+    &lt;div class="infinite-scroll-container" id="carousel4"&gt;
+        &lt;div class="infinite-scroll-item tech-item"&gt;
+            &lt;div class="tech-icon"&gt;🌐&lt;/div&gt;
+            &lt;span class="tech-name"&gt;HTML&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="infinite-scroll-item tech-item"&gt;
+            &lt;div class="tech-icon"&gt;🎨&lt;/div&gt;
+            &lt;span class="tech-name"&gt;CSS&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;!-- More items... --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <div class="code-block" id="css4">
+                        <pre><code>.tech-item {
+    padding: 12px 24px;
+    margin-right: 15px;
+    background: #204745;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+}
+
+.tech-name {
+    display: block;
+}
+
+.tech-icon {
+    font-size: 1rem;
+    margin-right: 10px;
+}</code></pre>
+                    </div>
+                    <div class="code-block active" id="js4">
+                        <pre><code>const carousel4 = new InfiniteScrollCarousel('#carousel4', {
+    speed: 100,
+    pauseOnHover: true,
+    momentumDecay: .99,
+    maxMomentumSpeed: .5,
+    fadeColor: '#204745'
+});</code></pre>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <footer>
@@ -240,12 +432,38 @@
 
     <script src="../infinite-scroll-carousel.js"></script>
     <script>
+        // Code dropdown functionality
+        function toggleCode(button) {
+            const dropdown = button.parentElement;
+            const content = dropdown.querySelector('.code-content');
+            const isOpen = content.style.display === 'block';
+            
+            content.style.display = isOpen ? 'none' : 'block';
+            button.textContent = isOpen ? 'Show Code ▼' : 'Hide Code ▲';
+        }
+
+        function switchTab(button, targetId) {
+            // Remove active class from all tabs and blocks in this dropdown
+            const dropdown = button.closest('.code-dropdown');
+            const tabs = dropdown.querySelectorAll('.code-tab');
+            const blocks = dropdown.querySelectorAll('.code-block');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            blocks.forEach(block => block.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding block
+            button.classList.add('active');
+            document.getElementById(targetId).classList.add('active');
+        }
+
         // Wait for DOM to be ready
         document.addEventListener('DOMContentLoaded', function() {
             // Example 1: Default settings
             const carousel1 = new InfiniteScrollCarousel('#carousel1', {
-                speed: -50,
+                speed: 50,
+                reverseDirection: true,
                 pauseOnHover: true,
+                copies: 4,
             });
 
             // Example 2: Faster speed
@@ -257,7 +475,8 @@
 
             // Example 3: Slower speed, no pause on hover
             const carousel3 = new InfiniteScrollCarousel('#carousel3', {
-                speed: -30,
+                speed: 30,
+                reverseDirection: true,
                 pauseOnHover: false,
                 maxMomentumSpeed: 25,
                 momentumDecay: 0.98,

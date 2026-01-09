@@ -14,7 +14,8 @@
      * 
      * @param {HTMLElement|string} container - Container element or selector
      * @param {Object} options - Configuration options
-     * @param {number} options.speed - Scroll speed in pixels per second. Use negative values for reverse scrolling (default: 50)
+     * @param {number} options.speed - Scroll speed in pixels per second, clamped to minimum 0 (default: 50)
+     * @param {boolean} options.reverseDirection - Scroll in reverse direction (right to left) (default: false)
      * @param {boolean} options.pauseOnHover - Pause scrolling on hover (default: true)
      * @param {boolean} options.responsive - Recalculate on window resize (default: true)
      * @param {number} options.momentumDecay - Momentum decay factor, clamped to 0.1-0.99 (default: 0.95)
@@ -35,6 +36,7 @@
         this.container = container;
         this.options = {
             speed: options && options.speed !== undefined ? options.speed : 50,
+            reverseDirection: options && options.reverseDirection === true,
             pauseOnHover: options && options.pauseOnHover !== false,
             responsive: options && options.responsive !== false,
             momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.95,
@@ -100,6 +102,24 @@
      * Validate and clamp option values to valid ranges
      */
     InfiniteScrollCarousel.prototype.validateOptions = function() {
+        // Validate and clamp speed: must be >= 0
+        // If negative speed is provided, convert to positive and set reverseDirection
+        if (this.options.speed < 0) {
+            const originalValue = this.options.speed;
+            this.options.speed = Math.abs(this.options.speed);
+            this.options.reverseDirection = true;
+            console.warn(
+                'InfiniteScrollCarousel: Negative speed value ' + originalValue + 
+                ' is deprecated. Use positive speed with reverseDirection: true instead. ' +
+                'Speed clamped to ' + this.options.speed + ' and reverseDirection set to true.'
+            );
+        }
+        
+        // Ensure speed is at least 0
+        if (this.options.speed < 0) {
+            this.options.speed = 0;
+        }
+        
         // Validate momentumDecay: must be between 0.5 and 0.99
         if (this.options.momentumDecay < 0.5 || this.options.momentumDecay > 0.99) {
             const originalValue = this.options.momentumDecay;
@@ -324,6 +344,7 @@
             const wasScrolling = this.isScrolling;
             const savedPosition = this.currentPosition;
             const savedTransform = this.container.style.transform;
+            const oldTotalSetWidth = this.totalSetWidth; // Store old width for proportional adjustment
             
             // Temporarily pause and reset to natural position for accurate measurement
             this.isScrolling = false;
@@ -341,36 +362,67 @@
             
             // Wait for next frame to ensure layout is settled
             requestAnimationFrame(function() {
-                // Calculate total width by summing item widths and margins
+                // Calculate total width by measuring actual rendered width of first set
+                // This is more accurate than summing individual items due to flexbox behavior
                 let totalSetWidth = 0;
                 
-                // Get computed margin-right from the first item
-                const firstItemStyle = window.getComputedStyle(items[0]);
-                const marginRight = parseFloat(firstItemStyle.marginRight) || 0;
-                
-                // Sum up all item widths and margins in the first set
-                for (let i = 0; i < itemCount; i++) {
-                    const item = items[i];
-                    if (!item) continue;
+                // Method 1: Measure the actual distance from first item to first item of second set
+                // This accounts for all margins, padding, and flexbox spacing correctly
+                if (items.length >= itemCount * 2) {
+                    const firstItemRect = items[0].getBoundingClientRect();
+                    const secondSetFirstItemRect = items[itemCount].getBoundingClientRect();
+                    totalSetWidth = secondSetFirstItemRect.left - firstItemRect.left;
+                } else {
+                    // Fallback: Sum item widths and margins (only between items, not after last)
+                    const firstItemStyle = window.getComputedStyle(items[0]);
+                    const marginRight = parseFloat(firstItemStyle.marginRight) || 0;
                     
-                    // Get the actual rendered width (includes padding and border)
-                    const itemWidth = item.offsetWidth;
-                    totalSetWidth += itemWidth;
-                    
-                    // Add margin after each item (including the last one)
-                    totalSetWidth += marginRight;
+                    for (let i = 0; i < itemCount; i++) {
+                        const item = items[i];
+                        if (!item) continue;
+                        
+                        // Get the actual rendered width (includes padding and border)
+                        const itemWidth = item.offsetWidth;
+                        totalSetWidth += itemWidth;
+                        
+                        // Add margin only between items (not after the last item)
+                        if (i < itemCount - 1) {
+                            totalSetWidth += marginRight;
+                        }
+                    }
                 }
                 
                 // Round to avoid sub-pixel issues, but keep precision for smooth animation
-                this.totalSetWidth = Math.round(totalSetWidth * 100) / 100;
+                const newTotalSetWidth = Math.round(totalSetWidth * 100) / 100;
                 
                 // Calculate the reset position
                 // Reset when we've scrolled exactly one set width
-                this.resetPosition = -this.totalSetWidth;
+                const newResetPosition = -newTotalSetWidth;
                 
-                // Restore previous state
-                this.container.style.transform = savedTransform;
-                this.currentPosition = savedPosition;
+                // Adjust position proportionally if dimensions changed
+                let adjustedPosition = savedPosition;
+                if (oldTotalSetWidth && oldTotalSetWidth !== newTotalSetWidth && savedPosition !== 0) {
+                    // Calculate the ratio of change
+                    const ratio = newTotalSetWidth / oldTotalSetWidth;
+                    adjustedPosition = savedPosition * ratio;
+                    
+                    // Clamp position to valid bounds: resetPosition < position < 0
+                    if (adjustedPosition >= 0) {
+                        // Too far right, snap to appropriate position based on direction
+                        adjustedPosition = this.options.reverseDirection ? newResetPosition : 0;
+                    } else if (adjustedPosition <= newResetPosition) {
+                        // Too far left, snap to reset position
+                        adjustedPosition = newResetPosition;
+                    }
+                }
+                
+                // Update dimensions
+                this.totalSetWidth = newTotalSetWidth;
+                this.resetPosition = newResetPosition;
+                
+                // Restore adjusted position
+                this.container.style.transform = 'translateX(' + adjustedPosition + 'px)';
+                this.currentPosition = adjustedPosition;
                 this.isScrolling = wasScrolling;
                 
                 // Force another layout recalculation
@@ -378,6 +430,9 @@
                 
                 // Recalculate drag boundaries
                 this.calculateDragBoundaries();
+                
+                // Snap to valid position to ensure we're not at a boundary that would trigger immediate reset
+                this.snapToValidPosition();
                 
                 // If we were scrolling, restart animation
                 // Check if animation loop is actually running, if not, restart it
@@ -410,13 +465,13 @@
     InfiniteScrollCarousel.prototype.setInitialPosition = function() {
         if (this.resetPosition === null) return;
         
-        // For reverse scrolling (negative speed), start at the second copy position
+        // For reverse scrolling, start at the second copy position
         // This ensures items are visible on both sides when scrolling right
-        if (this.options.speed < 0) {
+        if (this.options.reverseDirection) {
             this.currentPosition = this.resetPosition; // -totalSetWidth
             this.container.style.transform = 'translateX(' + this.currentPosition + 'px)';
         } else {
-            // For forward scrolling (positive speed), start at 0 (first copy)
+            // For forward scrolling, start at 0 (first copy)
             this.currentPosition = 0;
             this.container.style.transform = 'translateX(0px)';
         }
@@ -428,20 +483,11 @@
     InfiniteScrollCarousel.prototype.calculateDragBoundaries = function() {
         if (this.resetPosition === null) return;
         
-        // For forward scrolling (positive speed): reset when going too far left
-        // For reverse scrolling (negative speed): reset when going too far right
-        if (this.options.speed >= 0) {
-            // Forward: Min boundary is reset position (left), max is 0 (right)
-            // Valid range: resetPosition < position < 0 (exclusive boundaries to avoid seams)
-            this.minDragBoundary = this.resetPosition;
-            this.maxDragBoundary = 0;
-        } else {
-            // Reverse: Valid range is resetPosition < position < 0
-            // Min boundary is reset position (left), max is 0 (right)
-            // Same boundaries as forward, but reset logic is different
-            this.minDragBoundary = this.resetPosition;
-            this.maxDragBoundary = 0;
-        }
+        // Boundaries are the same for both directions
+        // Min boundary is reset position (left), max is 0 (right)
+        // Valid range: resetPosition < position < 0 (exclusive boundaries to avoid seams)
+        this.minDragBoundary = this.resetPosition;
+        this.maxDragBoundary = 0;
     };
     
     /**
@@ -709,23 +755,19 @@
     InfiniteScrollCarousel.prototype.snapToValidPosition = function() {
         if (this.resetPosition === null) return;
         
-        const speed = this.options.speed;
-        
-        if (speed >= 0) {
-            // Forward scrolling: snap if we're too far left
-            // Don't show the seam at resetPosition
-            if (this.currentPosition <= this.resetPosition) {
-                this.currentPosition = 0;
-                this.container.style.transform = 'translateX(0px)';
-            }
-        } else {
-            // Reverse scrolling: snap if we're too far right
-            // Don't show the seam at 0, snap to second copy position
+        // Unified logic for both directions
+        if (this.options.reverseDirection) {
+            // Reverse direction: snap if we're too far right (>= 0)
             if (this.currentPosition >= 0) {
                 this.currentPosition = this.resetPosition; // -totalSetWidth
                 this.container.style.transform = 'translateX(' + this.currentPosition + 'px)';
             }
-            // Note: Lower boundary (position < resetPosition) is handled by drag boundary wrapping
+        } else {
+            // Forward direction: snap if we're too far left (<= resetPosition)
+            if (this.currentPosition <= this.resetPosition) {
+                this.currentPosition = 0;
+                this.container.style.transform = 'translateX(0px)';
+            }
         }
     };
     
@@ -797,37 +839,36 @@
             const speed = this.options.speed;
             const pixelsPerFrame = (speed / 1000) * clampedDeltaTime;
             
-            // For positive speed: move left (decrease position)
-            // For negative speed: move right (increase position)
-            const newPosition = this.currentPosition - pixelsPerFrame;
+            // Calculate new position based on direction
+            // Forward: move left (decrease position)
+            // Reverse: move right (increase position)
+            let newPosition;
+            if (this.options.reverseDirection) {
+                newPosition = this.currentPosition + pixelsPerFrame;
+            } else {
+                newPosition = this.currentPosition - pixelsPerFrame;
+            }
             
             // Reset position when we reach the reset point
+            // Unified logic for both directions
             // Check boundaries BEFORE updating to prevent visible jump
+            // Add small buffer (1px) to prevent premature resets due to floating point precision
+            const resetBuffer = 1;
             if (this.resetPosition !== null) {
-                if (speed >= 0) {
-                    // Forward scrolling: reset when going too far left
-                    // If new position would cross resetPosition, reset to 0 instead
-                    if (newPosition <= this.resetPosition) {
-                        this.currentPosition = 0;
+                if (this.options.reverseDirection) {
+                    // Reverse direction: moving right (increasing), reset when >= 0 - buffer
+                    if (newPosition >= 0 - resetBuffer) {
+                        this.currentPosition = this.resetPosition; // -totalSetWidth
                     } else {
                         this.currentPosition = newPosition;
                     }
                 } else {
-                    // Reverse scrolling: reset when going too far right
-                    // Use dynamic threshold: reset when within one frame's movement of 0
-                    // This prevents visible jump by resetting before position gets too close to 0
-                    // Math.abs(pixelsPerFrame) gives us the movement distance per frame
-                    const resetThreshold = Math.max(Math.abs(pixelsPerFrame) * 2, 2); // Use 2x movement distance, min 2px
-                    // Check current position first - if already close to 0, reset immediately
-                    // This prevents the visible jump that occurs when position is already rendered close to 0
-                    if (this.currentPosition >= -resetThreshold) {
-                        this.currentPosition = this.resetPosition; // -totalSetWidth
-                    } else if (newPosition >= -resetThreshold) {
-                        this.currentPosition = this.resetPosition; // -totalSetWidth
+                    // Forward direction: moving left (decreasing), reset when <= resetPosition + buffer
+                    if (newPosition <= this.resetPosition + resetBuffer) {
+                        this.currentPosition = 0;
                     } else {
                         this.currentPosition = newPosition;
                     }
-                    // Note: Lower boundary (position < resetPosition) is handled by drag boundary wrapping
                 }
             } else {
                 this.currentPosition = newPosition;
