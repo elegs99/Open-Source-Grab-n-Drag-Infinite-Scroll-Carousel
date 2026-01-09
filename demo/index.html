@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Scroll Carousel - Demo</title>
+    <link rel="stylesheet" href="../infinite-scroll-carousel.css">
+    <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+    <div class="demo-container">
+        <header>
+            <h1>Infinite Scroll Carousel</h1>
+            <p>A lightweight, dependency-free infinite scrolling carousel with grab-and-drag interaction</p>
+        </header>
+
+        <!-- Example 1: Simple Text Items -->
+        <section class="demo-section">
+            <h2>Example 1: Simple Text Items</h2>
+            <div class="infinite-scroll-wrapper">
+                <div class="infinite-scroll-container" id="carousel1">
+                    <div class="infinite-scroll-item">Item 1</div>
+                    <div class="infinite-scroll-item">Item 2</div>
+                    <div class="infinite-scroll-item">Item 3</div>
+                    <div class="infinite-scroll-item">Item 4</div>
+                    <div class="infinite-scroll-item">Item 5</div>
+                    <div class="infinite-scroll-item">Item 6</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 2: Icon Cards -->
+        <section class="demo-section">
+            <h2>Example 2: Icon Cards (Faster Speed, Transparent Fade Gradient)</h2>
+            <div class="infinite-scroll-wrapper">
+                <div class="infinite-scroll-container" id="carousel2">
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">🚀</div>
+                        <span>Rocket</span>
+                    </div>
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">⭐</div>
+                        <span>Star</span>
+                    </div>
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">🔥</div>
+                        <span>Fire</span>
+                    </div>
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">💎</div>
+                        <span>Diamond</span>
+                    </div>
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">⚡</div>
+                        <span>Lightning</span>
+                    </div>
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">🌟</div>
+                        <span>Glowing Star</span>
+                    </div>
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">🎯</div>
+                        <span>Target</span>
+                    </div>
+                    <div class="infinite-scroll-item card">
+                        <div class="icon">🎨</div>
+                        <span>Palette</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 3: Numbered Boxes -->
+        <section class="demo-section">
+            <h2>Example 3: Numbered Boxes (Slower Speed, No Pause on Hover)</h2>
+            <div class="infinite-scroll-wrapper">
+                <div class="infinite-scroll-container" id="carousel3">
+                    <div class="infinite-scroll-item box">1</div>
+                    <div class="infinite-scroll-item box">2</div>
+                    <div class="infinite-scroll-item box">3</div>
+                    <div class="infinite-scroll-item box">4</div>
+                    <div class="infinite-scroll-item box">5</div>
+                    <div class="infinite-scroll-item box">6</div>
+                    <div class="infinite-scroll-item box">7</div>
+                    <div class="infinite-scroll-item box">8</div>
+                    <div class="infinite-scroll-item box">9</div>
+                    <div class="infinite-scroll-item box">10</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 4: Technology Stack -->
+        <section class="demo-section">
+            <h2>Example 4: Technology Stack (Green Fade Gradient)</h2>
+            <div class="infinite-scroll-wrapper">
+                <div class="infinite-scroll-container" id="carousel4">
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">🌐</div>
+                        <span class="tech-name">HTML</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">🎨</div>
+                        <span class="tech-name">CSS</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">🔥</div>
+                        <span class="tech-name">JavaScript</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">💻</div>
+                        <span class="tech-name">TypeScript</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">⚙</div>
+                        <span class="tech-name">React</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">🌐</div>
+                        <span class="tech-name">Vue</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">🔥</div>
+                        <span class="tech-name">Angular</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">💻</div>
+                        <span class="tech-name">Node.js</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">🐍</div>
+                        <span class="tech-name">Python</span>
+                    </div>
+                    <div class="infinite-scroll-item tech-item">
+                        <div class="tech-icon">⚙</div>
+                        <span class="tech-name">Java</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Try dragging the carousels! They support mouse and touch interactions.</p>
+            <p><a href="../README.md">View Documentation</a></p>
+        </footer>
+    </div>
+
+    <script src="../infinite-scroll-carousel.js"></script>
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Example 1: Default settings
+            const carousel1 = new InfiniteScrollCarousel('#carousel1', {
+                speed: 50,
+                pauseOnHover: true
+            });
+
+            // Example 2: Faster speed
+            const carousel2 = new InfiniteScrollCarousel('#carousel2', {
+                speed: 60,
+                pauseOnHover: true,
+                fadeColor: 'transparent'
+            });
+
+            // Example 3: Slower speed, no pause on hover
+            const carousel3 = new InfiniteScrollCarousel('#carousel3', {
+                speed: 30,
+                pauseOnHover: false
+            });
+
+            // Example 4: Medium speed with custom momentum
+            const carousel4 = new InfiniteScrollCarousel('#carousel4', {
+                speed: -100,
+                pauseOnHover: true,
+                momentumDecay: .99,
+                maxMomentumSpeed: .5,
+                fadeColor: '#204745'
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,204 @@
+/**
+ * Demo-specific styles for Infinite Scroll Carousel
+ * 
+ * These styles are for demonstration purposes only.
+ * The component itself only requires infinite-scroll-carousel.css
+ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+.demo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.demo-section {
+    margin-bottom: 60px;
+}
+
+.demo-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Example 1: Simple Text Items */
+#carousel1 .infinite-scroll-item {
+    padding: 15px 30px;
+    margin-right: 20px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+}
+
+/* Example 2: Icon Cards */
+.card {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin-right: 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    min-width: 120px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card .icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.card span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Example 3: Numbered Boxes */
+.box {
+    width: 80px;
+    height: 80px;
+    margin-right: 15px;
+    background: #ff6b6b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+/* Example 4: Technology Stack */
+.tech-item {
+    padding: 12px 24px;
+    margin-right: 15px;
+    background: #204745;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+}
+
+.tech-name {
+    display: block;
+}
+
+.tech-icon {
+    font-size: 1rem;
+    margin-right: 10px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 2px solid #e0e0e0;
+    color: #666;
+}
+
+footer p {
+    margin-bottom: 10px;
+}
+
+footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .demo-container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .demo-section h2 {
+        font-size: 1.2rem;
+    }
+
+    #carousel1 .infinite-scroll-item {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+
+    .card {
+        min-width: 100px;
+        padding: 15px;
+    }
+
+    .card .icon {
+        font-size: 2rem;
+    }
+
+    .box {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .tech-item {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+}
+
