@@ -15,7 +15,7 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 
 ## Demo
 
-![Demo GIF of Infinite Scrolling Carousel](docs/demo-placeholder.gif)
+![Demo GIF of Infinite Scrolling Carousel](docs/demo.gif)
 <!-- Replace the above with an actual GIF (e.g., demo/demo.gif) after creating a screen capture -->
 View the interactive [demo page](docs/index.html) for live examples and usage.
 
