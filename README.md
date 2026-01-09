@@ -13,6 +13,9 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 - **Lightweight** - ~8KB minified, works in all modern browsers
 - **Accessible** - Maintains keyboard navigation and screen reader compatibility
 
+## Demo
+View the interactive [demo page](demo/index.html) for live examples and usage.
+
 ## Quickstart
 
 ### 1. Include the Files
@@ -79,14 +82,15 @@ new InfiniteScrollCarousel(container, options)
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `speed` | `number` | `50` | Scroll speed in pixels per second |
-| `pauseOnHover` | `boolean` | `true` | Pause scrolling when mouse enters the container |
-| `responsive` | `boolean` | `true` | Recalculate dimensions on window resize |
-| `momentumDecay` | `number` | `0.95` | Momentum decay factor (0-1). Higher = longer momentum |
-| `maxMomentumSpeed` | `number` | `2.0` | Maximum momentum speed in pixels per millisecond |
-| `copies` | `number` | `3` | Number of item copies for seamless loop (minimum 2) |
+| Option             | Type      | Default     | Description                                                                                                  |
+|--------------------|-----------|-------------|--------------------------------------------------------------------------------------------------------------|
+| `speed`            | `number`  | `50`        | Automatic scroll speed (pixels per second). Use a negative value for reverse direction, or `0` to disable.   |
+| `pauseOnHover`     | `boolean` | `true`      | Whether to pause automatic scrolling when the mouse enters the container.                                    |
+| `responsive`       | `boolean` | `true`      | Whether to recalculate carousel dimensions on window resize.                                                 |
+| `momentumDecay`    | `number`  | `0.95`      | Momentum decay factor (`0.5`–`0.99`). Higher values allow momentum to last longer.                           |
+| `maxMomentumSpeed` | `number`  | `2.0`       | Maximum momentum speed in pixels per millisecond (`0.5`–`25`).                                               |
+| `fadeColor`        | `string`  | `#ffffff`   | Edge fade gradient color (hex, rgb, or rgba). Use `'transparent'` to disable the fading effect.              |
+| `copies`           | `number`  | `3`         | Number of times the set of items is duplicated for seamless looping. Raise this when you notice gaps.        |
 
 ### Methods
 
@@ -119,7 +123,7 @@ carousel.resume();
 ```
 
 #### `destroy()`
-Clean up event listeners and reset the carousel. Call this when removing the carousel from the page.
+Clean up event listeners and reset the carousel. Call this when removing the carousel from an active page.
 
 ```javascript
 carousel.destroy();
@@ -229,33 +233,100 @@ const carousel2 = new InfiniteScrollCarousel('#carousel2', {
 
 ### Customization
 
-You can customize the appearance by adding your own CSS:
+You can fully customize the look and feel of the carousel by adding your own CSS or extending the default classes.
+
+**1. Item Spacing:**
+
+Change the spacing between items (adjust margin or padding):
 
 ```css
-/* Custom item spacing */
 .infinite-scroll-item {
-    margin-right: 40px;
-}
-
-/* Custom fade gradients */
-.infinite-scroll-wrapper::before {
-    background: linear-gradient(to right, rgba(255, 255, 255, 1), transparent);
-}
-
-.infinite-scroll-wrapper::after {
-    background: linear-gradient(to left, rgba(255, 255, 255, 1), transparent);
+    margin-right: 40px; /* Increase space between items */
 }
 ```
 
-### Fade Gradient Customization
+**2. Item Styling:**
 
-Use CSS variables to customize fade gradients:
+Style individual items (such as background, border, typography):
 
 ```css
-.infinite-scroll-wrapper {
-    --fade-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.5), transparent);
+.infinite-scroll-item {
+    background: #f8f8fc;
+    border-radius: 8px;
+    padding: 16px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    color: #222;
+    font-weight: 500;
 }
 ```
+
+**3. Fade Gradient Colors:**
+
+Override the fade color (defaults to white) on the wrapper edges, either via the API or by customizing CSS if needed. (Set `fadeColor` option in JS.)
+
+**4. Carousel Height and Alignment:**
+
+Adjust item alignment or carousel height to fit your content:
+
+```css
+.infinite-scroll-container {
+    align-items: flex-start; /* or center, flex-end */
+    min-height: 50px;
+}
+```
+
+**5. Responsive Layouts:**
+
+Make the carousel responsive by adjusting sizes and spacing at different breakpoints:
+
+```css
+@media (max-width: 600px) {
+    .infinite-scroll-item {
+        margin-right: 16px;
+        padding: 10px 14px;
+        font-size: 0.95em;
+    }
+}
+```
+
+#### Advanced: Add Custom Classes
+
+You can apply your own classes to the wrapper, container, or items for more specific targeting, e.g.
+
+```html
+<div class="infinite-scroll-wrapper my-carousel-wrapper">
+    <div class="infinite-scroll-container" id="customCarousel">
+        <div class="infinite-scroll-item my-carousel-item">Custom 1</div>
+        <div class="infinite-scroll-item my-carousel-item">Custom 2</div>
+        <div class="infinite-scroll-item my-carousel-item">Custom 3</div>
+    </div>
+</div>
+```
+
+And then:
+
+```css
+.my-carousel-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    background: #fafbfc;
+}
+.my-carousel-item {
+    padding: 24px;
+    margin-right: 32px;
+    font-size: 18px;
+    color: #225577;
+}
+```
+
+#### Tip
+
+- You can use *any* content inside `.infinite-scroll-item`—icons, images, cards, links, etc.
+- You can stack multiple carousels with different IDs and provide tailored styles for each.
+
+For more advanced interactivity, combine with your JS events or frameworks—just ensure you keep the core class structure for the carousel JavaScript to work.
+
 
 ## Browser Compatibility
 
@@ -294,7 +365,7 @@ Requires support for:
 
 ### Optimization Tips
 
-1. **Limit Item Count**: While the carousel handles many items, keep it reasonable (< 50 items)
+1. **Limit Item Count**: While the carousel handles many items, keep it reasonable (< 100 items)
 2. **Optimize Images**: Use optimized images for logo/item carousels
 3. **Use `will-change`**: Already included in the CSS for optimal performance
 4. **Avoid Heavy Animations**: Don't add heavy CSS animations to items
@@ -319,7 +390,6 @@ Requires support for:
 - Ensure items have consistent widths
 - Don't modify item count after initialization
 - Wait for images to load before initializing (if using images)
-- Increase `copies` option if needed
 
 ### Drag Not Working
 

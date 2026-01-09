@@ -20,6 +20,7 @@
      * @param {number} options.momentumDecay - Momentum decay factor, clamped to 0.1-0.99 (default: 0.95)
      * @param {number} options.maxMomentumSpeed - Max momentum speed in px/ms, clamped to 0.5-25 (default: 2.0)
      * @param {string} options.fadeColor - Color of the fade gradient in hex, rgb, or rgba format (default: #ffffff)
+     * @param {number} options.copies - Number of item copies for seamless loop (default: 3)
      */
     function InfiniteScrollCarousel(container, options) {
         // Resolve container element
@@ -39,6 +40,7 @@
             momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.95,
             maxMomentumSpeed: options && options.maxMomentumSpeed !== undefined ? options.maxMomentumSpeed : 2.0,
             fadeColor: options && options.fadeColor !== undefined ? options.fadeColor : '#ffffff',
+            copies: options && options.copies !== undefined ? options.copies : 3,
             ...options
         };
         
@@ -98,13 +100,13 @@
      * Validate and clamp option values to valid ranges
      */
     InfiniteScrollCarousel.prototype.validateOptions = function() {
-        // Validate momentumDecay: must be between 0.1 and 0.99
-        if (this.options.momentumDecay < 0.1 || this.options.momentumDecay > 0.99) {
+        // Validate momentumDecay: must be between 0.5 and 0.99
+        if (this.options.momentumDecay < 0.5 || this.options.momentumDecay > 0.99) {
             const originalValue = this.options.momentumDecay;
-            this.options.momentumDecay = Math.max(0.1, Math.min(0.99, this.options.momentumDecay));
+            this.options.momentumDecay = Math.max(0.5, Math.min(0.99, this.options.momentumDecay));
             console.warn(
                 'InfiniteScrollCarousel: momentumDecay value ' + originalValue + 
-                ' is outside valid range (0.1 - 0.99). Clamped to ' + this.options.momentumDecay + '.'
+                ' is outside valid range (0.5 - 0.99). Clamped to ' + this.options.momentumDecay + '.'
             );
         }
         
@@ -115,6 +117,16 @@
             console.warn(
                 'InfiniteScrollCarousel: maxMomentumSpeed value ' + originalValue + 
                 ' is outside valid range (0.5 - 25). Clamped to ' + this.options.maxMomentumSpeed + '.'
+            );
+        }
+
+        // Validate copies: must be between 3 and 100
+        if (this.options.copies < 3) {
+            const originalValue = this.options.copies;
+            this.options.copies = Math.max(3, Math.min(100, this.options.copies));
+            console.warn(
+                'InfiniteScrollCarousel: copies value ' + originalValue + 
+                ' must be greater than or equal to 3. Clamped to ' + this.options.copies + '.'
             );
         }
     };
@@ -257,7 +269,7 @@
         this.originalItemCount = originalItems.length;
         
         // Create copies
-        const copies = 3;
+        const copies = this.options.copies || 3;
         for (let i = 1; i < copies; i++) {
             originalItems.forEach(function(item) {
                 const clone = item.cloneNode(true);
@@ -787,25 +799,38 @@
             
             // For positive speed: move left (decrease position)
             // For negative speed: move right (increase position)
-            this.currentPosition -= pixelsPerFrame;
+            const newPosition = this.currentPosition - pixelsPerFrame;
             
             // Reset position when we reach the reset point
+            // Check boundaries BEFORE updating to prevent visible jump
             if (this.resetPosition !== null) {
                 if (speed >= 0) {
                     // Forward scrolling: reset when going too far left
-                    // Don't show the seam at resetPosition, reset before we reach it
-                    if (this.currentPosition <= this.resetPosition) {
+                    // If new position would cross resetPosition, reset to 0 instead
+                    if (newPosition <= this.resetPosition) {
                         this.currentPosition = 0;
+                    } else {
+                        this.currentPosition = newPosition;
                     }
                 } else {
                     // Reverse scrolling: reset when going too far right
-                    // Don't show the seam at 0, reset before we reach it
-                    // Reset to second copy position so items remain visible on both sides
-                    if (this.currentPosition >= 0) {
+                    // Use dynamic threshold: reset when within one frame's movement of 0
+                    // This prevents visible jump by resetting before position gets too close to 0
+                    // Math.abs(pixelsPerFrame) gives us the movement distance per frame
+                    const resetThreshold = Math.max(Math.abs(pixelsPerFrame) * 2, 2); // Use 2x movement distance, min 2px
+                    // Check current position first - if already close to 0, reset immediately
+                    // This prevents the visible jump that occurs when position is already rendered close to 0
+                    if (this.currentPosition >= -resetThreshold) {
                         this.currentPosition = this.resetPosition; // -totalSetWidth
+                    } else if (newPosition >= -resetThreshold) {
+                        this.currentPosition = this.resetPosition; // -totalSetWidth
+                    } else {
+                        this.currentPosition = newPosition;
                     }
                     // Note: Lower boundary (position < resetPosition) is handled by drag boundary wrapping
                 }
+            } else {
+                this.currentPosition = newPosition;
             }
             
             // Update transform with sub-pixel precision
