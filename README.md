@@ -1,4 +1,4 @@
-# Infinite Scroll Carousel
+# Grab-n-Drag Infinite Scrolling Carousel
 
 A lightweight, dependency-free infinite scrolling carousel component with grab-and-drag interaction, momentum scrolling, and seamless looping. Perfect for showcasing logos, skills, testimonials, or any horizontally scrollable content.
 
@@ -14,6 +14,8 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 - **HTML Accessible** - Maintains keyboard navigation and screen reader compatibility
 
 ## Demo
+![Demo GIF of Infinite Scrolling Carousel](docs/demo-placeholder.gif)
+<!-- Replace the above with an actual GIF (e.g., demo/demo.gif) after creating a screen capture -->
 View the interactive [demo page](demo/index.html) for live examples and usage.
 
 ## Quickstart
