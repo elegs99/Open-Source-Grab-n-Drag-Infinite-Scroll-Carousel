@@ -737,7 +737,7 @@
         this.container.style.transform = 'translateX(' + this.currentPosition + 'px)';
         
         // Stop momentum when velocity is too low
-        if (Math.abs(this.velocity) < 0.01) {
+        if (Math.abs(this.velocity) < 0.02) {
             this.isMomentumActive = false;
             this.velocity = 0;
             this.snapToValidPosition();

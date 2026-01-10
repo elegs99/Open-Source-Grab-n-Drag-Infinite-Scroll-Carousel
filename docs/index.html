@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grab-n-Drag Infinite Scrolling Carousel - Demo</title>
-    <link rel="stylesheet" href="Open-Source-Files/infinite-scroll-carousel.css">
+    <link rel="stylesheet" href="Open-Source-Files/grab-n-drag-infinite-carousel.css">
     <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="demo-container">
@@ -66,7 +67,7 @@
 
         <!-- Example 2: Icon Cards -->
         <section class="demo-section">
-            <h2>Example 2: Icon Cards</h2>
+            <h2>Example 2: Icon Cards; Individual Card Hover Effect</h2>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel2">
                     <div class="infinite-scroll-item card">
@@ -167,7 +168,7 @@
 
         <!-- Example 3: Numbered Boxes -->
         <section class="demo-section">
-            <h2>Example 3: Numbered Boxes</h2>
+            <h2>Example 3: Numbered Boxes; Slow Momentum Decay</h2>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel3">
                     <div class="infinite-scroll-item box">1</div>
@@ -319,50 +320,31 @@
             </div>
         </section>
 
-        <!-- Example 4: Technology Stack -->
+        <!-- Example 4  : Technology Skills Dual Carousel -->
         <section class="demo-section">
-            <h2>Example 4: Technology Stack</h2>
-            <div class="infinite-scroll-wrapper">
-                <div class="infinite-scroll-container" id="carousel4">
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">🌐</div>
-                        <span class="tech-name">HTML</span>
+            <h2>Example 4: Technology Skills Dual Carousel</h2>
+            <div class="skills-list">
+                <div class="icon-container-wrapper">
+                    <div class="infinite-scroll-wrapper">
+                        <div class="infinite-scroll-container" id="carousel4a">
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-python"></i> Python</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-java"></i> Java</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-solid fa-code"></i> C#</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-html5"></i> HTML</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-css3-alt"></i> CSS</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-js"></i> JavaScript</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-solid fa-database"></i> SQL</div>
+                        </div>
                     </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">🎨</div>
-                        <span class="tech-name">CSS</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">🔥</div>
-                        <span class="tech-name">JavaScript</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">💻</div>
-                        <span class="tech-name">TypeScript</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">⚙</div>
-                        <span class="tech-name">React</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">🌐</div>
-                        <span class="tech-name">Vue</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">🔥</div>
-                        <span class="tech-name">Angular</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">💻</div>
-                        <span class="tech-name">Node.js</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">🐍</div>
-                        <span class="tech-name">Python</span>
-                    </div>
-                    <div class="infinite-scroll-item tech-item">
-                        <div class="tech-icon">⚙</div>
-                        <span class="tech-name">Java</span>
+                    <div class="infinite-scroll-wrapper">
+                        <div class="infinite-scroll-container" id="carousel4b">
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-react"></i> React Native</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-android"></i> Android</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-unity"></i> Unity</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-solid fa-terminal"></i> TensorFlow</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-solid fa-fire-flame-curved fa-flip-horizontal"></i> PyTorch</div>
+                            <div class="infinite-scroll-item icon-item"><i class="fa-brands fa-kaggle"></i> Kaggle</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -370,67 +352,85 @@
                 <button class="code-toggle" onclick="toggleCode(this)">Show Code ▼</button>
                 <div class="code-content">
                     <div class="code-tabs">
-                        <button class="code-tab" onclick="switchTab(this, 'html4')">HTML</button>
-                        <button class="code-tab" onclick="switchTab(this, 'css4')">CSS</button>
-                        <button class="code-tab active" onclick="switchTab(this, 'js4')">JavaScript</button>
+                        <button class="code-tab" onclick="switchTab(this, 'html5')">HTML</button>
+                        <button class="code-tab" onclick="switchTab(this, 'css5')">CSS</button>
+                        <button class="code-tab active" onclick="switchTab(this, 'js5')">JavaScript</button>
                     </div>
-                    <div class="code-block" id="html4">
-                        <pre><code>&lt;div class="infinite-scroll-wrapper"&gt;
-    &lt;div class="infinite-scroll-container" id="carousel4"&gt;
-        &lt;div class="infinite-scroll-item tech-item"&gt;
-            &lt;div class="tech-icon"&gt;🌐&lt;/div&gt;
-            &lt;span class="tech-name"&gt;HTML&lt;/span&gt;
+                    <div class="code-block" id="html5">
+                        <pre><code>&lt;div class="skills-list"&gt;
+    &lt;div class="icon-container-wrapper"&gt;
+        &lt;div class="infinite-scroll-wrapper"&gt;
+            &lt;div class="infinite-scroll-container" id="carousel5a"&gt;
+                &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-python"&gt;&lt;/i&gt; Python&lt;/div&gt;
+                &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-java"&gt;&lt;/i&gt; Java&lt;/div&gt;
+                &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-solid fa-code"&gt;&lt;/i&gt; C#&lt;/div&gt;
+                &lt;!-- More items... --&gt;
+            &lt;/div&gt;
         &lt;/div&gt;
-        &lt;div class="infinite-scroll-item tech-item"&gt;
-            &lt;div class="tech-icon"&gt;🎨&lt;/div&gt;
-            &lt;span class="tech-name"&gt;CSS&lt;/span&gt;
+        &lt;div class="infinite-scroll-wrapper"&gt;
+            &lt;div class="infinite-scroll-container" id="carousel5b"&gt;
+                &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-react"&gt;&lt;/i&gt; React Native&lt;/div&gt;
+                &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-android"&gt;&lt;/i&gt; Android&lt;/div&gt;
+                &lt;!-- More items... --&gt;
+            &lt;/div&gt;
         &lt;/div&gt;
-        &lt;!-- More items... --&gt;
     &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                     </div>
-                    <div class="code-block" id="css4">
-                        <pre><code>.tech-item {
-    padding: 12px 24px;
+                    <div class="code-block" id="css5">
+                        <pre><code>.skills-list {
+    margin: 20px 0;
+}
+
+.icon-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.icon-item {
+    padding: 12px 20px;
     margin-right: 15px;
-    background: #204745;
-    border-radius: 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
     color: white;
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 500;
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
-.tech-name {
-    display: block;
-}
-
-.tech-icon {
-    font-size: 1rem;
-    margin-right: 10px;
+.icon-item i {
+    font-size: 1.2rem;
 }</code></pre>
                     </div>
-                    <div class="code-block active" id="js4">
-                        <pre><code>const carousel4 = new InfiniteScrollCarousel('#carousel4', {
-    speed: 100,
+                    <div class="code-block active" id="js5">
+                        <pre><code>const carousel5a = new InfiniteScrollCarousel('#carousel5a', {
+    speed: 50,
+    reverseDirection: true,
     pauseOnHover: true,
-    momentumDecay: .99,
-    maxMomentumSpeed: .5,
-    fadeColor: '#204745'
+    fadeColor: '#000',
+});
+
+const carousel5b = new InfiniteScrollCarousel('#carousel5b', {
+    speed: 60,
+    pauseOnHover: true,
+    fadeColor: '#000',
 });</code></pre>
                     </div>
                 </div>
             </div>
         </section>
-
+         
         <footer>
             <p>Try dragging the carousels! They support mouse and touch interactions.</p>
             <p><a href="https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel" target="_blank">View Documentation</a></p>
         </footer>
     </div>
 
-    <script src="Open-Source-Files/infinite-scroll-carousel.js"></script>
+    <script src="Open-Source-Files/grab-n-drag-infinite-carousel.js"></script>
     <script>
         // Code dropdown functionality
         function toggleCode(button) {
@@ -440,6 +440,7 @@
             
             content.style.display = isOpen ? 'none' : 'block';
             button.textContent = isOpen ? 'Show Code ▼' : 'Hide Code ▲';
+            button.style.background = isOpen ? 'linear-gradient(to right, #667eea, transparent)' : '#667eea';
         }
 
         function switchTab(button, targetId) {
@@ -482,13 +483,19 @@
                 momentumDecay: 0.98,
             });
 
-            // Example 4: Medium speed with custom momentum
-            const carousel4 = new InfiniteScrollCarousel('#carousel4', {
-                speed: 100,
+
+            // Example 4: Skills List with Icons (dual carousel)
+            const carousel4a = new InfiniteScrollCarousel('#carousel4a', {
+                speed: 50,
+                reverseDirection: true,
                 pauseOnHover: true,
-                momentumDecay: .99,
-                maxMomentumSpeed: .5,
-                fadeColor: '#204745'
+                fadeColor: '#000'
+            });
+
+            const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
+                speed: 60,
+                pauseOnHover: true,
+                fadeColor: '#000'
             });
         });
     </script>

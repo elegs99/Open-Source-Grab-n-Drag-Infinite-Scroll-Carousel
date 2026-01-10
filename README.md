@@ -19,6 +19,57 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 <!-- Replace the above with an actual GIF (e.g., demo/demo.gif) after creating a screen capture -->
 View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
 
+## Installation
+
+### npm (Recommended)
+
+```bash
+npm install grab-n-drag-infinite-carousel
+```
+
+Then import in your project:
+
+```javascript
+// ES Modules
+import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
+import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
+
+// CommonJS
+const InfiniteScrollCarousel = require('grab-n-drag-infinite-carousel');
+require('grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css');
+```
+
+### CDN
+
+```html
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/grab-n-drag-infinite-carousel.css">
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/grab-n-drag-infinite-carousel.js"></script>
+```
+
+### Manual Download
+
+Download the files directly from the repository:
+- `grab-n-drag-infinite-carousel.js` (or `grab-n-drag-infinite-carousel.min.js` for production)
+- `grab-n-drag-infinite-carousel.css` (or `grab-n-drag-infinite-carousel.min.css` for production)
+
+### TypeScript Support
+
+TypeScript definitions are included! If you're using TypeScript, you'll get full type checking and IntelliSense support:
+
+```typescript
+import InfiniteScrollCarousel, { InfiniteScrollCarouselOptions } from 'grab-n-drag-infinite-carousel';
+
+const options: InfiniteScrollCarouselOptions = {
+  speed: 50,
+  pauseOnHover: true
+};
+
+const carousel = new InfiniteScrollCarousel('#myCarousel', options);
+```
+
 ## Quickstart
 
 ### 1. Include the Files
@@ -27,12 +78,12 @@ View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-D
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="infinite-scroll-carousel.css">
+    <link rel="stylesheet" href="grab-n-drag-infinite-carousel.css">
 </head>
 <body>
     <!-- Your carousel markup -->
     
-    <script src="infinite-scroll-carousel.js"></script>
+    <script src="grab-n-drag-infinite-carousel.js"></script>
     <script>
         // Initialize carousel
     </script>
@@ -115,7 +166,7 @@ carousel.stop();
 ```
 
 #### `pause()`
-Pause scrolling (can be resumed).
+Pause scrolling (resumed when interacted).
 
 ```javascript
 carousel.pause();
