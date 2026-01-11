@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grab-n-Drag Infinite Scrolling Carousel - Demo</title>
-    <link rel="stylesheet" href="Open-Source-Files/grab-n-drag-infinite-carousel.css">
-    <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="node_modules/grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css">
+    <link rel="stylesheet" href="demo/demo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -322,7 +322,7 @@
 
         <!-- Example 4  : Technology Skills Dual Carousel -->
         <section class="demo-section">
-            <h2>Example 4: Technology Skills Dual Carousel</h2>
+            <h2>Example 4: Technology Skills; Custom Fade Color; Dual Carousel</h2>
             <div class="skills-list">
                 <div class="icon-container-wrapper">
                     <div class="infinite-scroll-wrapper">
@@ -360,7 +360,7 @@
                         <pre><code>&lt;div class="skills-list"&gt;
     &lt;div class="icon-container-wrapper"&gt;
         &lt;div class="infinite-scroll-wrapper"&gt;
-            &lt;div class="infinite-scroll-container" id="carousel5a"&gt;
+            &lt;div class="infinite-scroll-container" id="carousel4a"&gt;
                 &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-python"&gt;&lt;/i&gt; Python&lt;/div&gt;
                 &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-java"&gt;&lt;/i&gt; Java&lt;/div&gt;
                 &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-solid fa-code"&gt;&lt;/i&gt; C#&lt;/div&gt;
@@ -368,7 +368,7 @@
             &lt;/div&gt;
         &lt;/div&gt;
         &lt;div class="infinite-scroll-wrapper"&gt;
-            &lt;div class="infinite-scroll-container" id="carousel5b"&gt;
+            &lt;div class="infinite-scroll-container" id="carousel4b"&gt;
                 &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-react"&gt;&lt;/i&gt; React Native&lt;/div&gt;
                 &lt;div class="infinite-scroll-item icon-item"&gt;&lt;i class="fa-brands fa-android"&gt;&lt;/i&gt; Android&lt;/div&gt;
                 &lt;!-- More items... --&gt;
@@ -407,14 +407,14 @@
 }</code></pre>
                     </div>
                     <div class="code-block active" id="js5">
-                        <pre><code>const carousel5a = new InfiniteScrollCarousel('#carousel5a', {
+                        <pre><code>const carousel4a = new InfiniteScrollCarousel('#carousel4a', {
     speed: 50,
     reverseDirection: true,
     pauseOnHover: true,
     fadeColor: '#000',
 });
 
-const carousel5b = new InfiniteScrollCarousel('#carousel5b', {
+const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
     speed: 60,
     pauseOnHover: true,
     fadeColor: '#000',
@@ -430,7 +430,7 @@ const carousel5b = new InfiniteScrollCarousel('#carousel5b', {
         </footer>
     </div>
 
-    <script src="Open-Source-Files/grab-n-drag-infinite-carousel.js"></script>
+    <script src="node_modules/grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.js"></script>
     <script>
         // Code dropdown functionality
         function toggleCode(button) {

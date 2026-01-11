@@ -44,11 +44,14 @@
   "bugs": {
     "url": "https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/issues"
   },
-  "homepage": "https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel#readme",
+  "homepage": "https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/",
   "devDependencies": {
     "cssnano": "^6.0.1",
     "postcss": "^8.4.35",
     "postcss-cli": "^11.0.0",
     "terser": "^5.26.0"
+  },
+  "dependencies": {
+    "grab-n-drag-infinite-carousel": "^1.0.0"
   }
 }
