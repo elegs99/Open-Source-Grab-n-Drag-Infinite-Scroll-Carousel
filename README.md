@@ -16,7 +16,6 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 ## Demo
 
 ![Demo GIF of Infinite Scrolling Carousel](demo/demo.gif)
-<!-- Replace the above with an actual GIF (e.g., demo/demo.gif) after creating a screen capture -->
 View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
 
 ## Installation
