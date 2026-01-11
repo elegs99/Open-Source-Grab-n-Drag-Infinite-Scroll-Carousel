@@ -443,7 +443,7 @@ Requires support for:
 **Problem**: Visible jumps or glitches during scrolling.
 
 **Solutions**:
-- Ensure items have consistent widths
+- Ensure item widths don't change dynamically
 - Don't modify item count after initialization
 - Wait for images to load before initializing (if using images)
 
@@ -478,6 +478,18 @@ const carousel = new InfiniteScrollCarousel(container, {
     speed: 30  // Lower = slower, Higher = faster
 });
 ```
+
+### Empty Space At End Of Elements
+
+**Problem**: You see a large empty gap at the end of carousel items during scrolling.
+
+**Solution**: Increase the number of copies (clones) this ensures there are enough items to cover the visible area as it scrolls infinitely. See the `copies` option:
+```javascript
+const carousel = new InfiniteScrollCarousel(container, {
+    copies: 3  // Increase this number (default is 2)
+});
+```
+
 
 ## License
 
