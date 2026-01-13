@@ -18,11 +18,14 @@
         <!-- Example 1: Simple Text Items -->
         <section class="demo-section">
             <h2>Example 1: Simple Text Items</h2>
+            <h4>Default settings.</h4>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel1">
                     <div class="infinite-scroll-item">Item 1</div>
                     <div class="infinite-scroll-item">Item 2</div>
                     <div class="infinite-scroll-item">Item 3</div>
+                    <div class="infinite-scroll-item">Item 4</div>
+                    <div class="infinite-scroll-item">Item 5</div>
                 </div>
             </div>
             <div class="code-dropdown">
@@ -54,53 +57,41 @@
 }</code></pre>
                     </div>
                     <div class="code-block active" id="js1">
-                        <pre><code>const carousel1 = new InfiniteScrollCarousel('#carousel1', {
-    speed: 50,
-    reverseDirection: true,
-    pauseOnHover: true,
-    copies: 4,
-});</code></pre>
+                        <pre><code>const carousel1 = new InfiniteScrollCarousel('#carousel1', {}); // Default settings</code></pre>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Example 2: Icon Cards -->
+        <!-- Example 2: Image Gallery -->
         <section class="demo-section">
-            <h2>Example 2: Icon Cards; Individual Card Hover Effect</h2>
+            <h2>Example 2: Image Gallery</h2>
+            <h4>Individual hover effect; Transparent fade color.</h4>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel2">
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">🚀</div>
-                        <span>Rocket</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" alt="Mountain Landscape">
                     </div>
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">⭐</div>
-                        <span>Star</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=300&h=200&fit=crop" alt="Ocean View">
                     </div>
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">🔥</div>
-                        <span>Fire</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=300&h=200&fit=crop" alt="Forest Path">
                     </div>
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">💎</div>
-                        <span>Diamond</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&h=200&fit=crop" alt="Desert Sunset">
                     </div>
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">⚡</div>
-                        <span>Lightning</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop" alt="Mountain Lake">
                     </div>
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">🌟</div>
-                        <span>Glowing Star</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" alt="Snowy Peaks">
                     </div>
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">🎯</div>
-                        <span>Target</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=300&h=200&fit=crop" alt="Tropical Beach">
                     </div>
-                    <div class="infinite-scroll-item card">
-                        <div class="icon">🎨</div>
-                        <span>Palette</span>
+                    <div class="infinite-scroll-item image-item">
+                        <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=300&h=200&fit=crop" alt="Autumn Trees">
                     </div>
                 </div>
             </div>
@@ -108,56 +99,48 @@
                 <button class="code-toggle" onclick="toggleCode(this)">Show Code ▼</button>
                 <div class="code-content">
                     <div class="code-tabs">
-                        <button class="code-tab" onclick="switchTab(this, 'html2')">HTML</button>
-                        <button class="code-tab" onclick="switchTab(this, 'css2')">CSS</button>
-                        <button class="code-tab active" onclick="switchTab(this, 'js2')">JavaScript</button>
+                        <button class="code-tab" onclick="switchTab(this, 'html6')">HTML</button>
+                        <button class="code-tab" onclick="switchTab(this, 'css6')">CSS</button>
+                        <button class="code-tab active" onclick="switchTab(this, 'js6')">JavaScript</button>
                     </div>
-                    <div class="code-block" id="html2">
+                    <div class="code-block" id="html6">
                         <pre><code>&lt;div class="infinite-scroll-wrapper"&gt;
-    &lt;div class="infinite-scroll-container" id="carousel2"&gt;
-        &lt;div class="infinite-scroll-item card"&gt;
-            &lt;div class="icon"&gt;🚀&lt;/div&gt;
-            &lt;span&gt;Rocket&lt;/span&gt;
+    &lt;div class="infinite-scroll-container" id="carousel5"&gt;
+        &lt;div class="infinite-scroll-item image-item"&gt;
+            &lt;img src="path/to/image1.jpg" alt="Description"&gt;
         &lt;/div&gt;
-        &lt;div class="infinite-scroll-item card"&gt;
-            &lt;div class="icon"&gt;⭐&lt;/div&gt;
-            &lt;span&gt;Star&lt;/span&gt;
+        &lt;div class="infinite-scroll-item image-item"&gt;
+            &lt;img src="path/to/image2.jpg" alt="Description"&gt;
         &lt;/div&gt;
         &lt;!-- More items... --&gt;
     &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                     </div>
-                    <div class="code-block" id="css2">
-                        <pre><code>.card {
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    margin-right: 25px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    <div class="code-block" id="css6">
+                        <pre><code>.image-item {
+    width: 300px;
+    height: 200px;
+    margin-right: 20px;
     border-radius: 12px;
-    color: white;
-    min-width: 120px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    transition: transform 0.2s;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
 }
 
-.card:hover {
-    transform: translateY(-5px);
+.image-item:hover {
+    transform: scale(1.05);
 }
 
-.card .icon {
-    font-size: 3rem;
-    margin-bottom: 10px;
-}
-
-.card span {
-    font-size: 0.9rem;
-    font-weight: 500;
+.image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }</code></pre>
                     </div>
-                    <div class="code-block active" id="js2">
-                        <pre><code>const carousel2 = new InfiniteScrollCarousel('#carousel2', {
-    speed: 60,
+                    <div class="code-block active" id="js6">
+                        <pre><code>const carousel5 = new InfiniteScrollCarousel('#carousel5', {
+    speed: 40,
     pauseOnHover: true,
     fadeColor: 'transparent'
 });</code></pre>
@@ -168,7 +151,8 @@
 
         <!-- Example 3: Numbered Boxes -->
         <section class="demo-section">
-            <h2>Example 3: Numbered Boxes; Slow Momentum Decay</h2>
+            <h2>Example 3: Numbered Boxes</h2>
+            <h4>Large number of items; Slow momentum decay.</h4>
             <div class="infinite-scroll-wrapper">
                 <div class="infinite-scroll-container" id="carousel3">
                     <div class="infinite-scroll-item box">1</div>
@@ -322,7 +306,8 @@
 
         <!-- Example 4  : Technology Skills Dual Carousel -->
         <section class="demo-section">
-            <h2>Example 4: Technology Skills; Custom Fade Color; Dual Carousel</h2>
+            <h2>Example 4: Technology Skills</h2>
+            <h4>Dual carousel; Custom fade color.</h4>
             <div class="skills-list">
                 <div class="icon-container-wrapper">
                     <div class="infinite-scroll-wrapper">
@@ -423,7 +408,7 @@ const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
                 </div>
             </div>
         </section>
-         
+
         <footer>
             <p>Try dragging the carousels! They support mouse and touch interactions.</p>
             <p><a href="https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel" target="_blank">View Documentation</a></p>
@@ -460,16 +445,11 @@ const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
         // Wait for DOM to be ready
         document.addEventListener('DOMContentLoaded', function() {
             // Example 1: Default settings
-            const carousel1 = new InfiniteScrollCarousel('#carousel1', {
-                speed: 50,
-                reverseDirection: true,
-                pauseOnHover: true,
-                copies: 4,
-            });
+            const carousel1 = new InfiniteScrollCarousel('#carousel1', {}); // Default settings
 
-            // Example 2: Faster speed
+            // Example 5: Image Gallery
             const carousel2 = new InfiniteScrollCarousel('#carousel2', {
-                speed: 60,
+                speed: 40,
                 pauseOnHover: true,
                 fadeColor: 'transparent'
             });
