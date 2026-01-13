@@ -81,6 +81,11 @@
         this.resizeDelayTimeout = null;
         this.lastWidth = window.innerWidth;
         
+        // Size observer for dynamic content loading
+        this.sizeObserver = null;
+        this.sizeObserverTimeout = null;
+        this.lastMeasurement = null;
+        
         // Event handler references for cleanup
         this.boundHandlers = {
             mouseenter: null,
@@ -176,15 +181,16 @@
         // Setup event listeners
         this.setupEventListeners();
         
-        // Wait for responsive styles to be applied before initial calculation
-        // This is especially important on mobile where styles may not be ready immediately
-        setTimeout(function() {
+        // Wait for resources (fonts, images) to load before calculating sizes
+        this.waitForResources(function() {
             // Calculate distance first, then start scrolling after measurement completes
             this.calculateScrollDistance(function() {
                 this.setInitialPosition();
                 this.startScrolling();
+                // Setup ResizeObserver to monitor for size changes after initial load
+                this.setupSizeObserver();
             }.bind(this));
-        }.bind(this), 50);
+        }.bind(this));
     };
     
     /**
@@ -270,6 +276,119 @@
         
         // Add data attribute to activate the CSS rule
         wrapper.setAttribute('data-fade-color', '');
+    };
+    
+    /**
+     * Wait for resources (fonts, images) to load before calculating sizes
+     * @param {Function} callback - Callback to execute after resources are ready
+     */
+    InfiniteScrollCarousel.prototype.waitForResources = function(callback) {
+        const maxWaitTime = 3000; // Maximum 3 seconds
+        const startTime = Date.now();
+        let callbackCalled = false;
+        
+        // Guard to prevent multiple callback calls
+        const safeCallback = function() {
+            if (!callbackCalled) {
+                callbackCalled = true;
+                callback();
+            }
+        };
+        
+        // Check if fonts API is available
+        const fontsReady = document.fonts && typeof document.fonts.ready !== 'undefined';
+        
+        // Get all images in the container
+        const images = this.container.querySelectorAll('img');
+        const imagePromises = [];
+        
+        // Create promises for each image
+        images.forEach(function(img) {
+            if (!img.complete) {
+                const promise = new Promise(function(resolve, reject) {
+                    img.addEventListener('load', resolve);
+                    img.addEventListener('error', resolve); // Resolve even on error to not block
+                    // Timeout after maxWaitTime
+                    setTimeout(resolve, maxWaitTime);
+                });
+                imagePromises.push(promise);
+            }
+        });
+        
+        // Wait for fonts if available
+        const fontPromise = fontsReady ? document.fonts.ready : Promise.resolve();
+        
+        // Wait for all resources with timeout
+        Promise.all([fontPromise, Promise.all(imagePromises)])
+            .then(function() {
+                // Ensure minimum wait time for styles to apply (especially on mobile)
+                const elapsed = Date.now() - startTime;
+                const minWait = 50;
+                const remainingWait = Math.max(0, minWait - elapsed);
+                
+                setTimeout(function() {
+                    safeCallback();
+                }, remainingWait);
+            })
+            .catch(function() {
+                // Fallback: proceed after timeout even if resources fail
+                const elapsed = Date.now() - startTime;
+                const minWait = 50;
+                const remainingWait = Math.max(0, minWait - elapsed);
+                
+                setTimeout(function() {
+                    safeCallback();
+                }, remainingWait);
+            });
+        
+        // Safety timeout - always proceed after maxWaitTime
+        setTimeout(function() {
+            safeCallback();
+        }, maxWaitTime);
+    };
+    
+    /**
+     * Setup ResizeObserver to monitor for size changes and recalculate when sizes stabilize
+     */
+    InfiniteScrollCarousel.prototype.setupSizeObserver = function() {
+        // Check if ResizeObserver is available
+        if (typeof ResizeObserver === 'undefined') {
+            return; // Graceful fallback if not available
+        }
+        
+        // Clear any existing observer
+        if (this.sizeObserver) {
+            this.sizeObserver.disconnect();
+        }
+        
+        // Clear any pending timeout
+        if (this.sizeObserverTimeout) {
+            clearTimeout(this.sizeObserverTimeout);
+            this.sizeObserverTimeout = null;
+        }
+        
+        // Create observer to watch for size changes
+        this.sizeObserver = new ResizeObserver(function(entries) {
+            // Debounce: wait 100ms after last change before recalculating
+            if (this.sizeObserverTimeout) {
+                clearTimeout(this.sizeObserverTimeout);
+            }
+            
+            this.sizeObserverTimeout = setTimeout(function() {
+                // Only recalculate if we're not currently measuring
+                if (!this.isMeasuring) {
+                    this.calculateScrollDistance();
+                }
+                this.sizeObserverTimeout = null;
+            }.bind(this), 100);
+        }.bind(this));
+        
+        // Observe the container and all items
+        this.sizeObserver.observe(this.container);
+        const items = Array.from(this.container.children);
+        items.forEach(function(item) {
+            this.sizeObserver.observe(item);
+        }.bind(this));
     };
     
     /**
@@ -362,94 +481,126 @@
             
             // Wait for next frame to ensure layout is settled
             requestAnimationFrame(function() {
-                // Calculate total width by measuring actual rendered width of first set
-                // This is more accurate than summing individual items due to flexbox behavior
-                let totalSetWidth = 0;
-                
-                // Method 1: Measure the actual distance from first item to first item of second set
-                // This accounts for all margins, padding, and flexbox spacing correctly
-                if (items.length >= itemCount * 2) {
-                    const firstItemRect = items[0].getBoundingClientRect();
-                    const secondSetFirstItemRect = items[itemCount].getBoundingClientRect();
-                    totalSetWidth = secondSetFirstItemRect.left - firstItemRect.left;
-                } else {
-                    // Fallback: Sum item widths and margins (only between items, not after last)
-                    const firstItemStyle = window.getComputedStyle(items[0]);
-                    const marginRight = parseFloat(firstItemStyle.marginRight) || 0;
+                // Measure sizes across multiple frames to verify stability
+                const measureSize = function() {
+                    // Calculate total width by measuring actual rendered width of first set
+                    // This is more accurate than summing individual items due to flexbox behavior
+                    let totalSetWidth = 0;
                     
-                    for (let i = 0; i < itemCount; i++) {
-                        const item = items[i];
-                        if (!item) continue;
+                    // Method 1: Measure the actual distance from first item to first item of second set
+                    // This accounts for all margins, padding, and flexbox spacing correctly
+                    if (items.length >= itemCount * 2) {
+                        const firstItemRect = items[0].getBoundingClientRect();
+                        const secondSetFirstItemRect = items[itemCount].getBoundingClientRect();
+                        totalSetWidth = secondSetFirstItemRect.left - firstItemRect.left;
+                    } else {
+                        // Fallback: Sum item widths and margins (only between items, not after last)
+                        const firstItemStyle = window.getComputedStyle(items[0]);
+                        const marginRight = parseFloat(firstItemStyle.marginRight) || 0;
                         
-                        // Get the actual rendered width (includes padding and border)
-                        const itemWidth = item.offsetWidth;
-                        totalSetWidth += itemWidth;
-                        
-                        // Add margin only between items (not after the last item)
-                        if (i < itemCount - 1) {
-                            totalSetWidth += marginRight;
+                        for (let i = 0; i < itemCount; i++) {
+                            const item = items[i];
+                            if (!item) continue;
+                            
+                            // Get the actual rendered width (includes padding and border)
+                            const itemWidth = item.offsetWidth;
+                            totalSetWidth += itemWidth;
+                            
+                            // Add margin only between items (not after the last item)
+                            if (i < itemCount - 1) {
+                                totalSetWidth += marginRight;
+                            }
                         }
                     }
-                }
-                
-                // Round to avoid sub-pixel issues, but keep precision for smooth animation
-                const newTotalSetWidth = Math.round(totalSetWidth * 100) / 100;
-                
-                // Calculate the reset position
-                // Reset when we've scrolled exactly one set width
-                const newResetPosition = -newTotalSetWidth;
-                
-                // Adjust position proportionally if dimensions changed
-                let adjustedPosition = savedPosition;
-                if (oldTotalSetWidth && oldTotalSetWidth !== newTotalSetWidth && savedPosition !== 0) {
-                    // Calculate the ratio of change
-                    const ratio = newTotalSetWidth / oldTotalSetWidth;
-                    adjustedPosition = savedPosition * ratio;
                     
-                    // Clamp position to valid bounds: resetPosition < position < 0
-                    if (adjustedPosition >= 0) {
-                        // Too far right, snap to appropriate position based on direction
-                        adjustedPosition = this.options.reverseDirection ? newResetPosition : 0;
-                    } else if (adjustedPosition <= newResetPosition) {
-                        // Too far left, snap to reset position
-                        adjustedPosition = newResetPosition;
+                    return totalSetWidth;
+                };
+                
+                // Finalize calculation with the measured width
+                const finalizeCalculation = function(totalSetWidth) {
+                    // Round to avoid sub-pixel issues, but keep precision for smooth animation
+                    const newTotalSetWidth = Math.round(totalSetWidth * 100) / 100;
+                    
+                    // Calculate the reset position
+                    // Reset when we've scrolled exactly one set width
+                    const finalResetPosition = -newTotalSetWidth;
+                    
+                    // Adjust position proportionally if dimensions changed
+                    let adjustedPosition = savedPosition;
+                    if (oldTotalSetWidth && oldTotalSetWidth !== newTotalSetWidth && savedPosition !== 0) {
+                        // Calculate the ratio of change
+                        const ratio = newTotalSetWidth / oldTotalSetWidth;
+                        adjustedPosition = savedPosition * ratio;
+                        
+                        // Clamp position to valid bounds: resetPosition < position < 0
+                        if (adjustedPosition >= 0) {
+                            // Too far right, snap to appropriate position based on direction
+                            adjustedPosition = this.options.reverseDirection ? finalResetPosition : 0;
+                        } else if (adjustedPosition <= finalResetPosition) {
+                            // Too far left, snap to reset position
+                            adjustedPosition = finalResetPosition;
+                        }
                     }
-                }
-                
-                // Update dimensions
-                this.totalSetWidth = newTotalSetWidth;
-                this.resetPosition = newResetPosition;
-                
-                // Restore adjusted position
-                this.container.style.transform = 'translateX(' + adjustedPosition + 'px)';
-                this.currentPosition = adjustedPosition;
-                this.isScrolling = wasScrolling;
-                
-                // Force another layout recalculation
-                void this.container.offsetHeight;
-                
-                // Recalculate drag boundaries
-                this.calculateDragBoundaries();
-                
-                // Snap to valid position to ensure we're not at a boundary that would trigger immediate reset
-                this.snapToValidPosition();
-                
-                // If we were scrolling, restart animation
-                // Check if animation loop is actually running, if not, restart it
-                if (wasScrolling && !this.isPaused && !this.isDragging && !this.isMomentumActive) {
-                    // Ensure animation loop is running
-                    if (!this.animationId) {
-                        this.lastTimestamp = 0; // Reset timestamp for accurate delta calculation
-                        this.animate();
+                    
+                    // Store measurement for stability checking
+                    this.lastMeasurement = newTotalSetWidth;
+                    
+                    // Update dimensions
+                    this.totalSetWidth = newTotalSetWidth;
+                    this.resetPosition = finalResetPosition;
+                    
+                    // Restore adjusted position
+                    this.container.style.transform = 'translateX(' + adjustedPosition + 'px)';
+                    this.currentPosition = adjustedPosition;
+                    this.isScrolling = wasScrolling;
+                    
+                    // Force another layout recalculation
+                    void this.container.offsetHeight;
+                    
+                    // Recalculate drag boundaries
+                    this.calculateDragBoundaries();
+                    
+                    // Snap to valid position to ensure we're not at a boundary that would trigger immediate reset
+                    this.snapToValidPosition();
+                    
+                    // If we were scrolling, restart animation
+                    // Check if animation loop is actually running, if not, restart it
+                    if (wasScrolling && !this.isPaused && !this.isDragging && !this.isMomentumActive) {
+                        // Ensure animation loop is running
+                        if (!this.animationId) {
+                            this.lastTimestamp = 0; // Reset timestamp for accurate delta calculation
+                            this.animate();
+                        }
                     }
-                }
+                    
+                    this.isMeasuring = false;
+                    
+                    // Call callback if provided
+                    if (callback) {
+                        callback();
+                    }
+                }.bind(this);
                 
-                this.isMeasuring = false;
+                // First measurement
+                let totalSetWidth = measureSize();
                 
-                // Call callback if provided
-                if (callback) {
-                    callback();
-                }
+                // Verify stability by measuring again after another frame
+                requestAnimationFrame(function() {
+                    const secondMeasurement = measureSize();
+                    
+                    // If sizes differ significantly (more than 1px), wait another frame and retry
+                    if (Math.abs(totalSetWidth - secondMeasurement) > 1) {
+                        // Sizes are still changing, wait and retry
+                        requestAnimationFrame(function() {
+                            totalSetWidth = measureSize();
+                            finalizeCalculation(totalSetWidth);
+                        }.bind(this));
+                    } else {
+                        // Sizes are stable, use the average for precision
+                        totalSetWidth = (totalSetWidth + secondMeasurement) / 2;
+                        finalizeCalculation(totalSetWidth);
+                    }
+                }.bind(this));
             }.bind(this));
         } catch (error) {
             console.error('InfiniteScrollCarousel: Error calculating scroll distance:', error);
@@ -927,6 +1078,18 @@
         if (this.resizeDelayTimeout) {
             clearTimeout(this.resizeDelayTimeout);
             this.resizeDelayTimeout = null;
+        }
+        
+        // Disconnect ResizeObserver if it exists
+        if (this.sizeObserver) {
+            this.sizeObserver.disconnect();
+            this.sizeObserver = null;
+        }
+        
+        // Clear size observer timeout
+        if (this.sizeObserverTimeout) {
+            clearTimeout(this.sizeObserverTimeout);
+            this.sizeObserverTimeout = null;
         }
         
         // Reset container styles
