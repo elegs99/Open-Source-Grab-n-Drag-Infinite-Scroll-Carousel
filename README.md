@@ -408,7 +408,7 @@ Requires support for:
 
 1. Ensure items have proper `alt` text for images
 2. Use semantic HTML for carousel items
-3. Provide alternative navigation for users who cannot use drag gestures
+3. Provide alternative navigation for users who cannot use drag gestures(auto-scroll)
 4. Test with keyboard-only navigation
 
 ## Performance
@@ -486,7 +486,7 @@ const carousel = new InfiniteScrollCarousel(container, {
 **Solution**: Increase the number of copies (clones) this ensures there are enough items to cover the visible area as it scrolls infinitely. See the `copies` option:
 ```javascript
 const carousel = new InfiniteScrollCarousel(container, {
-    copies: 3  // Increase this number (default is 2)
+    copies: 4  // Increase this number (default is 3)
 });
 ```
 
