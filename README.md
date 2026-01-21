@@ -2,6 +2,13 @@
 
 A lightweight, dependency-free infinite scrolling carousel component with grab-and-drag interaction, momentum scrolling, and seamless looping. Perfect for showcasing logos, skills, testimonials, or any horizontally scrollable content.
 
+![CI](https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/workflows/CI/badge.svg) ![npm version](https://img.shields.io/npm/v/grab-n-drag-infinite-carousel) ![npm downloads](https://img.shields.io/npm/dm/grab-n-drag-infinite-carousel) ![GitHub issues](https://img.shields.io/github/issues/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel) ![License](https://img.shields.io/npm/l/grab-n-drag-infinite-carousel)
+
+## Demo
+
+![Demo GIF of Infinite Scrolling Carousel](demo/assets/demo.gif)
+View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
+
 ## Features
 
 - **Infinite Seamless Loop** - Automatically duplicates items for continuous scrolling with no visible jumps
@@ -13,10 +20,12 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 - **Lightweight** - Works in all modern browsers
 - **HTML Accessible** - Maintains keyboard navigation and screen reader compatibility
 
-## Demo
+## Bundle Size
 
-![Demo GIF of Infinite Scrolling Carousel](demo/assets/demo.gif)
-View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
+- **JavaScript (minified)**: 16 KB
+- **CSS (minified)**: 5 KB  
+- **Total (gzipped)**: ~22 KB
+- **Zero dependencies** - No additional bundle weight
 
 ## Installation
 
@@ -278,6 +287,100 @@ const carousel2 = new InfiniteScrollCarousel('#carousel2', {
     </div>
 </div>
 ```
+
+## Framework Integration
+
+The carousel works with any framework or vanilla JavaScript. Here are examples for popular frameworks:
+
+### React
+
+```jsx
+import { useEffect, useRef } from 'react';
+import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
+import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
+
+function Carousel({ items }) {
+  const containerRef = useRef(null);
+  const carouselRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      carouselRef.current = new InfiniteScrollCarousel(containerRef.current, {
+        speed: 50,
+        pauseOnHover: true
+      });
+    }
+
+    return () => {
+      if (carouselRef.current) {
+        carouselRef.current.destroy();
+      }
+    };
+  }, []);
+
+  return (
+    <div className="infinite-scroll-wrapper">
+      <div className="infinite-scroll-container" ref={containerRef}>
+        {items.map((item, index) => (
+          <div key={index} className="infinite-scroll-item">
+            {item}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### Vue 3 (Composition API)
+
+```vue
+<template>
+  <div class="infinite-scroll-wrapper">
+    <div class="infinite-scroll-container" ref="container">
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        class="infinite-scroll-item"
+      >
+        {{ item }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
+import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
+
+const props = defineProps({
+  items: Array
+});
+
+const container = ref(null);
+let carousel = null;
+
+onMounted(() => {
+  if (container.value) {
+    carousel = new InfiniteScrollCarousel(container.value, {
+      speed: 50,
+      pauseOnHover: true
+    });
+  }
+});
+
+onBeforeUnmount(() => {
+  if (carousel) {
+    carousel.destroy();
+  }
+});
+</script>
+```
+
+### Vanilla JavaScript
+
+The carousel works perfectly with vanilla JavaScript - see the [Quickstart](#quickstart) section above for examples.
 
 ## Styling
 
