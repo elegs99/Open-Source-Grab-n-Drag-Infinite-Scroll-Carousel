@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] - 2026-01-20
+## [1.0.2] - 2026-01-20
+
+### Added
+- `fadeWidth` option to customize fade gradient width (default: 50px)
+- `interactable` option to enable/disable grab-and-drag interaction (default: true)
+
+### Changed
+- Refactored `pause()` and `resume()` methods to handle both starting from stopped state and resuming from paused state
+
+### Removed
+- `startScrolling()` method (use `resume()` instead)
+- `stop()` method (use `pause()` or `destroy()` instead)
+
+## [1.0.1] - 2026-01-14
 
 ### Added
 - ResizeObserver for automatic detection of container and item size changes
