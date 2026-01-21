@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Build outputs
 # Note: *.min.js and *.min.css in root are needed for npm publishing
