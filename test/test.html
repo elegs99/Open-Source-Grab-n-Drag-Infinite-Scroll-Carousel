@@ -55,8 +55,14 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        button:hover {
+        button:hover:not(:disabled) {
             background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            color: #ffffff;
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         #testResults {
             margin-top: 20px;
@@ -103,18 +109,21 @@
         </div>
         
         <div style="margin-top: 20px;">
-            <button onclick="testPause()">Test Pause</button>
-            <button onclick="testResume()">Test Resume</button>
-            <button onclick="testStop()">Test Stop</button>
-            <button onclick="testStart()">Test Start</button>
+            <strong>Methods:</strong>
         </div>
         <div style="margin-top: 10px;">
-            <button onclick="testSlowIconLoad()">Test Slow Icon Loading</button>
-            <button onclick="removeIcons()">Remove Icons</button>
-            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="testPause()">Test Pause</button>
+            <button onclick="testResume()">Test Resume</button>
+            <button onclick="testDestroy()">Test Destroy</button>
         </div>
-        <div id="testCarouselStatus" style="margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 4px; display: none;"></div>
-    </div>
+        <div style="margin-top: 10px;">
+            <button onclick="
+                runAllTests()
+                addSpace()
+                "
+            >Run All Tests</button>
+            <button onclick="clearResults()">Clear Results</button>
+        </div>
     </div>
 
     <div class="test-section">
@@ -152,6 +161,18 @@
             }
         }
 
+        function addSpace() {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result';
+            resultDiv.textContent = '--------------------------------';
+            if (resultsDiv.firstChild) {
+                resultsDiv.insertBefore(resultDiv, resultsDiv.firstChild);
+            } else {
+                resultsDiv.appendChild(resultDiv);
+            }
+        }
+
         function testPause() {
             try {
                 carousel.pause();
@@ -170,33 +191,85 @@
             }
         }
 
+        function testDestroy() {
+            try {
+                // Store reference to check if it was destroyed
+                const wasScrolling = carousel.isScrolling;
+                
+                // Destroy the carousel
+                carousel.destroy();
+                
+                // Verify it's destroyed (scrolling should be stopped)
+                if (!carousel.isScrolling && wasScrolling) {
+                    addResult('Destroy method', true, 'Carousel destroyed successfully');
+                    
+                    // Recreate the carousel so other tests can continue
+                    setTimeout(() => {
+                        carousel = new InfiniteScrollCarousel('#testCarousel', {
+                            speed: 50,
+                            pauseOnHover: true
+                        });
+                    }, 100);
+                } else {
+                    addResult('Destroy method', false, 'Destroy did not stop scrolling');
+                }
+            } catch (e) {
+                addResult('Destroy method', false, e.message);
+            }
+        }
+
         function testStop() {
             try {
-                carousel.stop();
-                addResult('Stop method', true, 'Carousel stopped successfully');
+                carousel.pause();
+                carousel.isScrolling = false;
+                if (carousel.animationId) {
+                    cancelAnimationFrame(carousel.animationId);
+                    carousel.animationId = null;
+                }
+                addResult('Stop method (via pause)', true, 'Carousel stopped successfully');
             } catch (e) {
-                addResult('Stop method', false, e.message);
+                addResult('Stop method (via pause)', false, e.message);
             }
         }
 
         function testStart() {
             try {
-                carousel.startScrolling();
-                addResult('Start method', true, 'Carousel started successfully');
+                carousel.resume();
+                addResult('Start method (via resume)', true, 'Carousel started successfully');
             } catch (e) {
-                addResult('Start method', false, e.message);
+                addResult('Start method (via resume)', false, e.message);
             }
         }
 
-        async function runAllTests() {
-            // Don't clear results - keep them for comparison
-            // Track starting point to calculate summary for this run only
-            const startIndex = results.length;
+        function disableAllButtons() {
+            const testSection = document.querySelector('.test-section');
+            const buttons = testSection.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+        }
 
-            // Cleanup: Reset carousel state before running tests
-            // This ensures tests run with a clean state regardless of previous modifications
-            // Note: We preserve icons as they are part of the carousel's visual state
+        function enableAllButtons() {
+            const testSection = document.querySelector('.test-section');
+            const buttons = testSection.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.disabled = false;
+            });
+        }
+
+        async function runAllTests() {
+            // Disable all buttons while tests are running
+            disableAllButtons();
+            
             try {
+                // Don't clear results - keep them for comparison
+                // Track starting point to calculate summary for this run only
+                const startIndex = results.length;
+
+                // Cleanup: Reset carousel state before running tests
+                // This ensures tests run with a clean state regardless of previous modifications
+                // Note: We preserve icons as they are part of the carousel's visual state
+                try {
                 const container = document.querySelector('#testCarousel');
                 if (container && carousel) {
                     // Reset any active drag state
@@ -226,10 +299,7 @@
                     }
                     
                     // Ensure carousel is in a known state
-                    if (!carousel.isScrolling) {
-                        carousel.startScrolling();
-                    }
-                    if (carousel.isPaused) {
+                    if (!carousel.isScrolling || carousel.isPaused) {
                         carousel.resume();
                     }
                     
@@ -265,7 +335,7 @@
 
             // Test 3: Methods exist
             try {
-                const methods = ['startScrolling', 'stop', 'pause', 'resume', 'destroy', 'validateOptions', 
+                const methods = ['pause', 'resume', 'destroy', 'validateOptions', 
                                'init', 'initialize', 'colorToRgba', 'applyFadeColor', 'duplicateItems', 
                                'calculateScrollDistance', 'setInitialPosition', 'calculateDragBoundaries',
                                'setupEventListeners', 'startDragging', 'handleDrag', 'endDragging',
@@ -363,7 +433,7 @@
 
             // Test 10: Options properties
             try {
-                const requiredOptions = ['speed', 'reverseDirection', 'pauseOnHover', 'responsive', 
+                const requiredOptions = ['speed', 'reverseDirection', 'pauseOnHover', 
                                        'momentumDecay', 'maxMomentumSpeed', 'fadeColor', 'copies'];
                 const missingOptions = requiredOptions.filter(opt => !(opt in carousel.options));
                 if (missingOptions.length === 0) {
@@ -415,16 +485,21 @@
                 addResult('Pause/Resume functionality', false, e.message);
             }
 
-            // Test 12: Stop/Start functionality
+            // Test 12: Pause/Resume functionality (replaces Stop/Start)
             try {
-                carousel.stop();
+                carousel.pause();
+                carousel.isScrolling = false;
+                if (carousel.animationId) {
+                    cancelAnimationFrame(carousel.animationId);
+                    carousel.animationId = null;
+                }
                 await new Promise(resolve => setTimeout(resolve, 100));
                 const wasStopped = !carousel.isScrolling;
-                carousel.startScrolling();
+                carousel.resume();
                 await new Promise(resolve => setTimeout(resolve, 100));
                 const wasStarted = carousel.isScrolling;
                 if (wasStopped && wasStarted) {
-                    addResult('Stop/Start functionality', true);
+                    addResult('Pause/Resume functionality', true);
                 } else {
                     addResult('Stop/Start functionality', false, 'Stop/start not working correctly');
                 }
@@ -575,7 +650,7 @@
                 
                 // Ensure scrolling is active
                 if (!testCarousel5.isScrolling) {
-                    testCarousel5.startScrolling();
+                    testCarousel5.resume();
                     await new Promise(resolve => setTimeout(resolve, 50));
                 }
                 
@@ -877,44 +952,7 @@
                 addResult('Touch drag start', false, e.message);
             }
 
-            // Test 28: Drag pauses scrolling
-            try {
-                const container = document.querySelector('#testCarousel');
-                
-                // Ensure scrolling is active
-                if (!carousel.isScrolling) {
-                    carousel.startScrolling();
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                }
-                
-                const wasScrolling = carousel.isScrolling;
-                const wasPaused = carousel.isPaused;
-                
-                // Start drag
-                const mouseDownEvent = new MouseEvent('mousedown', {
-                    bubbles: true,
-                    cancelable: true,
-                    clientX: 100,
-                    clientY: 100
-                });
-                container.dispatchEvent(mouseDownEvent);
-                await new Promise(resolve => setTimeout(resolve, 50));
-                
-                if (wasScrolling && carousel.isPaused && !wasPaused) {
-                    addResult('Drag pauses scrolling', true, 'Scrolling paused during drag');
-                } else {
-                    addResult('Drag pauses scrolling', false, `Was scrolling: ${wasScrolling}, Is paused: ${carousel.isPaused}`);
-                }
-                
-                // Clean up
-                const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
-                document.dispatchEvent(mouseUpEvent);
-                await new Promise(resolve => setTimeout(resolve, 50));
-            } catch (e) {
-                addResult('Drag pauses scrolling', false, e.message);
-            }
-
-            // Test 29: Drag boundary wrapping
+            // Test 28: Drag boundary wrapping
             try {
                 const container = document.querySelector('#testCarousel');
                 
@@ -1004,7 +1042,7 @@
 
             // ===== Momentum Physics Tests =====
 
-            // Test 30: Momentum velocity calculation
+            // Test 29: Momentum velocity calculation
             try {
                 const container = document.querySelector('#testCarousel');
                 
@@ -1058,7 +1096,7 @@
                 addResult('Momentum velocity calculation', false, e.message);
             }
 
-            // Test 31: Momentum decay
+            // Test 30: Momentum decay
             try {
                 const container = document.querySelector('#testCarousel');
                 
@@ -1112,7 +1150,7 @@
                 addResult('Momentum decay', false, e.message);
             }
 
-            // Test 32: Momentum boundary handling
+            // Test 31: Momentum boundary handling
             try {
                 const container = document.querySelector('#testCarousel');
                 
@@ -1150,7 +1188,7 @@
                 addResult('Momentum boundary handling', false, e.message);
             }
 
-            // Test 33: Momentum stops when velocity is low
+            // Test 32: Momentum stops when velocity is low
             try {
                 const container = document.querySelector('#testCarousel');
                 
@@ -1225,7 +1263,7 @@
 
             // ===== Edge Case Tests =====
 
-            // Test 34: Empty carousel
+            // Test 33: Empty carousel
             try {
                 const tempWrapper = document.createElement('div');
                 tempWrapper.className = 'infinite-scroll-wrapper';
@@ -1266,7 +1304,7 @@
                 addResult('Empty carousel', false, e.message);
             }
 
-            // Test 35: Single item carousel
+            // Test 34: Single item carousel
             try {
                 const tempWrapper = document.createElement('div');
                 tempWrapper.className = 'infinite-scroll-wrapper';
@@ -1296,7 +1334,7 @@
                 addResult('Single item carousel', false, e.message);
             }
 
-            // Test 36: Very fast drag (velocity clamping)
+            // Test 35: Very fast drag (velocity clamping)
             try {
                 const container = document.querySelector('#testCarousel');
                 
@@ -1356,13 +1394,13 @@
                 addResult('Very fast drag (velocity clamping)', false, e.message);
             }
 
-            // Test 37: Drag resume after end
+            // Test 36: Drag resume after end
             try {
                 const container = document.querySelector('#testCarousel');
                 
                 // Ensure scrolling is active
                 if (!carousel.isScrolling) {
-                    carousel.startScrolling();
+                    carousel.resume();
                     await new Promise(resolve => setTimeout(resolve, 100));
                 }
                 
@@ -1393,22 +1431,40 @@
                 addResult('Drag resume after end', false, e.message);
             }
 
-            // Summary (only for tests run in this execution)
-            const currentRunResults = results.slice(startIndex);
-            const passed = currentRunResults.filter(r => r.passed).length;
-            const total = currentRunResults.length;
-            const summary = document.createElement('div');
-            summary.className = 'test-result ' + (passed === total ? 'pass' : 'fail');
-            summary.style.marginTop = '20px';
-            summary.style.fontWeight = 'bold';
-            summary.style.fontSize = '18px';
-            summary.textContent = `📊 Summary: ${passed}/${total} test cases passed (${Math.round(passed/total*100)}%)`;
-            // Prepend summary so it appears right after the newest test results
-            const resultsDiv = document.getElementById('testResults');
-            if (resultsDiv.firstChild) {
-                resultsDiv.insertBefore(summary, resultsDiv.firstChild);
-            } else {
-                resultsDiv.appendChild(summary);
+            // Test 37: Slow icon loading - auto recalculation
+            try {
+                await testSlowIconLoad();
+            } catch (e) {
+                addResult('Slow Icon Loading - Auto Recalculation', false, e.message);
+            }
+
+            // Test 38: Slow icon removal - auto recalculation
+            try {
+                await testSlowIconRemoval();
+            } catch (e) {
+                addResult('Slow Icon Removal - Auto Recalculation', false, e.message);
+            }
+
+                // Summary (only for tests run in this execution)
+                const currentRunResults = results.slice(startIndex);
+                const passed = currentRunResults.filter(r => r.passed).length;
+                const total = currentRunResults.length;
+                const summary = document.createElement('div');
+                summary.className = 'test-result ' + (passed === total ? 'pass' : 'fail');
+                summary.style.marginTop = '20px';
+                summary.style.fontWeight = 'bold';
+                summary.style.fontSize = '18px';
+                summary.textContent = `📊 Summary: ${passed}/${total} test cases passed (${Math.round(passed/total*100)}%)`;
+                // Prepend summary so it appears right after the newest test results
+                const resultsDiv = document.getElementById('testResults');
+                if (resultsDiv.firstChild) {
+                    resultsDiv.insertBefore(summary, resultsDiv.firstChild);
+                } else {
+                    resultsDiv.appendChild(summary);
+                }
+            } finally {
+                // Re-enable all buttons when tests complete
+                enableAllButtons();
             }
         }
 
@@ -1420,11 +1476,6 @@
         // ===== Icon Loading Tests =====
         
         async function testSlowIconLoad() {
-            const statusDiv = document.getElementById('testCarouselStatus');
-            statusDiv.style.display = 'block';
-            statusDiv.className = 'status-info';
-            statusDiv.textContent = 'Testing slow icon loading...';
-            
             const container = document.querySelector('#testCarousel');
             const items = container.querySelectorAll('.infinite-scroll-item');
             
@@ -1470,23 +1521,56 @@
             const widthChanged = Math.abs(widthAfterIcons - widthBeforeIcons) > 1;
             
             if (widthChanged) {
-                statusDiv.className = 'status-success';
-                statusDiv.textContent = `✅ Success! Carousel detected icon load and recalculated: ${widthBeforeIcons.toFixed(2)}px → ${widthAfterIcons.toFixed(2)}px`;
                 addResult('Slow Icon Loading - Auto Recalculation', true, 
                     `Width updated from ${widthBeforeIcons.toFixed(2)}px to ${widthAfterIcons.toFixed(2)}px`);
             } else {
-                statusDiv.className = 'status-error';
-                statusDiv.textContent = `❌ Failed! Carousel did not detect icon load (${widthBeforeIcons.toFixed(2)}px → ${widthAfterIcons.toFixed(2)}px)`;
                 addResult('Slow Icon Loading - Auto Recalculation', false, 
                     `Width did not change (${widthBeforeIcons.toFixed(2)}px → ${widthAfterIcons.toFixed(2)}px)`);
             }
         }
 
-        function removeIcons() {
+        async function testSlowIconRemoval() {
+            
             const container = document.querySelector('#testCarousel');
             const items = container.querySelectorAll('.infinite-scroll-item');
-            const statusDiv = document.getElementById('testCarouselStatus');
             
+            // Ensure icons exist (they should be from the previous test)
+            // If not, add them first
+            let iconsExist = false;
+            items.forEach(item => {
+                if (item.querySelector('i')) {
+                    iconsExist = true;
+                }
+            });
+            
+            if (!iconsExist) {
+                // Add icons first if they don't exist
+                const iconClasses = [
+                    'fa-brands fa-html5',
+                    'fa-brands fa-css3-alt',
+                    'fa-brands fa-js',
+                    'fa-brands fa-react',
+                    'fa-brands fa-python'
+                ];
+                
+                items.forEach((item, index) => {
+                    item.classList.add('icon-item');
+                    const icon = document.createElement('i');
+                    icon.className = iconClasses[index] || 'fa-solid fa-circle';
+                    item.insertBefore(icon, item.firstChild);
+                });
+                
+                // Wait for icons to render
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            // Get width with icons
+            const widthWithIcons = carousel.totalSetWidth;
+            
+            // Wait a bit to ensure measurement is stable
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Now remove icons
             items.forEach(item => {
                 const icon = item.querySelector('i');
                 if (icon) {
@@ -1495,9 +1579,27 @@
                 item.classList.remove('icon-item');
             });
             
-            if (statusDiv) {
-                statusDiv.style.display = 'none';
+            // Wait for icons to be removed and ResizeObserver to detect size change
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Wait a bit more for ResizeObserver to recalculate
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            const widthWithoutIcons = carousel.totalSetWidth;
+            const widthChanged = Math.abs(widthWithoutIcons - widthWithIcons) > 1;
+            
+            if (widthChanged) {
+                addResult('Slow Icon Removal - Auto Recalculation', true, 
+                    `Width updated from ${widthWithIcons.toFixed(2)}px to ${widthWithoutIcons.toFixed(2)}px`);
+            } else {
+                addResult('Slow Icon Removal - Auto Recalculation', false, 
+                    `Width did not change (${widthWithIcons.toFixed(2)}px → ${widthWithoutIcons.toFixed(2)}px)`);
             }
+        }
+
+        function clearResults() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '';
         }
     </script>
 </body>

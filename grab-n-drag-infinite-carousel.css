@@ -35,7 +35,7 @@
     content: "";
     position: absolute;
     top: 0;
-    width: 50px;
+    width: var(--fade-width, 50px);
     height: 100%;
     pointer-events: none;
     z-index: 1;

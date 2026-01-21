@@ -17,10 +17,11 @@
      * @param {number} options.speed - Scroll speed in pixels per second, clamped to minimum 0 (default: 50)
      * @param {boolean} options.reverseDirection - Scroll in reverse direction (right to left) (default: false)
      * @param {boolean} options.pauseOnHover - Pause scrolling on hover (default: true)
-     * @param {boolean} options.responsive - Recalculate on window resize (default: true)
      * @param {number} options.momentumDecay - Momentum decay factor, clamped to 0.1-0.99 (default: 0.95)
      * @param {number} options.maxMomentumSpeed - Max momentum speed in px/ms, clamped to 0.5-25 (default: 2.0)
      * @param {string} options.fadeColor - Color of the fade gradient in hex, rgb, or rgba format (default: #ffffff)
+     * @param {number} options.fadeWidth - Width of the fade gradient in pixels (default: 50)
+     * @param {boolean} options.interactable - Enable grab-and-drag interaction (default: true)
      * @param {number} options.copies - Number of item copies for seamless loop (default: 3)
      */
     function InfiniteScrollCarousel(container, options) {
@@ -37,11 +38,12 @@
         this.options = {
             speed: options && options.speed !== undefined ? options.speed : 50,
             reverseDirection: options && options.reverseDirection === true,
-            pauseOnHover: options && options.pauseOnHover !== false,
-            responsive: options && options.responsive !== false,
+            pauseOnHover: options?.pauseOnHover !== false,
             momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.95,
             maxMomentumSpeed: options && options.maxMomentumSpeed !== undefined ? options.maxMomentumSpeed : 2.0,
             fadeColor: options && options.fadeColor !== undefined ? options.fadeColor : '#ffffff',
+            fadeWidth: options && options.fadeWidth !== undefined ? options.fadeWidth : 50,
+            interactable: options?.interactable !== false,
             copies: options && options.copies !== undefined ? options.copies : 3,
             ...options
         };
@@ -75,11 +77,6 @@
         this.velocity = 0;
         this.lastDragTime = 0;
         this.lastDragX = 0;
-        
-        // Resize handler cleanup
-        this.resizeHandler = null;
-        this.resizeDelayTimeout = null;
-        this.lastWidth = window.innerWidth;
         
         // Size observer for dynamic content loading
         this.sizeObserver = null;
@@ -184,9 +181,9 @@
         // Wait for resources (fonts, images) to load before calculating sizes
         this.waitForResources(function() {
             // Calculate distance first, then start scrolling after measurement completes
-            this.calculateScrollDistance(function() {
+                this.calculateScrollDistance(function() {
                 this.setInitialPosition();
-                this.startScrolling();
+                this.resume();
                 // Setup ResizeObserver to monitor for size changes after initial load
                 this.setupSizeObserver();
             }.bind(this));
@@ -273,6 +270,9 @@
         // Set CSS custom properties for left and right gradients
         wrapper.style.setProperty('--fade-gradient-left', 'linear-gradient(to right, ' + fadeColorRgba + ', transparent)');
         wrapper.style.setProperty('--fade-gradient-right', 'linear-gradient(to left, ' + fadeColorRgba + ', transparent)');
+        
+        // Set CSS custom property for fade width
+        wrapper.style.setProperty('--fade-width', this.options.fadeWidth + 'px');
         
         // Add data attribute to activate the CSS rule
         wrapper.setAttribute('data-fade-color', '');
@@ -645,11 +645,6 @@
      * Setup event listeners for interaction
      */
     InfiniteScrollCarousel.prototype.setupEventListeners = function() {
-        // Clean up any existing listeners if re-initializing
-        if (this.resizeHandler) {
-            window.removeEventListener('resize', this.resizeHandler);
-        }
-        
         // Pause on hover
         if (this.options.pauseOnHover) {
             this.boundHandlers.mouseenter = function() {
@@ -668,62 +663,44 @@
             this.container.addEventListener('mouseleave', this.boundHandlers.mouseleave);
         }
         
-        // Mouse events for dragging
-        this.boundHandlers.mousedown = this.startDragging.bind(this);
-        this.boundHandlers.mousemove = this.handleDrag.bind(this);
-        this.boundHandlers.mouseup = this.endDragging.bind(this);
+        // Set cursor based on interactable option
+        if (!this.options.interactable) {
+            this.container.style.cursor = 'default';
+        }
         
-        this.container.addEventListener('mousedown', this.boundHandlers.mousedown);
-        document.addEventListener('mousemove', this.boundHandlers.mousemove);
-        document.addEventListener('mouseup', this.boundHandlers.mouseup);
-        
-        // Handle case where mouse leaves window during drag
-        this.boundHandlers.mouseleaveWindow = function() {
-            if (this.isDragging) {
-                this.endDragging();
-            }
-        }.bind(this);
-        window.addEventListener('mouseleave', this.boundHandlers.mouseleaveWindow);
-        
-        // Touch events for mobile
-        this.boundHandlers.touchstart = this.startDragging.bind(this);
-        this.boundHandlers.touchmove = this.handleDrag.bind(this);
-        this.boundHandlers.touchend = this.endDragging.bind(this);
-        
-        this.container.addEventListener('touchstart', this.boundHandlers.touchstart, { passive: false });
-        document.addEventListener('touchmove', this.boundHandlers.touchmove, { passive: false });
-        document.addEventListener('touchend', this.boundHandlers.touchend);
-        
-        // Prevent text selection during drag
-        this.boundHandlers.selectstart = function(e) {
-            e.preventDefault();
-        };
-        this.container.addEventListener('selectstart', this.boundHandlers.selectstart);
-        
-        // Resize handler with proper debouncing
-        this.resizeHandler = function() {
-            const currentWidth = window.innerWidth;
+        // Mouse events for dragging (only if interactable)
+        if (this.options.interactable) {
+            this.boundHandlers.mousedown = this.startDragging.bind(this);
+            this.boundHandlers.mousemove = this.handleDrag.bind(this);
+            this.boundHandlers.mouseup = this.endDragging.bind(this);
             
-            // Only recalculate if width has changed
-            if (currentWidth === this.lastWidth) {
-                return;
-            }
+            this.container.addEventListener('mousedown', this.boundHandlers.mousedown);
+            document.addEventListener('mousemove', this.boundHandlers.mousemove);
+            document.addEventListener('mouseup', this.boundHandlers.mouseup);
             
-            // Clear any pending resize calculations
-            if (this.resizeDelayTimeout) {
-                clearTimeout(this.resizeDelayTimeout);
-                this.resizeDelayTimeout = null;
-            }
+            // Handle case where mouse leaves window during drag
+            this.boundHandlers.mouseleaveWindow = function() {
+                if (this.isDragging) {
+                    this.endDragging();
+                }
+            }.bind(this);
+            window.addEventListener('mouseleave', this.boundHandlers.mouseleaveWindow);
             
-            // Wait for responsive styles to be applied before recalculating
-            this.resizeDelayTimeout = setTimeout(function() {
-                this.lastWidth = currentWidth;
-                this.resizeDelayTimeout = null;
-                this.calculateScrollDistance();
-            }.bind(this), 50);
-        }.bind(this);
-        
-        window.addEventListener('resize', this.resizeHandler);
+            // Touch events for mobile
+            this.boundHandlers.touchstart = this.startDragging.bind(this);
+            this.boundHandlers.touchmove = this.handleDrag.bind(this);
+            this.boundHandlers.touchend = this.endDragging.bind(this);
+            
+            this.container.addEventListener('touchstart', this.boundHandlers.touchstart, { passive: false });
+            document.addEventListener('touchmove', this.boundHandlers.touchmove, { passive: false });
+            document.addEventListener('touchend', this.boundHandlers.touchend);
+            
+            // Prevent text selection during drag
+            this.boundHandlers.selectstart = function(e) {
+                e.preventDefault();
+            };
+            this.container.addEventListener('selectstart', this.boundHandlers.selectstart);
+        }
     };
     
     /**
@@ -923,17 +900,6 @@
     };
     
     /**
-     * Start automatic scrolling
-     */
-    InfiniteScrollCarousel.prototype.startScrolling = function() {
-        if (this.isScrolling) return; // Already scrolling
-        
-        this.isScrolling = true;
-        this.lastTimestamp = 0; // Reset timestamp for accurate delta calculation
-        this.animate();
-    };
-    
-    /**
      * Pause automatic scrolling
      */
     InfiniteScrollCarousel.prototype.pause = function() {
@@ -941,24 +907,15 @@
     };
     
     /**
-     * Resume automatic scrolling
+     * Resume paused scrolling or start scrolling if stopped.
+     * This method handles both resuming from a paused state and starting from a stopped state.
      */
     InfiniteScrollCarousel.prototype.resume = function() {
         this.isPaused = false;
-        if (this.isScrolling && !this.animationId && !this.isMomentumActive) {
-            this.lastTimestamp = 0; // Reset timestamp for accurate delta calculation
+        this.isScrolling = true;
+        this.lastTimestamp = 0; // Reset timestamp for accurate delta calculation
+        if (!this.animationId && !this.isMomentumActive) {
             this.animate();
-        }
-    };
-    
-    /**
-     * Stop automatic scrolling
-     */
-    InfiniteScrollCarousel.prototype.stop = function() {
-        this.isScrolling = false;
-        if (this.animationId) {
-            cancelAnimationFrame(this.animationId);
-            this.animationId = null;
         }
     };
     
@@ -1036,7 +993,12 @@
      * Cleanup method for proper resource management
      */
     InfiniteScrollCarousel.prototype.destroy = function() {
-        this.stop();
+        // Stop scrolling and cancel animation
+        this.isScrolling = false;
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
         
         // Remove event listeners
         if (this.boundHandlers.mouseenter) {
@@ -1068,16 +1030,6 @@
         }
         if (this.boundHandlers.selectstart) {
             this.container.removeEventListener('selectstart', this.boundHandlers.selectstart);
-        }
-        
-        if (this.resizeHandler) {
-            window.removeEventListener('resize', this.resizeHandler);
-            this.resizeHandler = null;
-        }
-        
-        if (this.resizeDelayTimeout) {
-            clearTimeout(this.resizeDelayTimeout);
-            this.resizeDelayTimeout = null;
         }
         
         // Disconnect ResizeObserver if it exists

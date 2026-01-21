@@ -28,12 +28,6 @@ export interface InfiniteScrollCarouselOptions {
     pauseOnHover?: boolean;
     
     /**
-     * Recalculate on window resize
-     * @default true
-     */
-    responsive?: boolean;
-    
-    /**
      * Momentum decay factor, clamped to 0.1-0.99
      * @default 0.95
      */
@@ -50,6 +44,18 @@ export interface InfiniteScrollCarouselOptions {
      * @default '#ffffff'
      */
     fadeColor?: string;
+    
+    /**
+     * Width of the fade gradient in pixels
+     * @default 50
+     */
+    fadeWidth?: number;
+    
+    /**
+     * Enable grab-and-drag interaction
+     * @default true
+     */
+    interactable?: boolean;
     
     /**
      * Number of item copies for seamless loop
@@ -160,24 +166,16 @@ declare class InfiniteScrollCarousel {
     snapToValidPosition(): void;
     
     /**
-     * Start automatic scrolling
-     */
-    startScrolling(): void;
-    
-    /**
      * Pause automatic scrolling
+     * The animation loop continues but position updates are paused.
      */
     pause(): void;
     
     /**
-     * Resume automatic scrolling
+     * Resume paused scrolling or start scrolling if stopped.
+     * This method handles both resuming from a paused state and starting from a stopped state.
      */
     resume(): void;
-    
-    /**
-     * Stop automatic scrolling
-     */
-    stop(): void;
     
     /**
      * Main animation loop
