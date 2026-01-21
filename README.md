@@ -14,7 +14,6 @@ View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-D
 - **Infinite Seamless Loop** - Automatically duplicates items for continuous scrolling with no visible jumps
 - **Grab and Drag** - Interactive dragging with mouse and touch support
 - **Momentum Scrolling** - Natural momentum physics after drag release
-- **Responsive** - Automatically recalculates on window resize
 - **Pause on Hover** - Optional pause when hovering over the carousel
 - **Zero Dependencies** - Pure vanilla JavaScript, no jQuery or frameworks required
 - **Lightweight** - Works in all modern browsers
@@ -150,38 +149,25 @@ new InfiniteScrollCarousel(container, options)
 | `speed` | number | `50` | Auto-scroll speed (pixels/sec).<br>Set to `0` to disable. |
 | `reverseDirection` | boolean | `false` | Scroll direction.<br>`false`: right → left<br>`true`: left → right |
 | `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer enters the container. |
-| `responsive` | boolean | `true` | Recalculate dimensions on window resize. |
 | `momentumDecay` | number | `0.95` | Drag momentum decay factor.<br>Range: `0.5–0.99` |
 | `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed (px/ms).<br>Range: `0.5–25` |
 | `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`).<br>Use `transparent` to disable. |
+| `fadeWidth` | number | `50` | Width of the fade gradient in pixels. |
+| `interactable` | boolean | `true` | Enable grab-and-drag interaction. Set to `false` to disable dragging. |
 | `copies` | number | `3` | Number of duplicated item sets for seamless looping. |
 
 
 ### Methods
 
-#### `startScrolling()`
-Start automatic scrolling (if stopped).
-
-```javascript
-carousel.startScrolling();
-```
-
-#### `stop()`
-Stop automatic scrolling.
-
-```javascript
-carousel.stop();
-```
-
 #### `pause()`
-Pause scrolling (resumed when interacted).
+Pause automatic scrolling. The animation loop continues but position updates are paused.
 
 ```javascript
 carousel.pause();
 ```
 
 #### `resume()`
-Resume paused scrolling.
+Resume paused scrolling or start scrolling if stopped. This method handles both resuming from a paused state and starting from a stopped state.
 
 ```javascript
 carousel.resume();
@@ -541,21 +527,12 @@ Requires support for:
 - Verify CSS file is loaded
 - Check browser console for errors
 
-### Items Jumping or Glitching
-
-**Problem**: Visible jumps or glitches during scrolling.
-
-**Solutions**:
-- Ensure item widths don't change dynamically
-- Don't modify item count after initialization
-- Wait for images to load before initializing (if using images)
-
 ### Drag Not Working
 
 **Problem**: Can't drag the carousel.
 
 **Solutions**:
-- Ensure container has `cursor: grab` (included in CSS)
+- Ensure `interactable` option is set to true
 - Check for CSS that might be blocking pointer events
 - Verify JavaScript file is loaded
 - Check for JavaScript errors in console
@@ -578,7 +555,7 @@ Requires support for:
 **Solution**: Adjust the `speed` option:
 ```javascript
 const carousel = new InfiniteScrollCarousel(container, {
-    speed: 30  // Lower = slower, Higher = faster
+    speed: 30
 });
 ```
 

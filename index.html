@@ -298,6 +298,7 @@
     pauseOnHover: false,
     maxMomentumSpeed: 25,
     momentumDecay: 0.98,
+    fadeWidth: 250
 });</code></pre>
                     </div>
                 </div>
@@ -393,15 +394,13 @@
                     </div>
                     <div class="code-block active" id="js5">
                         <pre><code>const carousel4a = new InfiniteScrollCarousel('#carousel4a', {
-    speed: 50,
+    speed: 40,
     reverseDirection: true,
-    pauseOnHover: true,
     fadeColor: '#000',
 });
 
 const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
-    speed: 60,
-    pauseOnHover: true,
+    speed: 40,
     fadeColor: '#000',
 });</code></pre>
                     </div>
@@ -451,7 +450,7 @@ const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
             const carousel2 = new InfiniteScrollCarousel('#carousel2', {
                 speed: 40,
                 pauseOnHover: true,
-                fadeColor: 'transparent'
+                fadeColor: 'transparent',
             });
 
             // Example 3: Slower speed, no pause on hover
@@ -461,20 +460,19 @@ const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
                 pauseOnHover: false,
                 maxMomentumSpeed: 25,
                 momentumDecay: 0.98,
+                fadeWidth: 250
             });
 
 
             // Example 4: Skills List with Icons (dual carousel)
             const carousel4a = new InfiniteScrollCarousel('#carousel4a', {
-                speed: 50,
+                speed: 40,
                 reverseDirection: true,
-                pauseOnHover: true,
                 fadeColor: '#000'
             });
 
             const carousel4b = new InfiniteScrollCarousel('#carousel4b', {
-                speed: 60,
-                pauseOnHover: true,
+                speed: 40,
                 fadeColor: '#000'
             });
         });
