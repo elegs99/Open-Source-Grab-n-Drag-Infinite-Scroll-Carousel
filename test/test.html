@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfiniteScrollCarousel - Basic Tests</title>
+    <link rel="stylesheet" href="../grab-n-drag-infinite-carousel.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .test-result.pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-result.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-item {
+            padding: 15px 30px;
+            margin-right: 20px;
+            background: #e9ecef;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #testResults {
+            margin-top: 20px;
+        }
+        .icon-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .icon-item i {
+            font-size: 1.2rem;
+        }
+        .status-success {
+            background: #d4edda !important;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-error {
+            background: #f8d7da !important;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status-info {
+            background: #d1ecf1 !important;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 InfiniteScrollCarousel - Basic Tests</h1>
+    <p>This page runs basic functionality tests in the browser.</p>
+
+    <div class="test-section">
+        <h2>Test Carousel</h2>
+        <div class="infinite-scroll-wrapper">
+            <div class="infinite-scroll-container" id="testCarousel">
+                <div class="infinite-scroll-item test-item">Item 1</div>
+                <div class="infinite-scroll-item test-item">Item 2</div>
+                <div class="infinite-scroll-item test-item">Item 3</div>
+                <div class="infinite-scroll-item test-item">Item 4</div>
+                <div class="infinite-scroll-item test-item">Item 5</div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button onclick="testPause()">Test Pause</button>
+            <button onclick="testResume()">Test Resume</button>
+            <button onclick="testStop()">Test Stop</button>
+            <button onclick="testStart()">Test Start</button>
+        </div>
+        <div style="margin-top: 10px;">
+            <button onclick="testSlowIconLoad()">Test Slow Icon Loading</button>
+            <button onclick="removeIcons()">Remove Icons</button>
+            <button onclick="runAllTests()">Run All Tests</button>
+        </div>
+        <div id="testCarouselStatus" style="margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 4px; display: none;"></div>
+    </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="testResults"></div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../grab-n-drag-infinite-carousel.js"></script>
+    <script>
+        let carousel;
+        let iconTestCarousel;
+        const results = [];
+        let testTimeout;
+
+        // Initialize carousel
+        document.addEventListener('DOMContentLoaded', function() {
+            carousel = new InfiniteScrollCarousel('#testCarousel', {
+                speed: 50,
+                pauseOnHover: true
+            });
+        });
+
+        function addResult(testName, passed, message = '') {
+            results.push({ name: testName, passed, message });
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result ' + (passed ? 'pass' : 'fail');
+            resultDiv.textContent = (passed ? '✅' : '❌') + ' ' + testName + (message ? ': ' + message : '');
+            // Prepend so newest results appear at the top
+            if (resultsDiv.firstChild) {
+                resultsDiv.insertBefore(resultDiv, resultsDiv.firstChild);
+            } else {
+                resultsDiv.appendChild(resultDiv);
+            }
+        }
+
+        function testPause() {
+            try {
+                carousel.pause();
+                addResult('Pause method', true, 'Carousel paused successfully');
+            } catch (e) {
+                addResult('Pause method', false, e.message);
+            }
+        }
+
+        function testResume() {
+            try {
+                carousel.resume();
+                addResult('Resume method', true, 'Carousel resumed successfully');
+            } catch (e) {
+                addResult('Resume method', false, e.message);
+            }
+        }
+
+        function testStop() {
+            try {
+                carousel.stop();
+                addResult('Stop method', true, 'Carousel stopped successfully');
+            } catch (e) {
+                addResult('Stop method', false, e.message);
+            }
+        }
+
+        function testStart() {
+            try {
+                carousel.startScrolling();
+                addResult('Start method', true, 'Carousel started successfully');
+            } catch (e) {
+                addResult('Start method', false, e.message);
+            }
+        }
+
+        async function runAllTests() {
+            // Don't clear results - keep them for comparison
+            // Track starting point to calculate summary for this run only
+            const startIndex = results.length;
+
+            // Cleanup: Reset carousel state before running tests
+            // This ensures tests run with a clean state regardless of previous modifications
+            // Note: We preserve icons as they are part of the carousel's visual state
+            try {
+                const container = document.querySelector('#testCarousel');
+                if (container && carousel) {
+                    // Reset any active drag state
+                    if (carousel.isDragging) {
+                        const cleanupMouseUp = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                        document.dispatchEvent(cleanupMouseUp);
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                    }
+                    
+                    // Reset momentum state
+                    if (carousel.isMomentumActive) {
+                        carousel.isMomentumActive = false;
+                        carousel.velocity = 0;
+                    }
+                    
+                    // Don't remove icons - they're part of the carousel's state
+                    // If icons are present, the carousel should handle them correctly
+                    
+                    // Wait for cleanup to complete
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    // Recalculate carousel dimensions (this will account for icons if present)
+                    if (typeof carousel.calculateScrollDistance === 'function') {
+                        await new Promise(resolve => {
+                            carousel.calculateScrollDistance(resolve);
+                        });
+                    }
+                    
+                    // Ensure carousel is in a known state
+                    if (!carousel.isScrolling) {
+                        carousel.startScrolling();
+                    }
+                    if (carousel.isPaused) {
+                        carousel.resume();
+                    }
+                    
+                    // Wait a bit for state to stabilize
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            } catch (e) {
+                // Ignore cleanup errors, but log them
+                console.warn('Cleanup warning:', e);
+            }
+
+            // Test 1: Instance creation
+            try {
+                if (typeof InfiniteScrollCarousel !== 'undefined') {
+                    addResult('InfiniteScrollCarousel class exists', true);
+                } else {
+                    addResult('InfiniteScrollCarousel class exists', false, 'Class not found');
+                }
+            } catch (e) {
+                addResult('InfiniteScrollCarousel class exists', false, e.message);
+            }
+
+            // Test 2: Carousel instance
+            try {
+                if (carousel && typeof carousel === 'object') {
+                    addResult('Carousel instance created', true);
+                } else {
+                    addResult('Carousel instance created', false, 'Instance not created');
+                }
+            } catch (e) {
+                addResult('Carousel instance created', false, e.message);
+            }
+
+            // Test 3: Methods exist
+            try {
+                const methods = ['startScrolling', 'stop', 'pause', 'resume', 'destroy', 'validateOptions', 
+                               'init', 'initialize', 'colorToRgba', 'applyFadeColor', 'duplicateItems', 
+                               'calculateScrollDistance', 'setInitialPosition', 'calculateDragBoundaries',
+                               'setupEventListeners', 'startDragging', 'handleDrag', 'endDragging',
+                               'startMomentum', 'animateMomentum', 'snapToValidPosition', 'animate'];
+                const missingMethods = [];
+                methods.forEach(method => {
+                    if (typeof carousel[method] !== 'function') {
+                        missingMethods.push(method);
+                    }
+                });
+                if (missingMethods.length === 0) {
+                    addResult('All required methods exist', true, `${methods.length} methods verified`);
+                } else {
+                    addResult('All required methods exist', false, `Missing methods: ${missingMethods.join(', ')}`);
+                }
+            } catch (e) {
+                addResult('All required methods exist', false, e.message);
+            }
+
+            // Test 4: Container element
+            try {
+                const container = document.querySelector('#testCarousel');
+                if (container) {
+                    addResult('Container element found', true);
+                } else {
+                    addResult('Container element found', false, 'Element not found');
+                }
+            } catch (e) {
+                addResult('Container element found', false, e.message);
+            }
+
+            // Test 5: Items exist
+            try {
+                const items = document.querySelectorAll('#testCarousel .infinite-scroll-item');
+                if (items.length > 0) {
+                    addResult('Carousel items found', true, `${items.length} items`);
+                } else {
+                    addResult('Carousel items found', false, 'No items found');
+                }
+            } catch (e) {
+                addResult('Carousel items found', false, e.message);
+            }
+
+            // Test 6: CSS classes
+            try {
+                const wrapper = document.querySelector('.infinite-scroll-wrapper');
+                const container = document.querySelector('.infinite-scroll-container');
+                if (wrapper && container) {
+                    addResult('Required CSS classes present', true);
+                } else {
+                    addResult('Required CSS classes present', false, 'Missing classes');
+                }
+            } catch (e) {
+                addResult('Required CSS classes present', false, e.message);
+            }
+
+            // Test 7: Items duplicated
+            try {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                const allItems = document.querySelectorAll('#testCarousel .infinite-scroll-item');
+                const originalItems = 5; // We have 5 original items
+                if (allItems.length >= originalItems) {
+                    addResult('Items duplicated for infinite loop', true, `${allItems.length} total items (${originalItems} original)`);
+                } else {
+                    addResult('Items duplicated for infinite loop', false, `Expected at least ${originalItems} items, got ${allItems.length}`);
+                }
+            } catch (e) {
+                addResult('Items duplicated for infinite loop', false, e.message);
+            }
+
+            // Test 8: Transform applied
+            try {
+                await new Promise(resolve => setTimeout(resolve, 200));
+                const container = document.querySelector('#testCarousel');
+                const transform = window.getComputedStyle(container).transform;
+                if (transform && transform !== 'none') {
+                    addResult('Transform applied to container', true);
+                } else {
+                    addResult('Transform applied to container', false, 'Transform not applied');
+                }
+            } catch (e) {
+                addResult('Transform applied to container', false, e.message);
+            }
+
+            // Test 9: Options validation
+            try {
+                if (carousel.options && typeof carousel.options === 'object') {
+                    addResult('Options object exists', true);
+                } else {
+                    addResult('Options object exists', false, 'Options not found');
+                }
+            } catch (e) {
+                addResult('Options object exists', false, e.message);
+            }
+
+            // Test 10: Options properties
+            try {
+                const requiredOptions = ['speed', 'reverseDirection', 'pauseOnHover', 'responsive', 
+                                       'momentumDecay', 'maxMomentumSpeed', 'fadeColor', 'copies'];
+                const missingOptions = requiredOptions.filter(opt => !(opt in carousel.options));
+                if (missingOptions.length === 0) {
+                    addResult('All required options present', true);
+                } else {
+                    addResult('All required options present', false, `Missing: ${missingOptions.join(', ')}`);
+                }
+            } catch (e) {
+                addResult('All required options present', false, e.message);
+            }
+
+            // Test 11: Pause/Resume functionality
+            try {
+                // Get initial position
+                const container = document.querySelector('#testCarousel');
+                const initialTransform = window.getComputedStyle(container).transform;
+                const initialMatrix = initialTransform.match(/matrix\(([^)]+)\)/);
+                const initialX = initialMatrix ? parseFloat(initialMatrix[1].split(',')[4]) : 0;
+                
+                // Pause and wait
+                carousel.pause();
+                await new Promise(resolve => setTimeout(resolve, 200));
+                const wasPaused = carousel.isPaused;
+                
+                // Check position hasn't changed (animation paused)
+                const pausedTransform = window.getComputedStyle(container).transform;
+                const pausedMatrix = pausedTransform.match(/matrix\(([^)]+)\)/);
+                const pausedX = pausedMatrix ? parseFloat(pausedMatrix[1].split(',')[4]) : 0;
+                const positionStopped = Math.abs(pausedX - initialX) < 5; // Allow small margin
+                
+                // Resume and wait
+                carousel.resume();
+                await new Promise(resolve => setTimeout(resolve, 200));
+                const wasResumed = !carousel.isPaused;
+                
+                // Check position changed (animation resumed)
+                const resumedTransform = window.getComputedStyle(container).transform;
+                const resumedMatrix = resumedTransform.match(/matrix\(([^)]+)\)/);
+                const resumedX = resumedMatrix ? parseFloat(resumedMatrix[1].split(',')[4]) : 0;
+                const positionChanged = Math.abs(resumedX - pausedX) > 1;
+                
+                if (wasPaused && wasResumed && positionStopped && positionChanged) {
+                    addResult('Pause/Resume functionality', true, 'State and animation both work');
+                } else {
+                    addResult('Pause/Resume functionality', false, 
+                        `State: ${wasPaused && wasResumed}, Position stopped: ${positionStopped}, Position changed: ${positionChanged}`);
+                }
+            } catch (e) {
+                addResult('Pause/Resume functionality', false, e.message);
+            }
+
+            // Test 12: Stop/Start functionality
+            try {
+                carousel.stop();
+                await new Promise(resolve => setTimeout(resolve, 100));
+                const wasStopped = !carousel.isScrolling;
+                carousel.startScrolling();
+                await new Promise(resolve => setTimeout(resolve, 100));
+                const wasStarted = carousel.isScrolling;
+                if (wasStopped && wasStarted) {
+                    addResult('Stop/Start functionality', true);
+                } else {
+                    addResult('Stop/Start functionality', false, 'Stop/start not working correctly');
+                }
+            } catch (e) {
+                addResult('Stop/Start functionality', false, e.message);
+            }
+
+            // Test 13: Color conversion
+            try {
+                const hexColor = carousel.colorToRgba('#ffffff', 0.5);
+                const rgbColor = carousel.colorToRgba('rgb(255, 255, 255)', 0.5);
+                const hexColor3 = carousel.colorToRgba('#f00', 0.3); // 3-digit hex
+                // Verify format and values
+                const hexMatch = hexColor.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+                const rgbMatch = rgbColor.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+                if (hexMatch && rgbMatch && 
+                    hexMatch[1] === '255' && hexMatch[2] === '255' && hexMatch[3] === '255' && hexMatch[4] === '0.5' &&
+                    rgbMatch[1] === '255' && rgbMatch[2] === '255' && rgbMatch[3] === '255' && rgbMatch[4] === '0.5' &&
+                    hexColor3.includes('rgba')) {
+                    addResult('Color conversion method', true, 'Hex, RGB, and 3-digit hex all work');
+                } else {
+                    addResult('Color conversion method', false, 'Color conversion values incorrect');
+                }
+            } catch (e) {
+                addResult('Color conversion method', false, e.message);
+            }
+
+            // Test 14: Fade color applied
+            try {
+                const wrapper = document.querySelector('.infinite-scroll-wrapper');
+                if (wrapper && wrapper.hasAttribute('data-fade-color')) {
+                    addResult('Fade color applied', true);
+                } else {
+                    addResult('Fade color applied', false, 'Fade color not applied');
+                }
+            } catch (e) {
+                addResult('Fade color applied', false, e.message);
+            }
+
+            // Test 15: Container has cursor style
+            try {
+                const container = document.querySelector('#testCarousel');
+                const cursor = window.getComputedStyle(container).cursor;
+                if (cursor === 'grab' || cursor === 'grabbing') {
+                    addResult('Cursor style applied', true, `Cursor: ${cursor}`);
+                } else {
+                    addResult('Cursor style applied', false, `Expected grab/grabbing, got ${cursor}`);
+                }
+            } catch (e) {
+                addResult('Cursor style applied', false, e.message);
+            }
+
+            // Test 16: Constructor with string selector (test on a temporary element)
+            try {
+                // Create a temporary test element
+                const tempWrapper = document.createElement('div');
+                tempWrapper.className = 'infinite-scroll-wrapper';
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'infinite-scroll-container';
+                tempContainer.id = 'tempTestCarousel';
+                tempContainer.innerHTML = '<div class="infinite-scroll-item">Test</div>';
+                tempWrapper.appendChild(tempContainer);
+                document.body.appendChild(tempWrapper);
+                
+                const testCarousel2 = new InfiniteScrollCarousel('#tempTestCarousel');
+                if (testCarousel2 && testCarousel2.container) {
+                    addResult('Constructor with string selector', true);
+                    testCarousel2.destroy();
+                    document.body.removeChild(tempWrapper); // Cleanup
+                } else {
+                    addResult('Constructor with string selector', false, 'Failed to create instance');
+                    if (tempWrapper.parentNode) document.body.removeChild(tempWrapper);
+                }
+            } catch (e) {
+                addResult('Constructor with string selector', false, e.message);
+            }
+
+            // Test 17: Constructor with HTMLElement (test on a temporary element)
+            try {
+                // Create a temporary test element
+                const tempWrapper = document.createElement('div');
+                tempWrapper.className = 'infinite-scroll-wrapper';
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'infinite-scroll-container';
+                tempContainer.innerHTML = '<div class="infinite-scroll-item">Test</div>';
+                tempWrapper.appendChild(tempContainer);
+                document.body.appendChild(tempWrapper);
+                
+                const testCarousel3 = new InfiniteScrollCarousel(tempContainer);
+                if (testCarousel3 && testCarousel3.container === tempContainer) {
+                    addResult('Constructor with HTMLElement', true);
+                    testCarousel3.destroy();
+                    document.body.removeChild(tempWrapper); // Cleanup
+                } else {
+                    addResult('Constructor with HTMLElement', false, 'Failed to create instance');
+                    if (tempWrapper.parentNode) document.body.removeChild(tempWrapper);
+                }
+            } catch (e) {
+                addResult('Constructor with HTMLElement', false, e.message);
+            }
+
+            // Test 18: Options with custom values (test on a temporary element)
+            try {
+                // Create a temporary test element
+                const tempWrapper = document.createElement('div');
+                tempWrapper.className = 'infinite-scroll-wrapper';
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'infinite-scroll-container';
+                tempContainer.innerHTML = '<div class="infinite-scroll-item">Test</div>';
+                tempWrapper.appendChild(tempContainer);
+                document.body.appendChild(tempWrapper);
+                
+                const testCarousel4 = new InfiniteScrollCarousel(tempContainer, {
+                    speed: 100,
+                    reverseDirection: true,
+                    pauseOnHover: false,
+                    fadeColor: '#ff0000'
+                });
+                if (testCarousel4.options.speed === 100 && 
+                    testCarousel4.options.reverseDirection === true &&
+                    testCarousel4.options.pauseOnHover === false &&
+                    testCarousel4.options.fadeColor === '#ff0000') {
+                    addResult('Custom options applied', true);
+                    testCarousel4.destroy();
+                    document.body.removeChild(tempWrapper); // Cleanup
+                } else {
+                    addResult('Custom options applied', false, 'Options not applied correctly');
+                    if (tempWrapper.parentNode) document.body.removeChild(tempWrapper);
+                }
+            } catch (e) {
+                addResult('Custom options applied', false, e.message);
+            }
+
+            // Test 19: Destroy method (test on a temporary element)
+            try {
+                // Create a temporary test element
+                const tempWrapper = document.createElement('div');
+                tempWrapper.className = 'infinite-scroll-wrapper';
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'infinite-scroll-container';
+                tempContainer.innerHTML = '<div class="infinite-scroll-item">Test</div>';
+                tempWrapper.appendChild(tempContainer);
+                document.body.appendChild(tempWrapper);
+                
+                const testCarousel5 = new InfiniteScrollCarousel(tempContainer);
+                // Wait for initialization to complete (carousel initializes asynchronously)
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Ensure scrolling is active
+                if (!testCarousel5.isScrolling) {
+                    testCarousel5.startScrolling();
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                
+                // Verify it's scrolling before destroy
+                const wasScrolling = testCarousel5.isScrolling;
+                
+                // Destroy the carousel
+                testCarousel5.destroy();
+                
+                // Check that scrolling stopped
+                if (!testCarousel5.isScrolling && wasScrolling) {
+                    addResult('Destroy method', true);
+                } else if (!wasScrolling) {
+                    addResult('Destroy method', false, 'Carousel was not scrolling before destroy');
+                } else {
+                    addResult('Destroy method', false, 'Destroy did not stop scrolling');
+                }
+                if (tempWrapper.parentNode) document.body.removeChild(tempWrapper);
+            } catch (e) {
+                addResult('Destroy method', false, e.message);
+            }
+
+            // Test 20: Error handling - invalid selector
+            try {
+                let errorThrown = false;
+                try {
+                    new InfiniteScrollCarousel('#nonexistent-element-12345');
+                } catch (e) {
+                    errorThrown = true;
+                    if (e.message && e.message.includes('Container element not found')) {
+                        addResult('Error handling - invalid selector', true);
+                    } else {
+                        addResult('Error handling - invalid selector', false, 'Wrong error message');
+                    }
+                }
+                if (!errorThrown) {
+                    addResult('Error handling - invalid selector', false, 'No error thrown for invalid selector');
+                }
+            } catch (e) {
+                addResult('Error handling - invalid selector', false, e.message);
+            }
+
+            // Test 21: Error handling - null container
+            try {
+                let errorThrown = false;
+                try {
+                    new InfiniteScrollCarousel(null);
+                } catch (e) {
+                    errorThrown = true;
+                    if (e.message && e.message.includes('Container element not found')) {
+                        addResult('Error handling - null container', true);
+                    } else {
+                        addResult('Error handling - null container', false, 'Wrong error message');
+                    }
+                }
+                if (!errorThrown) {
+                    addResult('Error handling - null container', false, 'No error thrown for null container');
+                }
+            } catch (e) {
+                addResult('Error handling - null container', false, e.message);
+            }
+
+            // Test 22: Scrolling behavior - position changes over time
+            try {
+                const container = document.querySelector('#testCarousel');
+                const startTransform = window.getComputedStyle(container).transform;
+                const startMatrix = startTransform.match(/matrix\(([^)]+)\)/);
+                const startX = startMatrix ? parseFloat(startMatrix[1].split(',')[4]) : 0;
+                
+                // Wait for scrolling to occur
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const endTransform = window.getComputedStyle(container).transform;
+                const endMatrix = endTransform.match(/matrix\(([^)]+)\)/);
+                const endX = endMatrix ? parseFloat(endMatrix[1].split(',')[4]) : 0;
+                
+                // Position should have changed (scrolled)
+                const positionChanged = Math.abs(endX - startX) > 1;
+                if (positionChanged) {
+                    addResult('Scrolling behavior', true, `Position changed from ${startX.toFixed(2)} to ${endX.toFixed(2)}`);
+                } else {
+                    addResult('Scrolling behavior', false, `Position did not change (${startX.toFixed(2)} to ${endX.toFixed(2)})`);
+                }
+            } catch (e) {
+                addResult('Scrolling behavior', false, e.message);
+            }
+
+            // Test 23: Options validation - negative speed handling
+            try {
+                const tempWrapper = document.createElement('div');
+                tempWrapper.className = 'infinite-scroll-wrapper';
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'infinite-scroll-container';
+                tempContainer.innerHTML = '<div class="infinite-scroll-item">Test</div>';
+                tempWrapper.appendChild(tempContainer);
+                document.body.appendChild(tempWrapper);
+                
+                // Negative speed should be converted to positive with reverseDirection
+                const testCarousel6 = new InfiniteScrollCarousel(tempContainer, { speed: -50 });
+                if (testCarousel6.options.speed === 50 && testCarousel6.options.reverseDirection === true) {
+                    addResult('Options validation - negative speed', true, 'Negative speed converted correctly');
+                } else {
+                    addResult('Options validation - negative speed', false, 
+                        `Speed: ${testCarousel6.options.speed}, Reverse: ${testCarousel6.options.reverseDirection}`);
+                }
+                testCarousel6.destroy();
+                if (tempWrapper.parentNode) document.body.removeChild(tempWrapper);
+            } catch (e) {
+                addResult('Options validation - negative speed', false, e.message);
+            }
+
+            // Test 24: Infinite loop - position resets
+            try {
+                const container = document.querySelector('#testCarousel');
+                // Wait for carousel to potentially loop
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Check that position is within valid bounds (not NaN, not infinite)
+                const transform = window.getComputedStyle(container).transform;
+                const matrix = transform.match(/matrix\(([^)]+)\)/);
+                if (matrix) {
+                    const x = parseFloat(matrix[1].split(',')[4]);
+                    if (!isNaN(x) && isFinite(x)) {
+                        addResult('Infinite loop - position bounds', true, `Position: ${x.toFixed(2)}`);
+                    } else {
+                        addResult('Infinite loop - position bounds', false, `Invalid position: ${x}`);
+                    }
+                } else {
+                    addResult('Infinite loop - position bounds', false, 'Could not parse transform');
+                }
+            } catch (e) {
+                addResult('Infinite loop - position bounds', false, e.message);
+            }
+
+            // ===== Drag Interaction Tests =====
+
+            // Test 25: Mouse drag start
+            try {
+                const container = document.querySelector('#testCarousel');
+                const initialPosition = carousel.currentPosition;
+                const initialIsDragging = carousel.isDragging;
+                
+                // Simulate mousedown
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                if (carousel.isDragging && !initialIsDragging) {
+                    addResult('Mouse drag start', true, 'Drag state activated');
+                } else {
+                    addResult('Mouse drag start', false, `Expected isDragging=true, got ${carousel.isDragging}`);
+                }
+                
+                // Clean up - end drag
+                if (carousel.isDragging) {
+                    const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                    document.dispatchEvent(mouseUpEvent);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            } catch (e) {
+                addResult('Mouse drag start', false, e.message);
+            }
+
+            // Test 26: Mouse drag movement
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Ensure no previous drag state
+                if (carousel.isDragging) {
+                    const cleanupMouseUp = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                    document.dispatchEvent(cleanupMouseUp);
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                // Get initial position before starting drag
+                const initialPosition = carousel.currentPosition;
+                
+                // Start drag
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                
+                // Wait for drag to be confirmed active
+                let dragActive = carousel.isDragging;
+                let waitCount = 0;
+                while (!dragActive && waitCount < 10) {
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                    dragActive = carousel.isDragging;
+                    waitCount++;
+                }
+                
+                if (!dragActive) {
+                    addResult('Mouse drag movement', false, 'Drag did not start');
+                    // Clean up
+                    const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                    document.dispatchEvent(mouseUpEvent);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                } else {
+                    // Get position after drag started (should be same as initial if no movement yet)
+                    const positionAfterDragStart = carousel.currentPosition;
+                    
+                    // Simulate drag movement (50px to the right)
+                    const mouseMoveEvent = new MouseEvent('mousemove', {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: 150, // 50px to the right
+                        clientY: 100
+                    });
+                    document.dispatchEvent(mouseMoveEvent);
+                    
+                    // Wait for drag handler to process (use requestAnimationFrame for better timing)
+                    await new Promise(resolve => requestAnimationFrame(resolve));
+                    await new Promise(resolve => setTimeout(resolve, 20));
+                    
+                    const positionAfterDrag = carousel.currentPosition;
+                    const positionChanged = Math.abs(positionAfterDrag - positionAfterDragStart) > 0.5;
+                    
+                    if (positionChanged && carousel.isDragging) {
+                        addResult('Mouse drag movement', true, `Position changed from ${positionAfterDragStart.toFixed(2)} to ${positionAfterDrag.toFixed(2)}`);
+                    } else {
+                        // Retry once with a larger movement
+                        const retryMouseMove = new MouseEvent('mousemove', {
+                            bubbles: true,
+                            cancelable: true,
+                            clientX: 200, // Larger movement
+                            clientY: 100
+                        });
+                        document.dispatchEvent(retryMouseMove);
+                        await new Promise(resolve => requestAnimationFrame(resolve));
+                        await new Promise(resolve => setTimeout(resolve, 20));
+                        
+                        const retryPosition = carousel.currentPosition;
+                        const retryChanged = Math.abs(retryPosition - positionAfterDragStart) > 0.5;
+                        
+                        if (retryChanged && carousel.isDragging) {
+                            addResult('Mouse drag movement', true, `Position changed from ${positionAfterDragStart.toFixed(2)} to ${retryPosition.toFixed(2)} (after retry)`);
+                        } else {
+                            addResult('Mouse drag movement', false, 
+                                `Position did not change (${positionAfterDragStart.toFixed(2)} to ${retryPosition.toFixed(2)}, isDragging: ${carousel.isDragging})`);
+                        }
+                    }
+                    
+                    // Clean up
+                    const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                    document.dispatchEvent(mouseUpEvent);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            } catch (e) {
+                addResult('Mouse drag movement', false, e.message);
+            }
+
+            // Test 27: Touch drag start
+            try {
+                const container = document.querySelector('#testCarousel');
+                const initialIsDragging = carousel.isDragging;
+                
+                // Simulate touchstart
+                const touchStartEvent = new TouchEvent('touchstart', {
+                    bubbles: true,
+                    cancelable: true,
+                    touches: [new Touch({
+                        identifier: 1,
+                        target: container,
+                        clientX: 100,
+                        clientY: 100,
+                        radiusX: 10,
+                        radiusY: 10,
+                        rotationAngle: 0,
+                        force: 1
+                    })]
+                });
+                container.dispatchEvent(touchStartEvent);
+                
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                if (carousel.isDragging && !initialIsDragging) {
+                    addResult('Touch drag start', true, 'Touch drag state activated');
+                } else {
+                    addResult('Touch drag start', false, `Expected isDragging=true, got ${carousel.isDragging}`);
+                }
+                
+                // Clean up
+                if (carousel.isDragging) {
+                    const touchEndEvent = new TouchEvent('touchend', { bubbles: true, cancelable: true });
+                    document.dispatchEvent(touchEndEvent);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            } catch (e) {
+                addResult('Touch drag start', false, e.message);
+            }
+
+            // Test 28: Drag pauses scrolling
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Ensure scrolling is active
+                if (!carousel.isScrolling) {
+                    carousel.startScrolling();
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                const wasScrolling = carousel.isScrolling;
+                const wasPaused = carousel.isPaused;
+                
+                // Start drag
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                if (wasScrolling && carousel.isPaused && !wasPaused) {
+                    addResult('Drag pauses scrolling', true, 'Scrolling paused during drag');
+                } else {
+                    addResult('Drag pauses scrolling', false, `Was scrolling: ${wasScrolling}, Is paused: ${carousel.isPaused}`);
+                }
+                
+                // Clean up
+                const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                document.dispatchEvent(mouseUpEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+            } catch (e) {
+                addResult('Drag pauses scrolling', false, e.message);
+            }
+
+            // Test 29: Drag boundary wrapping
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Wait for carousel to be ready
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Ensure boundaries are calculated
+                if (typeof carousel.calculateDragBoundaries === 'function' && 
+                    (carousel.minDragBoundary === undefined || carousel.maxDragBoundary === undefined)) {
+                    carousel.calculateDragBoundaries();
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                
+                // Check if carousel is properly initialized
+                const hasResetPosition = carousel.resetPosition !== null && carousel.resetPosition !== undefined;
+                const hasBoundaries = carousel.minDragBoundary !== undefined && carousel.maxDragBoundary !== undefined;
+                
+                if (!hasResetPosition || !hasBoundaries) {
+                    addResult('Drag boundary wrapping', false, 
+                        `Carousel not initialized (resetPosition: ${carousel.resetPosition}, boundaries: ${hasBoundaries})`);
+                } else {
+                    // Test wrapping by dragging in both directions from boundary positions
+                    // Start near the left boundary
+                    carousel.currentPosition = carousel.resetPosition + 5;
+                    container.style.transform = 'translateX(' + carousel.currentPosition + 'px)';
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    
+                    const initialPosition = carousel.currentPosition;
+                    
+                    // Start drag
+                    const mouseDownEvent = new MouseEvent('mousedown', {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: 100,
+                        clientY: 100
+                    });
+                    container.dispatchEvent(mouseDownEvent);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    
+                    // Drag mouse RIGHT by a large distance (moves content LEFT, past boundary)
+                    // This should trigger wrapping when position goes <= resetPosition
+                    const largeDragDistance = Math.abs(carousel.resetPosition) * 1.5; // Drag enough to definitely pass boundary
+                    
+                    const mouseMoveEvent = new MouseEvent('mousemove', {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: 100 + largeDragDistance, // Drag right (increases clientX)
+                        clientY: 100
+                    });
+                    document.dispatchEvent(mouseMoveEvent);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    
+                    const finalPosition = carousel.currentPosition;
+                    
+                    // The key test: position should remain within valid bounds
+                    // Valid range: resetPosition <= position <= 0
+                    const positionIsValid = finalPosition >= carousel.minDragBoundary && finalPosition <= carousel.maxDragBoundary;
+                    
+                    // If wrapping occurred, the position should have "jumped" to the other side
+                    // We can detect this by checking if the position is on the opposite side of the loop
+                    // from where we started (closer to 0 than to resetPosition)
+                    const positionChanged = Math.abs(finalPosition - initialPosition) > 10;
+                    const onRightSide = Math.abs(finalPosition) < Math.abs(carousel.resetPosition) * 0.5;
+                    
+                    if (positionIsValid) {
+                        // Position is valid - wrapping mechanism is working
+                        if (onRightSide || positionChanged) {
+                            addResult('Drag boundary wrapping', true, 
+                                `Position wrapped and stayed valid: ${initialPosition.toFixed(2)} → ${finalPosition.toFixed(2)} (reset: ${carousel.resetPosition.toFixed(2)})`);
+                        } else {
+                            addResult('Drag boundary wrapping', true, 
+                                `Boundary wrapping maintains valid position: ${finalPosition.toFixed(2)} (reset: ${carousel.resetPosition.toFixed(2)})`);
+                        }
+                    } else {
+                        addResult('Drag boundary wrapping', false, 
+                            `Position out of bounds: ${finalPosition.toFixed(2)}, reset: ${carousel.resetPosition.toFixed(2)}, bounds: [${carousel.minDragBoundary.toFixed(2)}, ${carousel.maxDragBoundary.toFixed(2)}]`);
+                    }
+                    
+                    // Clean up
+                    const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                    document.dispatchEvent(mouseUpEvent);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            } catch (e) {
+                addResult('Drag boundary wrapping', false, e.message);
+            }
+
+            // ===== Momentum Physics Tests =====
+
+            // Test 30: Momentum velocity calculation
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Start drag
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Simulate fast drag movement
+                const mouseMove1 = new MouseEvent('mousemove', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 150,
+                    clientY: 100
+                });
+                document.dispatchEvent(mouseMove1);
+                await new Promise(resolve => setTimeout(resolve, 20));
+                
+                const mouseMove2 = new MouseEvent('mousemove', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 200,
+                    clientY: 100
+                });
+                document.dispatchEvent(mouseMove2);
+                await new Promise(resolve => setTimeout(resolve, 20));
+                
+                // End drag - should calculate velocity
+                const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                document.dispatchEvent(mouseUpEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Check if momentum started (velocity should be calculated)
+                const hasVelocity = carousel.velocity !== undefined && carousel.velocity !== null;
+                const isMomentumActive = carousel.isMomentumActive;
+                
+                if (hasVelocity && isMomentumActive) {
+                    addResult('Momentum velocity calculation', true, `Velocity: ${carousel.velocity.toFixed(4)} px/ms`);
+                } else {
+                    addResult('Momentum velocity calculation', false, `Velocity: ${carousel.velocity}, Momentum active: ${isMomentumActive}`);
+                }
+                
+                // Wait for momentum to complete
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (e) {
+                addResult('Momentum velocity calculation', false, e.message);
+            }
+
+            // Test 31: Momentum decay
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Start drag and create velocity
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Fast drag
+                for (let i = 0; i < 3; i++) {
+                    const mouseMove = new MouseEvent('mousemove', {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: 100 + (i + 1) * 50,
+                        clientY: 100
+                    });
+                    document.dispatchEvent(mouseMove);
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+                
+                const initialVelocity = carousel.velocity;
+                
+                // End drag to start momentum
+                const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                document.dispatchEvent(mouseUpEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                if (!carousel.isMomentumActive) {
+                    addResult('Momentum decay', false, 'Momentum did not start');
+                } else {
+                    // Wait a bit and check velocity has decayed
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    const velocityAfterDecay = carousel.velocity;
+                    const hasDecayed = Math.abs(velocityAfterDecay) < Math.abs(initialVelocity);
+                    
+                    if (hasDecayed) {
+                        addResult('Momentum decay', true, `Velocity decayed from ${initialVelocity.toFixed(4)} to ${velocityAfterDecay.toFixed(4)}`);
+                    } else {
+                        addResult('Momentum decay', false, `Velocity did not decay (${initialVelocity.toFixed(4)} to ${velocityAfterDecay.toFixed(4)})`);
+                    }
+                }
+                
+                // Wait for momentum to complete
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (e) {
+                addResult('Momentum decay', false, e.message);
+            }
+
+            // Test 32: Momentum boundary handling
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                if (!carousel.resetPosition) {
+                    addResult('Momentum boundary handling', false, 'Carousel not initialized');
+                } else {
+                    // Set position near boundary
+                    carousel.currentPosition = carousel.resetPosition + 10;
+                    container.style.transform = 'translateX(' + carousel.currentPosition + 'px)';
+                    
+                    // Manually set velocity to move past boundary
+                    carousel.velocity = -5; // Negative velocity moves left (past resetPosition)
+                    carousel.isMomentumActive = true;
+                    
+                    // Let momentum run for a bit
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    // Position should have wrapped, not gone past boundary
+                    const finalPosition = carousel.currentPosition;
+                    const withinBounds = finalPosition > carousel.resetPosition && finalPosition < 0;
+                    
+                    if (withinBounds) {
+                        addResult('Momentum boundary handling', true, `Position stayed within bounds: ${finalPosition.toFixed(2)}`);
+                    } else {
+                        addResult('Momentum boundary handling', false, `Position out of bounds: ${finalPosition.toFixed(2)}`);
+                    }
+                    
+                    // Clean up
+                    carousel.isMomentumActive = false;
+                    carousel.velocity = 0;
+                }
+            } catch (e) {
+                addResult('Momentum boundary handling', false, e.message);
+            }
+
+            // Test 33: Momentum stops when velocity is low
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Ensure no existing momentum
+                carousel.isMomentumActive = false;
+                carousel.velocity = 0;
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Start drag with very slow movement
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Very slow drag - move only 1px over a long time to ensure low velocity
+                const mouseMove1 = new MouseEvent('mousemove', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                document.dispatchEvent(mouseMove1);
+                await new Promise(resolve => setTimeout(resolve, 200)); // Wait longer to ensure low velocity
+                
+                const mouseMove2 = new MouseEvent('mousemove', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 101, // Only 1px movement over 200ms = very low velocity
+                    clientY: 100
+                });
+                document.dispatchEvent(mouseMove2);
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // End drag
+                const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                document.dispatchEvent(mouseUpEvent);
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Check if momentum started at all
+                const momentumStarted = carousel.isMomentumActive;
+                const currentVelocity = carousel.velocity;
+                
+                // Wait for momentum to decay (velocity threshold is 0.02)
+                // With very low initial velocity, it should stop quickly
+                let momentumStopped = !carousel.isMomentumActive;
+                let waitCount = 0;
+                const maxWait = 20; // Wait up to 2 seconds (20 * 100ms)
+                
+                while (!momentumStopped && waitCount < maxWait) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    momentumStopped = !carousel.isMomentumActive;
+                    waitCount++;
+                }
+                
+                if (!momentumStarted) {
+                    // Momentum never started - this is also correct behavior for very low velocity
+                    addResult('Momentum stops when velocity is low', true, 'Momentum did not start (velocity too low)');
+                } else if (momentumStopped) {
+                    addResult('Momentum stops when velocity is low', true, 
+                        `Momentum stopped after ${waitCount * 100}ms (velocity: ${currentVelocity.toFixed(4)})`);
+                } else {
+                    addResult('Momentum stops when velocity is low', false, 
+                        `Momentum still active after ${maxWait * 100}ms (velocity: ${carousel.velocity.toFixed(4)})`);
+                }
+            } catch (e) {
+                addResult('Momentum stops when velocity is low', false, e.message);
+            }
+
+            // ===== Edge Case Tests =====
+
+            // Test 34: Empty carousel
+            try {
+                const tempWrapper = document.createElement('div');
+                tempWrapper.className = 'infinite-scroll-wrapper';
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'infinite-scroll-container';
+                tempContainer.id = 'emptyTestCarousel';
+                tempWrapper.appendChild(tempContainer);
+                document.body.appendChild(tempWrapper);
+                
+                let errorThrown = false;
+                let carouselCreated = false;
+                
+                try {
+                    const emptyCarousel = new InfiniteScrollCarousel('#emptyTestCarousel');
+                    carouselCreated = true;
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    
+                    // Should handle empty carousel gracefully
+                    if (emptyCarousel.originalItemCount === 0) {
+                        addResult('Empty carousel', true, 'Handled gracefully with 0 items');
+                    } else {
+                        addResult('Empty carousel', false, `Expected 0 items, got ${emptyCarousel.originalItemCount}`);
+                    }
+                    
+                    emptyCarousel.destroy();
+                } catch (e) {
+                    errorThrown = true;
+                    // Empty carousel should either work gracefully or throw a clear error
+                    if (e.message && e.message.includes('No children')) {
+                        addResult('Empty carousel', true, 'Threw expected warning');
+                    } else {
+                        addResult('Empty carousel', false, `Unexpected error: ${e.message}`);
+                    }
+                }
+                
+                if (tempWrapper.parentNode) document.body.removeChild(tempWrapper);
+            } catch (e) {
+                addResult('Empty carousel', false, e.message);
+            }
+
+            // Test 35: Single item carousel
+            try {
+                const tempWrapper = document.createElement('div');
+                tempWrapper.className = 'infinite-scroll-wrapper';
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'infinite-scroll-container';
+                tempContainer.id = 'singleItemTestCarousel';
+                const singleItem = document.createElement('div');
+                singleItem.className = 'infinite-scroll-item';
+                singleItem.textContent = 'Single Item';
+                tempContainer.appendChild(singleItem);
+                tempWrapper.appendChild(tempContainer);
+                document.body.appendChild(tempWrapper);
+                
+                const singleCarousel = new InfiniteScrollCarousel('#singleItemTestCarousel');
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                if (singleCarousel.originalItemCount === 1 && singleCarousel.totalSetWidth !== null) {
+                    addResult('Single item carousel', true, 'Handled correctly with 1 item');
+                } else {
+                    addResult('Single item carousel', false, 
+                        `Items: ${singleCarousel.originalItemCount}, Width: ${singleCarousel.totalSetWidth}`);
+                }
+                
+                singleCarousel.destroy();
+                if (tempWrapper.parentNode) document.body.removeChild(tempWrapper);
+            } catch (e) {
+                addResult('Single item carousel', false, e.message);
+            }
+
+            // Test 36: Very fast drag (velocity clamping)
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Start drag
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                await new Promise(resolve => setTimeout(resolve, 10));
+                
+                // Extremely fast drag (simulate very large movement in short time)
+                const mouseMove1 = new MouseEvent('mousemove', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                document.dispatchEvent(mouseMove1);
+                await new Promise(resolve => setTimeout(resolve, 1));
+                
+                const mouseMove2 = new MouseEvent('mousemove', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 1000, // 900px in very short time
+                    clientY: 100
+                });
+                document.dispatchEvent(mouseMove2);
+                await new Promise(resolve => setTimeout(resolve, 10));
+                
+                // End drag
+                const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                document.dispatchEvent(mouseUpEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Velocity should be clamped to maxMomentumSpeed
+                if (carousel.isMomentumActive) {
+                    const maxSpeed = carousel.options.maxMomentumSpeed;
+                    const velocityWithinBounds = Math.abs(carousel.velocity) <= maxSpeed;
+                    
+                    if (velocityWithinBounds) {
+                        addResult('Very fast drag (velocity clamping)', true, 
+                            `Velocity clamped to ${carousel.velocity.toFixed(4)} (max: ${maxSpeed})`);
+                    } else {
+                        addResult('Very fast drag (velocity clamping)', false, 
+                            `Velocity ${carousel.velocity.toFixed(4)} exceeds max ${maxSpeed}`);
+                    }
+                } else {
+                    addResult('Very fast drag (velocity clamping)', false, 'Momentum did not start');
+                }
+                
+                // Wait for momentum to complete
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (e) {
+                addResult('Very fast drag (velocity clamping)', false, e.message);
+            }
+
+            // Test 37: Drag resume after end
+            try {
+                const container = document.querySelector('#testCarousel');
+                
+                // Ensure scrolling is active
+                if (!carousel.isScrolling) {
+                    carousel.startScrolling();
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                // Start and end drag
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 100,
+                    clientY: 100
+                });
+                container.dispatchEvent(mouseDownEvent);
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+                document.dispatchEvent(mouseUpEvent);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Scrolling should resume
+                const scrollingResumed = carousel.isScrolling && !carousel.isPaused;
+                
+                if (scrollingResumed) {
+                    addResult('Drag resume after end', true, 'Scrolling resumed after drag');
+                } else {
+                    addResult('Drag resume after end', false, 
+                        `Is scrolling: ${carousel.isScrolling}, Is paused: ${carousel.isPaused}`);
+                }
+            } catch (e) {
+                addResult('Drag resume after end', false, e.message);
+            }
+
+            // Summary (only for tests run in this execution)
+            const currentRunResults = results.slice(startIndex);
+            const passed = currentRunResults.filter(r => r.passed).length;
+            const total = currentRunResults.length;
+            const summary = document.createElement('div');
+            summary.className = 'test-result ' + (passed === total ? 'pass' : 'fail');
+            summary.style.marginTop = '20px';
+            summary.style.fontWeight = 'bold';
+            summary.style.fontSize = '18px';
+            summary.textContent = `📊 Summary: ${passed}/${total} test cases passed (${Math.round(passed/total*100)}%)`;
+            // Prepend summary so it appears right after the newest test results
+            const resultsDiv = document.getElementById('testResults');
+            if (resultsDiv.firstChild) {
+                resultsDiv.insertBefore(summary, resultsDiv.firstChild);
+            } else {
+                resultsDiv.appendChild(summary);
+            }
+        }
+
+        // Auto-run tests on load
+        window.addEventListener('load', function() {
+            setTimeout(runAllTests, 1000);
+        });
+
+        // ===== Icon Loading Tests =====
+        
+        async function testSlowIconLoad() {
+            const statusDiv = document.getElementById('testCarouselStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status-info';
+            statusDiv.textContent = 'Testing slow icon loading...';
+            
+            const container = document.querySelector('#testCarousel');
+            const items = container.querySelectorAll('.infinite-scroll-item');
+            
+            // Remove icons if they exist (clean up from previous test)
+            items.forEach(item => {
+                const icon = item.querySelector('i');
+                if (icon) {
+                    icon.remove();
+                }
+                // Remove icon-item class if present
+                item.classList.remove('icon-item');
+            });
+            
+            // Wait a bit for any cleanup to complete
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Get initial measurement (without icons)
+            const widthBeforeIcons = carousel.totalSetWidth;
+            
+            // Now add icons to existing items
+            const iconClasses = [
+                'fa-brands fa-html5',
+                'fa-brands fa-css3-alt',
+                'fa-brands fa-js',
+                'fa-brands fa-react',
+                'fa-brands fa-python'
+            ];
+            
+            items.forEach((item, index) => {
+                item.classList.add('icon-item');
+                const icon = document.createElement('i');
+                icon.className = iconClasses[index] || 'fa-solid fa-circle';
+                item.insertBefore(icon, item.firstChild);
+            });
+            
+            // Wait for icons to render and ResizeObserver to detect size change
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Wait a bit more for ResizeObserver to recalculate
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            const widthAfterIcons = carousel.totalSetWidth;
+            const widthChanged = Math.abs(widthAfterIcons - widthBeforeIcons) > 1;
+            
+            if (widthChanged) {
+                statusDiv.className = 'status-success';
+                statusDiv.textContent = `✅ Success! Carousel detected icon load and recalculated: ${widthBeforeIcons.toFixed(2)}px → ${widthAfterIcons.toFixed(2)}px`;
+                addResult('Slow Icon Loading - Auto Recalculation', true, 
+                    `Width updated from ${widthBeforeIcons.toFixed(2)}px to ${widthAfterIcons.toFixed(2)}px`);
+            } else {
+                statusDiv.className = 'status-error';
+                statusDiv.textContent = `❌ Failed! Carousel did not detect icon load (${widthBeforeIcons.toFixed(2)}px → ${widthAfterIcons.toFixed(2)}px)`;
+                addResult('Slow Icon Loading - Auto Recalculation', false, 
+                    `Width did not change (${widthBeforeIcons.toFixed(2)}px → ${widthAfterIcons.toFixed(2)}px)`);
+            }
+        }
+
+        function removeIcons() {
+            const container = document.querySelector('#testCarousel');
+            const items = container.querySelectorAll('.infinite-scroll-item');
+            const statusDiv = document.getElementById('testCarouselStatus');
+            
+            items.forEach(item => {
+                const icon = item.querySelector('i');
+                if (icon) {
+                    icon.remove();
+                }
+                item.classList.remove('icon-item');
+            });
+            
+            if (statusDiv) {
+                statusDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
