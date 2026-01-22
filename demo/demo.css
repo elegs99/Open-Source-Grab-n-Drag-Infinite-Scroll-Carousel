@@ -77,7 +77,45 @@ header p {
     white-space: nowrap;
 }
 
-/* Example 2: Icon Cards */
+/* Example 2: Image Gallery */
+.image-item {
+    width: 300px;
+    height: 200px;
+    margin-right: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    transform: scale(.9);
+    transition: transform 0.3s;
+}
+
+.image-item:hover {
+    transform: scale(1);
+}
+
+.image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Example 3: Numbered Boxes */
+.box {
+    width: 80px;
+    height: 80px;
+    margin-right: 15px;
+    border: 1px solid #ff6b6b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff6b6b;
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+/* Example 4: Icon Cards */
 .card {
     flex-direction: column;
     align-items: center;
@@ -106,25 +144,10 @@ header p {
     font-weight: 500;
 }
 
-/* Example 3: Numbered Boxes */
-.box {
-    width: 80px;
-    height: 80px;
-    margin-right: 15px;
-    border: 1px solid #ff6b6b;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #ff6b6b;
-    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
-}
-
-/* Example 5: Skills List with Icons */
+/* Example 4: Skills List with Icons */
 .skills-list {
-    margin: 20px 0;
+    padding: 20px 0;
+    background: #000;
 }
 
 .icon-container-wrapper {
@@ -151,28 +174,6 @@ header p {
 #carousel4a .icon-item i,
 #carousel4b .icon-item i {
     font-size: 1.2rem;
-}
-
-/* Example 5: Image Gallery */
-.image-item {
-    width: 300px;
-    height: 200px;
-    margin-right: 20px;
-    border-radius: 12px;
-    overflow: hidden;
-    transform: scale(.9);
-    transition: transform 0.3s;
-}
-
-.image-item:hover {
-    transform: scale(1);
-}
-
-.image-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
 }
 
 footer {
