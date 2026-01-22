@@ -90,6 +90,22 @@
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
+        .test-notice {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 10px 10px;
+            margin: 15px 5px 0 5px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .test-notice::before {
+            content: "⚠️";
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -107,27 +123,25 @@
                 <div class="infinite-scroll-item test-item">Item 5</div>
             </div>
         </div>
-        
         <div style="margin-top: 20px;">
             <strong>Methods:</strong>
         </div>
-        <div style="margin-top: 10px;">
+        <div style="margin-top: 5px;">
             <button onclick="testPause()">Test Pause</button>
             <button onclick="testResume()">Test Resume</button>
             <button onclick="testDestroy()">Test Destroy</button>
         </div>
-        <div style="margin-top: 10px;">
-            <button onclick="
-                runAllTests()
-                addSpace()
-                "
-            >Run All Tests</button>
-            <button onclick="clearResults()">Clear Results</button>
-        </div>
     </div>
 
-    <div class="test-section">
+    <div class="test-section results-section">
         <h2>Test Results</h2>
+        <div class="test-notice">
+            <strong>Important:</strong> Keep this page active and in focus while running tests. Scrolling away or losing focus may cause tests to fail.
+        </div>
+        <div style="margin: 10px 0;">
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="clearResults()">Clear Results</button>
+        </div>
         <div id="testResults"></div>
     </div>
 
