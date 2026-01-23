@@ -113,9 +113,10 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 </body>
 </html>
 ```
+That's it! The carousel will automatically start scrolling.
+
 > 📖 **For detailed API documentation, examples, and advanced usage, see [DOCS.md](DOCS.md)**
 
-That's it! The carousel will automatically start scrolling.
 
 ## API Reference
 
