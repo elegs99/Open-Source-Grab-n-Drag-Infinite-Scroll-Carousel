@@ -10,11 +10,10 @@ For quickstart and installation, see the [README.md](README.md).
 - [Examples](#examples)
 - [Framework Integration](#framework-integration)
 - [Styling Guide](#styling-guide)
+- [Troubleshooting](#troubleshooting)
 - [Browser Compatibility](#browser-compatibility)
 - [Accessibility](#accessibility)
 - [Performance](#performance)
-- [Troubleshooting](#troubleshooting)
-
 ---
 
 ## API Reference
@@ -939,54 +938,6 @@ For more advanced interactivity, combine with your JS events or frameworks—jus
 
 ---
 
-## Browser Compatibility
-
-- Chrome/Edge: ✅ (latest)
-- Firefox: ✅ (latest)
-- Safari: ✅ (latest)
-- iOS Safari: ✅ (latest)
-- Android Chrome: ✅ (latest)
-
-Requires support for:
-- `requestAnimationFrame`
-- `transform` CSS property
-- `addEventListener`
-
----
-
-## Accessibility
-
-- **Keyboard Navigation**: Items remain keyboard accessible
-- **Screen Readers**: Content is readable by screen readers
-- **Focus Management**: Focus states are preserved
-- **Touch Support**: Full touch gesture support on mobile devices
-
-### Best Practices
-
-1. Ensure items have proper `alt` text for images
-2. Use semantic HTML for carousel items
-3. Provide alternative navigation for users who cannot use drag gestures(auto-scroll)
-4. Test with keyboard-only navigation
-
----
-
-## Performance
-
-- Uses `requestAnimationFrame` for smooth 60fps animations
-- Sub-pixel precision for smooth scrolling
-- Efficient event handling with proper cleanup
-- Minimal DOM manipulation
-- Debounced resize calculations
-
-### Optimization Tips
-
-1. **Limit Item Count**: While the carousel handles many items, keep it reasonable (< 100 items)
-2. **Optimize Images**: Use optimized images for logo/item carousels
-3. **Use `will-change`**: Already included in the CSS for optimal performance
-4. **Avoid Heavy Animations**: Don't add heavy CSS animations to items
-
----
-
 ## Troubleshooting
 
 ### Items Not Scrolling
@@ -1041,3 +992,50 @@ const carousel = new InfiniteScrollCarousel(container, {
     copies: 4  // Increase this number (default is 3)
 });
 ```
+
+## Browser Compatibility
+
+- Chrome/Edge: ✅ (latest)
+- Firefox: ✅ (latest)
+- Safari: ✅ (latest)
+- iOS Safari: ✅ (latest)
+- Android Chrome: ✅ (latest)
+
+Requires support for:
+- `requestAnimationFrame`
+- `transform` CSS property
+- `addEventListener`
+
+---
+
+## Accessibility
+
+- **Keyboard Navigation**: Items remain keyboard accessible
+- **Screen Readers**: Content is readable by screen readers
+- **Focus Management**: Focus states are preserved
+- **Touch Support**: Full touch gesture support on mobile devices
+
+### Best Practices
+
+1. Ensure items have proper `alt` text for images
+2. Use semantic HTML for carousel items
+3. Provide alternative navigation for users who cannot use drag gestures(auto-scroll)
+4. Test with keyboard-only navigation
+
+---
+
+## Performance
+
+- Uses `requestAnimationFrame` for smooth 60fps animations
+- Sub-pixel precision for smooth scrolling
+- Efficient event handling with proper cleanup
+- Minimal DOM manipulation
+- Debounced resize calculations
+
+### Optimization Tips
+
+1. **Limit Item Count**: While the carousel handles many items, keep it reasonable (< 100 items)
+2. **Optimize Images**: Use optimized images for logo/item carousels
+3. **Avoid Heavy Animations**: Don't add heavy CSS animations to items
+
+---
