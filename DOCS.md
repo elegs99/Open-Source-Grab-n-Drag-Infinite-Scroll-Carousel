@@ -35,9 +35,9 @@ new InfiniteScrollCarousel(container, options)
 | Option | Type | Default | Description |
 |------|------|---------|-------------|
 | `speed` | number | `50` | Auto-scroll speed (pixels/sec).<br>Set to `0` to disable auto-scroll. |
-| `reverseDirection` | boolean | `false` | Scroll direction.<br>`false`: right to left →<br>`true`: left to right ← |
+| `reverseDirection` | boolean | `false` | Scroll direction.<br>`false`: right to left ←<br>`true`: left to right → |
 | `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer hovers an element. |
-| `momentumDecay` | number | `0.95` | Drag momentum decay rate.<br>Range: `0.5–0.99`<br>`0.5`: quick decay<br>`0.99`: slow decay |
+| `momentumDecay` | number | `0.05` | Drag momentum decay rate.<br>Range: `0.01–0.5`<br>`0.01`: slow decay (keeps momentum longer)<br>`0.5`: quick decay (loses momentum quickly)<br>Higher values decay quicker. |
 | `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed (px/ms).<br>Range: `0.5–25` |
 | `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`).<br>Use `transparent` to disable. |
 | `fadeWidth` | number | `50` | Width of the fade gradient in pixels. |
@@ -367,7 +367,7 @@ A flexible gallery carousel that can switch between manual-only browsing (user-c
             carousel = new InfiniteScrollCarousel('#galleryCarousel', {
                 speed: 0,                      // No auto-scroll (manual only)
                 pauseOnHover: false,            // Not needed since no auto-scroll
-                momentumDecay: 0.98,            // Higher decay rate (more momentum)
+                momentumDecay: 0.02,            // Lower decay rate (keeps momentum longer)
                 maxMomentumSpeed: 3.5,          // Higher max speed for smooth browsing
                 copies: 4,                      // More copies for smoother infinite loop
                 fadeColor: 'transparent',       // Disable fade effect
@@ -592,7 +592,7 @@ A production-ready e-commerce product carousel that tracks user engagement, inte
         speed: 35,
         reverseDirection: false,
         pauseOnHover: true,              // Pause when user hovers to view product
-        momentumDecay: 0.96,              // Smooth momentum for browsing
+        momentumDecay: 0.04,              // Smooth momentum for browsing (slower decay)
         maxMomentumSpeed: 2.8,
         fadeColor: 'rgba(102, 126, 234, 0.8)',  // Match gradient theme
         fadeWidth: 100,

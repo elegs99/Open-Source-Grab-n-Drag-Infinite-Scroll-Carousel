@@ -144,9 +144,9 @@ new InfiniteScrollCarousel(container, options)
 | Option | Type | Default | Description |
 |------|------|---------|-------------|
 | `speed` | number | `50` | Auto-scroll speed (pixels/sec). Set to `0` to disable auto-scroll. |
-| `reverseDirection` | boolean | `false` | Scroll direction. `false`: right to left →, `true`: left to right ← |
+| `reverseDirection` | boolean | `false` | Scroll direction. `false`: right to left ←, `true`: left to right → |
 | `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer hovers an element. |
-| `momentumDecay` | number | `0.95` | Drag momentum decay rate (Range: `0.5–0.99`). |
+| `momentumDecay` | number | `0.05` | Drag momentum decay rate (Range: `0.01–0.5`). Higher values decay quicker. |
 | `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed in px/ms (Range: `0.5–25`). |
 | `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`). Use `transparent` to disable. |
 | `fadeWidth` | number | `50` | Width of the fade gradient in pixels. |
@@ -219,7 +219,7 @@ new InfiniteScrollCarousel(container, options)
         reverseDirection: true,        // Scroll right to left
         fadeColor: '#1a1a2e',          // Custom fade color
         fadeWidth: 80,                  // Wider fade
-        momentumDecay: 0.96,            // Smoother momentum
+        momentumDecay: 0.04,            // Smoother momentum
         onReady: () => {
             console.log('Carousel ready!');
         }

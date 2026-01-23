@@ -28,8 +28,8 @@ export interface InfiniteScrollCarouselOptions {
     pauseOnHover?: boolean;
     
     /**
-     * Momentum decay factor, clamped to 0.1-0.99
-     * @default 0.95
+     * Momentum decay factor, clamped to 0.01-0.5. Higher values decay quicker.
+     * @default 0.05
      */
     momentumDecay?: number;
     

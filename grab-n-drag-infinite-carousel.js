@@ -17,7 +17,7 @@
      * @param {number} options.speed - Scroll speed in pixels per second, clamped to minimum 0 (default: 50)
      * @param {boolean} options.reverseDirection - Scroll in reverse direction (right to left) (default: false)
      * @param {boolean} options.pauseOnHover - Pause scrolling on hover (default: true)
-     * @param {number} options.momentumDecay - Momentum decay factor, clamped to 0.1-0.99 (default: 0.95)
+     * @param {number} options.momentumDecay - Momentum decay factor, clamped to 0.01-0.5 (default: 0.05). Higher values decay quicker.
      * @param {number} options.maxMomentumSpeed - Max momentum speed in px/ms, clamped to 0.5-25 (default: 2.0)
      * @param {string} options.fadeColor - Color of the fade gradient in hex, rgb, or rgba format (default: #ffffff)
      * @param {number} options.fadeWidth - Width of the fade gradient in pixels (default: 50)
@@ -39,7 +39,7 @@
             speed: options && options.speed !== undefined ? options.speed : 50,
             reverseDirection: options && options.reverseDirection === true,
             pauseOnHover: options?.pauseOnHover !== false,
-            momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.95,
+            momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.05,
             maxMomentumSpeed: options && options.maxMomentumSpeed !== undefined ? options.maxMomentumSpeed : 2.0,
             fadeColor: options && options.fadeColor !== undefined ? options.fadeColor : '#ffffff',
             fadeWidth: options && options.fadeWidth !== undefined ? options.fadeWidth : 50,
@@ -142,13 +142,13 @@
             this.options.speed = 0;
         }
         
-        // Validate momentumDecay: must be between 0.5 and 0.99
-        if (this.options.momentumDecay < 0.5 || this.options.momentumDecay > 0.99) {
+        // Validate momentumDecay: must be between 0.01 and 0.5
+        if (this.options.momentumDecay < 0.01 || this.options.momentumDecay > 0.5) {
             const originalValue = this.options.momentumDecay;
-            this.options.momentumDecay = Math.max(0.5, Math.min(0.99, this.options.momentumDecay));
+            this.options.momentumDecay = Math.max(0.01, Math.min(0.5, this.options.momentumDecay));
             console.warn(
                 'InfiniteScrollCarousel: momentumDecay value ' + originalValue + 
-                ' is outside valid range (0.5 - 0.99). Clamped to ' + this.options.momentumDecay + '.'
+                ' is outside valid range (0.01 - 0.5). Clamped to ' + this.options.momentumDecay + '.'
             );
         }
         
@@ -899,8 +899,8 @@
         // Apply velocity (assuming 60fps = 16ms per frame)
         this.currentPosition += this.velocity * 16;
         
-        // Decay velocity
-        this.velocity *= this.options.momentumDecay;
+        // Decay velocity (use 1 - decayRate, so higher decayRate values decay quicker)
+        this.velocity *= (1 - this.options.momentumDecay);
         
         // Handle boundaries during momentum
         if (this.resetPosition !== null) {
