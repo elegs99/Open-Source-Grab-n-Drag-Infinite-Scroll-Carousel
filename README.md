@@ -15,6 +15,7 @@ View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-D
 - **Grab and Drag** - Interactive dragging with mouse and touch support
 - **Momentum Scrolling** - Natural momentum physics after drag release
 - **Pause on Hover** - Optional pause when hovering over the carousel
+- **Event Callbacks** - Hook into lifecycle events and user interactions
 - **Zero Dependencies** - Pure vanilla JavaScript, no jQuery or frameworks required
 - **Lightweight** - Works in all modern browsers
 - **HTML Accessible** - Maintains keyboard navigation and screen reader compatibility
@@ -40,7 +41,7 @@ Then import in your project:
 // ES Modules
 import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
 import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
-
+// or
 // CommonJS
 const InfiniteScrollCarousel = require('grab-n-drag-infinite-carousel');
 require('grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css');
@@ -88,8 +89,8 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
     <link rel="stylesheet" href="grab-n-drag-infinite-carousel.css">
 </head>
 <body>
-    <!-- Your carousel markup -->
-    
+    <!-- Carousel HTML structure -->
+
     <script src="grab-n-drag-infinite-carousel.js"></script>
     <script>
         // Initialize carousel
@@ -103,7 +104,7 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 ```html
 <div class="infinite-scroll-wrapper">
     <div class="infinite-scroll-container" id="myCarousel">
-        <div class="infinite-scroll-item">Item 1</div>
+        <div class="infinite-scroll-item">Item 1<!-- Customize elements for your use case --></div>
         <div class="infinite-scroll-item">Item 2</div>
         <div class="infinite-scroll-item">Item 3</div>
         <!-- Add more items as needed -->
@@ -119,10 +120,8 @@ const container = document.querySelector('#myCarousel');
 
 // Create carousel instance
 const carousel = new InfiniteScrollCarousel(container, {
-    speed: 50,              // pixels per second
-    pauseOnHover: true,     // pause on hover
-    momentumDecay: 0.95,    // momentum decay factor
-    maxMomentumSpeed: 2.0   // max momentum speed
+    speed: 50,
+    // Initialize options for your use case
 });
 ```
 
@@ -136,439 +135,130 @@ That's it! The carousel will automatically start scrolling.
 new InfiniteScrollCarousel(container, options)
 ```
 
-#### Parameters
-
-- **container** (`HTMLElement` or `string`) - The container element or CSS selector. Must contain direct children that will be scrolled.
-- **options** (`Object`, optional) - Configuration object
-
+**Parameters:**
+- `container` (`HTMLElement` or `string`) - The container element or CSS selector
+- `options` (`Object`, optional) - Configuration object
 
 ### Options
 
 | Option | Type | Default | Description |
 |------|------|---------|-------------|
-| `speed` | number | `50` | Auto-scroll speed (pixels/sec).<br>Set to `0` to disable. |
-| `reverseDirection` | boolean | `false` | Scroll direction.<br>`false`: right → left<br>`true`: left → right |
-| `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer enters the container. |
-| `momentumDecay` | number | `0.95` | Drag momentum decay factor.<br>Range: `0.5–0.99` |
-| `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed (px/ms).<br>Range: `0.5–25` |
-| `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`).<br>Use `transparent` to disable. |
+| `speed` | number | `50` | Auto-scroll speed (pixels/sec). Set to `0` to disable auto-scroll. |
+| `reverseDirection` | boolean | `false` | Scroll direction. `false`: right to left →, `true`: left to right ← |
+| `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer hovers an element. |
+| `momentumDecay` | number | `0.95` | Drag momentum decay rate (Range: `0.5–0.99`). |
+| `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed in px/ms (Range: `0.5–25`). |
+| `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`). Use `transparent` to disable. |
 | `fadeWidth` | number | `50` | Width of the fade gradient in pixels. |
 | `interactable` | boolean | `true` | Enable grab-and-drag interaction. Set to `false` to disable dragging. |
 | `copies` | number | `3` | Number of duplicated item sets for seamless looping. |
 
+### Event Callbacks
+
+| Callback | Type | Description |
+|----------|------|-------------|
+| `onReady` | `() => void` | Fires when carousel initialization completes |
+| `onDragStart` | `() => void` | Fires when user starts dragging |
+| `onDrag` | `(position: number, deltaX: number) => void` | Fires during drag movement (throttled) |
+| `onDragEnd` | `() => void` | Fires when user ends dragging |
+| `onMomentumStart` | `(velocity: number) => void` | Fires when momentum scrolling begins |
+| `onMomentumEnd` | `() => void` | Fires when momentum scrolling ends |
+| `onPositionReset` | `() => void` | Fires when position resets during seamless loop |
+| `onPause` | `() => void` | Fires when carousel is paused |
+| `onResume` | `() => void` | Fires when carousel is resumed |
 
 ### Methods
 
-#### `pause()`
-Pause automatic scrolling. The animation loop continues but position updates are paused.
+- `pause()` - Pause automatic scrolling
+- `resume()` - Resume paused scrolling
+- `destroy()` - Clean up event listeners and reset the carousel
 
-```javascript
-carousel.pause();
-```
-
-#### `resume()`
-Resume paused scrolling or start scrolling if stopped. This method handles both resuming from a paused state and starting from a stopped state.
-
-```javascript
-carousel.resume();
-```
-
-#### `destroy()`
-Clean up event listeners and reset the carousel. Call this when removing the carousel from an active page.
-
-```javascript
-carousel.destroy();
-```
+> 📖 **For detailed API documentation, examples, and advanced usage, see [DOCS.md](DOCS.md)**
 
 ## Examples
 
-### Example 1: Logo Carousel
+### Basic Example
 
 ```html
 <div class="infinite-scroll-wrapper">
-    <div class="infinite-scroll-container" id="logoCarousel">
+    <div class="infinite-scroll-container" id="myCarousel">
         <div class="infinite-scroll-item">
-            <img src="logo1.png" alt="Company 1">
+            <img src="logo1.png" alt="Logo 1">
         </div>
         <div class="infinite-scroll-item">
-            <img src="logo2.png" alt="Company 2">
+            <img src="logo2.png" alt="Logo 2">
         </div>
         <div class="infinite-scroll-item">
-            <img src="logo3.png" alt="Company 3">
+            <img src="logo3.png" alt="Logo 3">
         </div>
     </div>
 </div>
 
 <script>
-    const carousel = new InfiniteScrollCarousel('#logoCarousel', {
-        speed: 30
-    });
-</script>
-```
-
-### Example 2: Skills Icons
-
-```html
-<div class="infinite-scroll-wrapper">
-    <div class="infinite-scroll-container" id="skillsCarousel">
-        <div class="infinite-scroll-item">
-            <i class="fab fa-html5"></i>
-            <span>HTML</span>
-        </div>
-        <div class="infinite-scroll-item">
-            <i class="fab fa-css3"></i>
-            <span>CSS</span>
-        </div>
-        <div class="infinite-scroll-item">
-            <i class="fab fa-js"></i>
-            <span>JavaScript</span>
-        </div>
-    </div>
-</div>
-
-<script>
-    const carousel = new InfiniteScrollCarousel('#skillsCarousel', {
-        speed: 40,
-        pauseOnHover: true
-    });
-</script>
-```
-
-### Example 3: Multiple Carousels
-
-```javascript
-// Initialize multiple carousels with different settings
-const carousel1 = new InfiniteScrollCarousel('#carousel1', {
-    speed: 50
-});
-
-const carousel2 = new InfiniteScrollCarousel('#carousel2', {
-    speed: 30,
-    pauseOnHover: false
-});
-```
-
-### Example 4: Custom Styling
-
-```html
-<style>
-    .my-carousel-wrapper {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    
-    .my-carousel-item {
-        padding: 20px;
-        margin-right: 30px;
-        background: #f0f0f0;
-        border-radius: 8px;
-    }
-</style>
-
-<div class="infinite-scroll-wrapper my-carousel-wrapper">
-    <div class="infinite-scroll-container" id="customCarousel">
-        <div class="infinite-scroll-item my-carousel-item">Card 1</div>
-        <div class="infinite-scroll-item my-carousel-item">Card 2</div>
-        <div class="infinite-scroll-item my-carousel-item">Card 3</div>
-    </div>
-</div>
-```
-
-## Framework Integration
-
-The carousel works with any framework or vanilla JavaScript. Here are examples for popular frameworks:
-
-### React
-
-```jsx
-import { useEffect, useRef } from 'react';
-import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
-import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
-
-function Carousel({ items }) {
-  const containerRef = useRef(null);
-  const carouselRef = useRef(null);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      carouselRef.current = new InfiniteScrollCarousel(containerRef.current, {
+    const carousel = new InfiniteScrollCarousel('#myCarousel', {
         speed: 50,
         pauseOnHover: true
-      });
-    }
-
-    return () => {
-      if (carouselRef.current) {
-        carouselRef.current.destroy();
-      }
-    };
-  }, []);
-
-  return (
-    <div className="infinite-scroll-wrapper">
-      <div className="infinite-scroll-container" ref={containerRef}>
-        {items.map((item, index) => (
-          <div key={index} className="infinite-scroll-item">
-            {item}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-```
-
-### Vue 3 (Composition API)
-
-```vue
-<template>
-  <div class="infinite-scroll-wrapper">
-    <div class="infinite-scroll-container" ref="container">
-      <div
-        v-for="(item, index) in items"
-        :key="index"
-        class="infinite-scroll-item"
-      >
-        {{ item }}
-      </div>
-    </div>
-  </div>
-</template>
-
-<script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
-import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
-
-const props = defineProps({
-  items: Array
-});
-
-const container = ref(null);
-let carousel = null;
-
-onMounted(() => {
-  if (container.value) {
-    carousel = new InfiniteScrollCarousel(container.value, {
-      speed: 50,
-      pauseOnHover: true
     });
-  }
-});
-
-onBeforeUnmount(() => {
-  if (carousel) {
-    carousel.destroy();
-  }
-});
 </script>
 ```
 
-### Vanilla JavaScript
-
-The carousel works perfectly with vanilla JavaScript - see the [Quickstart](#quickstart) section above for examples.
-
-## Styling
-
-### Required Classes
-
-- `.infinite-scroll-wrapper` - Outer wrapper (handles overflow)
-- `.infinite-scroll-container` - Scrolling container
-- `.infinite-scroll-item` - Individual items (direct children of container)
-
-### Customization
-
-You can fully customize the look and feel of the carousel by adding your own CSS or extending the default classes.
-
-**1. Item Spacing:**
-
-Change the spacing between items (adjust margin or padding):
-
-```css
-.infinite-scroll-item {
-    margin-right: 40px; /* Increase space between items */
-}
-```
-
-**2. Item Styling:**
-
-Style individual items (such as background, border, typography):
-
-```css
-.infinite-scroll-item {
-    background: #f8f8fc;
-    border-radius: 8px;
-    padding: 16px 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    color: #222;
-    font-weight: 500;
-}
-```
-
-**3. Fade Gradient Colors:**
-
-Override the fade color (defaults to white) on the wrapper edges, either via the API or by customizing CSS if needed. (Set `fadeColor` option in JS.)
-
-**4. Carousel Height and Alignment:**
-
-Adjust item alignment or carousel height to fit your content:
-
-```css
-.infinite-scroll-container {
-    align-items: flex-start; /* or center, flex-end */
-    min-height: 50px;
-}
-```
-
-**5. Responsive Layouts:**
-
-Make the carousel responsive by adjusting sizes and spacing at different breakpoints:
-
-```css
-@media (max-width: 600px) {
-    .infinite-scroll-item {
-        margin-right: 16px;
-        padding: 10px 14px;
-        font-size: 0.95em;
-    }
-}
-```
-
-#### Advanced: Add Custom Classes
-
-You can apply your own classes to the wrapper, container, or items for more specific targeting, e.g.
+### Custom Configuration
 
 ```html
-<div class="infinite-scroll-wrapper my-carousel-wrapper">
+<div class="infinite-scroll-wrapper">
     <div class="infinite-scroll-container" id="customCarousel">
-        <div class="infinite-scroll-item my-carousel-item">Custom 1</div>
-        <div class="infinite-scroll-item my-carousel-item">Custom 2</div>
-        <div class="infinite-scroll-item my-carousel-item">Custom 3</div>
+        <div class="infinite-scroll-item">Item 1</div>
+        <div class="infinite-scroll-item">Item 2</div>
+        <div class="infinite-scroll-item">Item 3</div>
     </div>
 </div>
+
+<script>
+    const carousel = new InfiniteScrollCarousel('#customCarousel', {
+        speed: 40,
+        reverseDirection: true,        // Scroll right to left
+        fadeColor: '#1a1a2e',          // Custom fade color
+        fadeWidth: 80,                  // Wider fade
+        momentumDecay: 0.96,            // Smoother momentum
+        onReady: () => {
+            console.log('Carousel ready!');
+        }
+    });
+</script>
 ```
 
-And then:
-
-```css
-.my-carousel-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
-    border: 1px solid #ddd;
-    background: #fafbfc;
-}
-.my-carousel-item {
-    padding: 24px;
-    margin-right: 32px;
-    font-size: 18px;
-    color: #225577;
-}
-```
-
-#### Tip
-
-- You can use *any* content inside `.infinite-scroll-item`—icons, images, cards, links, etc.
-- You can stack multiple carousels with different IDs and provide tailored styles for each. [See Demo 🠚](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)
-
-For more advanced interactivity, combine with your JS events or frameworks—just ensure you keep the core class structure for the carousel JavaScript to work.
+> 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](DOCS.md)**
 
 
 ## Browser Compatibility
 
-- Chrome/Edge: ✅ (latest)
-- Firefox: ✅ (latest)
-- Safari: ✅ (latest)
-- iOS Safari: ✅ (latest)
-- Android Chrome: ✅ (latest)
-
-Requires support for:
-- `requestAnimationFrame`
-- `transform` CSS property
-- `addEventListener`
+✅ Works in all modern browsers (Chrome, Firefox, Safari, Edge)  
+✅ Mobile support (iOS Safari, Android Chrome)  
+✅ Requires: `requestAnimationFrame`, CSS `transform`, `addEventListener`
 
 ## Accessibility
 
-- **Keyboard Navigation**: Items remain keyboard accessible
-- **Screen Readers**: Content is readable by screen readers
-- **Focus Management**: Focus states are preserved
-- **Touch Support**: Full touch gesture support on mobile devices
-
-### Best Practices
-
-1. Ensure items have proper `alt` text for images
-2. Use semantic HTML for carousel items
-3. Provide alternative navigation for users who cannot use drag gestures(auto-scroll)
-4. Test with keyboard-only navigation
+✅ Keyboard navigation support  
+✅ Screen reader compatible  
+✅ Touch gesture support  
+✅ Focus management
 
 ## Performance
 
-- Uses `requestAnimationFrame` for smooth 60fps animations
-- Sub-pixel precision for smooth scrolling
-- Efficient event handling with proper cleanup
-- Minimal DOM manipulation
-- Debounced resize calculations
+✅ 60fps smooth animations using `requestAnimationFrame`  
+✅ Efficient event handling with proper cleanup  
+✅ Minimal DOM manipulation  
+✅ Optimized for performance
 
-### Optimization Tips
+## Troubleshooting
 
-1. **Limit Item Count**: While the carousel handles many items, keep it reasonable (< 100 items)
-2. **Optimize Images**: Use optimized images for logo/item carousels
-3. **Use `will-change`**: Already included in the CSS for optimal performance
-4. **Avoid Heavy Animations**: Don't add heavy CSS animations to items
+**Items not scrolling?** Ensure CSS is loaded and container has direct children.  
+**Drag not working?** Check that `interactable: true` and no CSS is blocking pointer events.  
+**Items too close?** Add margin: `.infinite-scroll-item { margin-right: 30px; }`  
+**Speed issues?** Adjust the `speed` option (set to `0` to disable auto-scroll).  
+**Large empty gap?** Increase the `copies` option (default: 3).
 
-## Common Pitfalls
-
-### Items Not Scrolling
-
-**Problem**: Carousel doesn't scroll or items don't move.
-
-**Solutions**:
-- Ensure `.infinite-scroll-wrapper` has `overflow: hidden`
-- Check that container has direct children
-- Verify CSS file is loaded
-- Check browser console for errors
-
-### Drag Not Working
-
-**Problem**: Can't drag the carousel.
-
-**Solutions**:
-- Ensure `interactable` option is set to true
-- Check for CSS that might be blocking pointer events
-- Verify JavaScript file is loaded
-- Check for JavaScript errors in console
-
-### Items Too Close Together
-
-**Problem**: Items are overlapping or too close.
-
-**Solution**: Add margin to items:
-```css
-.infinite-scroll-item {
-    margin-right: 30px; /* Adjust as needed */
-}
-```
-
-### Carousel Too Fast/Slow
-
-**Problem**: Scrolling speed is not right.
-
-**Solution**: Adjust the `speed` option:
-```javascript
-const carousel = new InfiniteScrollCarousel(container, {
-    speed: 30 // 0 = doesnt scroll automatically
-});
-```
-
-### Empty Space At End Of Elements
-
-**Problem**: You see a large empty gap at the end of carousel items during scrolling.
-
-**Solution**: Increase the number of copies (clones) this ensures there are enough items to cover the visible area as it scrolls infinitely. See the `copies` option:
-```javascript
-const carousel = new InfiniteScrollCarousel(container, {
-    copies: 4  // Increase this number (default is 3)
-});
-```
+> 📖 **For detailed troubleshooting, styling guides, framework integration, and more examples, see [DOCS.md](DOCS.md)**
 
 
 ## License
