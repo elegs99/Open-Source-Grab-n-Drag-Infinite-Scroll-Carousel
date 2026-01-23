@@ -80,49 +80,37 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 
 ## Quickstart
 
-### 1. Include the Files
+### HTML
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- 1a. Include the Files -->
     <link rel="stylesheet" href="grab-n-drag-infinite-carousel.css">
 </head>
 <body>
-    <!-- Carousel HTML structure -->
+    <!-- 2. Basic HTML Structure -->
+    <div class="infinite-scroll-wrapper">
+        <div class="infinite-scroll-container" id="myCarousel">
+            <div class="infinite-scroll-item">Item 1<!--Customize as needed--></div>
+            <div class="infinite-scroll-item">Item 2</div>
+            <div class="infinite-scroll-item">Item 3</div>
+            <!-- Add more items as needed -->
+        </div>
+    </div>
 
+    <!-- 1b. Include the Files -->
     <script src="grab-n-drag-infinite-carousel.js"></script>
+    <!-- 3. Initialize the Carousel -->
     <script>
-        // Initialize carousel
+        const container = document.querySelector('#myCarousel');
+        const carousel = new InfiniteScrollCarousel(container, {
+            speed: 50
+        });
     </script>
 </body>
 </html>
-```
-
-### 2. Basic HTML Structure
-
-```html
-<div class="infinite-scroll-wrapper">
-    <div class="infinite-scroll-container" id="myCarousel">
-        <div class="infinite-scroll-item">Item 1<!-- Customize elements for your use case --></div>
-        <div class="infinite-scroll-item">Item 2</div>
-        <div class="infinite-scroll-item">Item 3</div>
-        <!-- Add more items as needed -->
-    </div>
-</div>
-```
-
-### 3. Initialize the Carousel
-
-```javascript
-// Get the container element
-const container = document.querySelector('#myCarousel');
-
-// Create carousel instance
-const carousel = new InfiniteScrollCarousel(container, {
-    speed: 50,
-    // Initialize options for your use case
-});
 ```
 
 That's it! The carousel will automatically start scrolling.
@@ -182,15 +170,11 @@ new InfiniteScrollCarousel(container, options)
 ```html
 <div class="infinite-scroll-wrapper">
     <div class="infinite-scroll-container" id="myCarousel">
-        <div class="infinite-scroll-item">
-            <img src="logo1.png" alt="Logo 1">
-        </div>
-        <div class="infinite-scroll-item">
-            <img src="logo2.png" alt="Logo 2">
-        </div>
-        <div class="infinite-scroll-item">
-            <img src="logo3.png" alt="Logo 3">
-        </div>
+        <div class="infinite-scroll-item">Item 1</div>
+        <div class="infinite-scroll-item">Item 2</div>
+        <div class="infinite-scroll-item">Item 3</div>
+        <div class="infinite-scroll-item">Item 4</div>
+        <div class="infinite-scroll-item">Item 5</div>
     </div>
 </div>
 
@@ -216,10 +200,11 @@ new InfiniteScrollCarousel(container, options)
 <script>
     const carousel = new InfiniteScrollCarousel('#customCarousel', {
         speed: 40,
-        reverseDirection: true,        // Scroll right to left
-        fadeColor: '#1a1a2e',          // Custom fade color
+        reverseDirection: true,         // Scroll right to left
+        fadeColor: '#1a1a2e',           // Custom fade color
         fadeWidth: 80,                  // Wider fade
         momentumDecay: 0.04,            // Smoother momentum
+        copies: 5,                      // Cover Gap w/ more copies
         onReady: () => {
             console.log('Carousel ready!');
         }
@@ -265,10 +250,7 @@ new InfiniteScrollCarousel(container, options)
 
 This project is licensed under CC0 1.0 Universal - see the [LICENSE](LICENSE) file for details.
 
-## Contributing
+## Support & Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Support
-
-For issues, questions, or contributions, please open an issue on the repository.
+For bug reports or feature requests, please open an issue on the repository.
