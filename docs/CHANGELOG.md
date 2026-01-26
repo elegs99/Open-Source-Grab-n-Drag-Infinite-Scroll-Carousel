@@ -12,14 +12,14 @@ All notable changes to this project will be documented in this file.
 - `momentumDecay` parameter to use complement as input (higher number = quicker decay)
 
 
-## [1.0.1] - 2026-01-14
+## [1.0.1] - 2026-01-13
 
 ### Fixed
 - Incorrect dimension calculations when images load slowly
 - Layout issues when items resize dynamically
 - Memory leaks from ResizeObserver not being cleaned up
 
-## [1.0.0] - 2026-01-12
+## [1.0.0] - 2026-01-11
 
 ### Added
 - Initial release
