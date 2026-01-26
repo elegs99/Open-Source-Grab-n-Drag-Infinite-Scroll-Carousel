@@ -14,11 +14,6 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.1] - 2026-01-14
 
-### Added
-- ResizeObserver for automatic detection of container and item size changes
-- Resource loading detection (waits for fonts and images before initialization)
-- Debounced resize calculations (100ms) for better performance
-
 ### Fixed
 - Incorrect dimension calculations when images load slowly
 - Layout issues when items resize dynamically
