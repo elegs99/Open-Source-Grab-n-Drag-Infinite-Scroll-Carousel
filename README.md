@@ -7,7 +7,7 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 ## Demo
 
 ![Demo GIF of Infinite Scrolling Carousel](docs/demo/assets/demo.gif)
-View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
+View the interactive [demo page](https://www.ethanlegum.com/docs/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
 
 ## Features
 
@@ -59,7 +59,7 @@ require('grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css');
 
 ### Manual Download
 
-Download the files directly from [npm](https://www.npmjs.com/package/grab-n-drag-infinite-carousel) or the repository:
+Download the files directly from [npm](https://www.npmjs.com/package/grab-n-drag-infinite-carousel) or this repository:
 - `grab-n-drag-infinite-carousel.js` (or `grab-n-drag-infinite-carousel.min.js` for production)
 - `grab-n-drag-infinite-carousel.css` (or `grab-n-drag-infinite-carousel.min.css` for production)
 
@@ -248,7 +248,7 @@ This project is licensed under CC0 1.0 Universal - see the [LICENSE](LICENSE) fi
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
+See [CHANGELOG.md](docs/CHANGELOG.md) for a list of changes and version history.
 
 ## Support & Contributing
 
