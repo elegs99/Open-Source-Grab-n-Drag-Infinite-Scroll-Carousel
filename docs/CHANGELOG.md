@@ -6,19 +6,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Event callbacks: `onReady`, `onDragStart`, `onDrag`, `onDragEnd`, `onMomentumStart`, `onMomentumEnd`, `onPositionReset`, `onPause`, `onResume`
-- More comprehensive visual testing file
+- Comprehensive visual testing file
 
 ### Changed
-- Refactored `momentumDecay` parameter to use complement as input (higher number = quicker decay)
-
-## [1.0.2] - 2026-01-21
-
-### Added
-- `fadeWidth` option to customize fade gradient width (default: 50px)
-- `interactable` option to enable/disable grab-and-drag interaction (default: true)
-
-### Changed
-- Refactored `pause()` and `resume()` methods to handle both starting from stopped state and resuming from paused state
+- `pause()` and `resume()` methods to handle both starting from stopped state and resuming from paused state
+- `momentumDecay` parameter to use complement as input (higher number = quicker decay)
 
 ### Removed
 - `startScrolling()` method (use `resume()` instead)
