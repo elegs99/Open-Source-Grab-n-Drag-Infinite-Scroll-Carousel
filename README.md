@@ -6,7 +6,7 @@ A lightweight, dependency-free infinite scrolling carousel component with grab-a
 
 ## Demo
 
-![Demo GIF of Infinite Scrolling Carousel](demo/assets/demo.gif)
+![Demo GIF of Infinite Scrolling Carousel](docs/demo/assets/demo.gif)
 View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
 
 ## Features
@@ -59,7 +59,7 @@ require('grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css');
 
 ### Manual Download
 
-Download the files directly from the repository:
+Download the files directly from [npm](https://www.npmjs.com/package/grab-n-drag-infinite-carousel) or the repository:
 - `grab-n-drag-infinite-carousel.js` (or `grab-n-drag-infinite-carousel.min.js` for production)
 - `grab-n-drag-infinite-carousel.css` (or `grab-n-drag-infinite-carousel.min.css` for production)
 
@@ -80,29 +80,26 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 
 ## Quickstart
 
-### HTML
+### HTML, CSS, JS
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- 1a. Include the Files -->
     <link rel="stylesheet" href="grab-n-drag-infinite-carousel.css">
 </head>
 <body>
-    <!-- 2. Basic HTML Structure -->
     <div class="infinite-scroll-wrapper">
         <div class="infinite-scroll-container" id="myCarousel">
-            <div class="infinite-scroll-item">Item 1<!--Customize as needed--></div>
+            <div class="infinite-scroll-item">Item 1</div>
             <div class="infinite-scroll-item">Item 2</div>
             <div class="infinite-scroll-item">Item 3</div>
             <!-- Add more items as needed -->
         </div>
     </div>
 
-    <!-- 1b. Include the Files -->
     <script src="grab-n-drag-infinite-carousel.js"></script>
-    <!-- 3. Initialize the Carousel -->
+    <script>
     <script>
         const container = document.querySelector('#myCarousel');
         const carousel = new InfiniteScrollCarousel(container, {
@@ -200,11 +197,11 @@ new InfiniteScrollCarousel(container, options)
 <script>
     const carousel = new InfiniteScrollCarousel('#customCarousel', {
         speed: 40,
-        reverseDirection: true,         // Scroll right to left
+        reverseDirection: true,         // Scroll left to right
         fadeColor: '#1a1a2e',           // Custom fade color
         fadeWidth: 80,                  // Wider fade
         momentumDecay: 0.04,            // Smoother momentum
-        copies: 5,                      // Cover Gap w/ more copies
+        copies: 5,                      // Cover gap with more copies
         onReady: () => {
             console.log('Carousel ready!');
         }
@@ -217,9 +214,9 @@ new InfiniteScrollCarousel(container, options)
 
 ## Browser Compatibility
 
-✅ Works in all modern browsers (Chrome, Firefox, Safari, Edge)  
-✅ Mobile support (iOS Safari, Android Chrome)  
-✅ Requires: `requestAnimationFrame`, CSS `transform`, `addEventListener`
+✅ Chrome 64+, Firefox 69+, Safari 13.1+, Edge 79+  
+✅ Mobile support (iOS Safari 13.1+, Android Chrome 64+)  
+✅ Requires: `requestAnimationFrame`, CSS `transform`, `addEventListener` (ResizeObserver has fallback support)
 
 ## Accessibility
 
@@ -232,8 +229,7 @@ new InfiniteScrollCarousel(container, options)
 
 ✅ 60fps smooth animations using `requestAnimationFrame`  
 ✅ Efficient event handling with proper cleanup  
-✅ Minimal DOM manipulation  
-✅ Optimized for performance
+✅ Minimal DOM manipulation
 
 ## Troubleshooting
 
@@ -241,7 +237,7 @@ new InfiniteScrollCarousel(container, options)
 **Drag not working?** Check that `interactable: true` and no CSS is blocking pointer events.  
 **Items too close?** Add margin: `.infinite-scroll-item { margin-right: 30px; }`  
 **Speed issues?** Adjust the `speed` option (set to `0` to disable auto-scroll).  
-**Large empty gap?** Increase the `copies` option (default: 3).
+**Visible gap at end of items?** The carousel runs out of duplicated copies to fill the infinite loop. Increase the `copies` option to add more item duplicates (default: 3).
 
 > 📖 **For detailed troubleshooting, styling guides, framework integration, and more examples, see [DOCS.md](DOCS.md)**
 
@@ -250,7 +246,11 @@ new InfiniteScrollCarousel(container, options)
 
 This project is licensed under CC0 1.0 Universal - see the [LICENSE](LICENSE) file for details.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
+
 ## Support & Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-For bug reports or feature requests, please open an issue on the repository.
+Contributions are welcome! Please feel free to submit a Pull Request.  
+For bug reports or feature requests, please [open an issue](https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/issues) on the repository.

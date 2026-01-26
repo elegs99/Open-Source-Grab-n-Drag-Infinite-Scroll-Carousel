@@ -223,7 +223,7 @@ The simplest implementation using default settings. Perfect for getting started 
     // - speed: 50 (auto-scroll)
     // - pauseOnHover: true
     // - interactable: true (grab & drag enabled)
-    // - reverseDirection: false (left to right)
+    // - reverseDirection: false (right to left)
     const carousel = new InfiniteScrollCarousel('#logoCarousel');
 </script>
 ```
@@ -269,7 +269,7 @@ A carousel scrolling in reverse direction with custom fade gradient to match you
 <script>
     const carousel = new InfiniteScrollCarousel('#testimonialCarousel', {
         speed: 40,
-        reverseDirection: true,        // Scroll right to left (←)
+        reverseDirection: true,        // Scroll left to right (→)
         pauseOnHover: true,
         fadeColor: '#1a1a2e',          // Match background color
         fadeWidth: 80                  // Wider fade gradient
@@ -982,11 +982,11 @@ const carousel = new InfiniteScrollCarousel(container, {
 });
 ```
 
-### Empty Space At End Of Elements
+### Visible Gap At End Of Items
 
-**Problem**: You see a large empty gap at the end of carousel items during scrolling.
+**Problem**: You see a visible gap because the carousel runs out of duplicated copies to fill the infinite loop.
 
-**Solution**: Increase the number of copies (clones) this ensures there are enough items to cover the visible area as it scrolls infinitely. See the `copies` option:
+**Solution**: Increase the `copies` option to add more item duplicates:
 ```javascript
 const carousel = new InfiniteScrollCarousel(container, {
     copies: 4  // Increase this number (default is 3)
@@ -995,16 +995,14 @@ const carousel = new InfiniteScrollCarousel(container, {
 
 ## Browser Compatibility
 
-- Chrome/Edge: ✅ (latest)
-- Firefox: ✅ (latest)
-- Safari: ✅ (latest)
-- iOS Safari: ✅ (latest)
-- Android Chrome: ✅ (latest)
+- Chrome 64+, Firefox 69+, Safari 13.1+, Edge 79+
+- Mobile support (iOS Safari 13.1+, Android Chrome 64+)
 
 Requires support for:
 - `requestAnimationFrame`
 - `transform` CSS property
 - `addEventListener`
+- ResizeObserver (has fallback support)
 
 ---
 
