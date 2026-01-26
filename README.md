@@ -158,7 +158,7 @@ new InfiniteScrollCarousel(container, options)
 - `resume()` - Resume paused scrolling
 - `destroy()` - Clean up event listeners and reset the carousel
 
-> 📖 **For detailed API documentation, examples, and advanced usage, see [DOCS.md](DOCS.md)**
+> 📖 **For detailed API documentation, examples, and advanced usage, see [DOCS.md](docs/DOCS.md)**
 
 ## Examples
 
@@ -209,7 +209,7 @@ new InfiniteScrollCarousel(container, options)
 </script>
 ```
 
-> 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](DOCS.md)**
+> 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](docs/DOCS.md)**
 
 
 ## Browser Compatibility
@@ -239,7 +239,7 @@ new InfiniteScrollCarousel(container, options)
 **Speed issues?** Adjust the `speed` option (set to `0` to disable auto-scroll).  
 **Visible gap at end of items?** The carousel runs out of duplicated copies to fill the infinite loop. Increase the `copies` option to add more item duplicates (default: 3).
 
-> 📖 **For detailed troubleshooting, styling guides, framework integration, and more examples, see [DOCS.md](DOCS.md)**
+> 📖 **For detailed troubleshooting, styling guides, framework integration, and more examples, see [DOCS.md](docs/DOCS.md)**
 
 
 ## License
