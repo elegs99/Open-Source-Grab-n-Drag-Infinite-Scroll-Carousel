@@ -2,7 +2,7 @@
 
 > 📖 **Full API reference, examples, and advanced usage guide**
 
-For quickstart and installation, see the [README.md](README.md).
+For quickstart and installation, see the [README.md](../README.md).
 
 ## Table of Contents
 
