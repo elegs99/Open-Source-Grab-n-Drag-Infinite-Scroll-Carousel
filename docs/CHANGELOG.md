@@ -9,12 +9,8 @@ All notable changes to this project will be documented in this file.
 - Comprehensive visual testing file
 
 ### Changed
-- `pause()` and `resume()` methods to handle both starting from stopped state and resuming from paused state
 - `momentumDecay` parameter to use complement as input (higher number = quicker decay)
 
-### Removed
-- `startScrolling()` method (use `resume()` instead)
-- `stop()` method (use `pause()` or `destroy()` instead)
 
 ## [1.0.1] - 2026-01-14
 
