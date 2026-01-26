@@ -28,8 +28,8 @@ export interface InfiniteScrollCarouselOptions {
     pauseOnHover?: boolean;
     
     /**
-     * Momentum decay factor, clamped to 0.1-0.99
-     * @default 0.95
+     * Momentum decay factor, clamped to 0.01-0.5. Higher values decay quicker.
+     * @default 0.05
      */
     momentumDecay?: number;
     
@@ -62,6 +62,54 @@ export interface InfiniteScrollCarouselOptions {
      * @default 3
      */
     copies?: number;
+    
+    /**
+     * Fires when carousel initialization completes
+     */
+    onReady?: () => void;
+    
+    /**
+     * Fires when user starts dragging
+     */
+    onDragStart?: () => void;
+    
+    /**
+     * Fires during drag movement (throttled)
+     * @param position - Current scroll position in pixels
+     * @param deltaX - Distance dragged from the start position
+     */
+    onDrag?: (position: number, deltaX: number) => void;
+    
+    /**
+     * Fires when user ends dragging
+     */
+    onDragEnd?: () => void;
+    
+    /**
+     * Fires when momentum scrolling begins
+     * @param velocity - Initial momentum velocity in pixels per millisecond
+     */
+    onMomentumStart?: (velocity: number) => void;
+    
+    /**
+     * Fires when momentum scrolling ends
+     */
+    onMomentumEnd?: () => void;
+    
+    /**
+     * Fires when position resets during seamless loop
+     */
+    onPositionReset?: () => void;
+    
+    /**
+     * Fires when carousel is paused
+     */
+    onPause?: () => void;
+    
+    /**
+     * Fires when carousel is resumed
+     */
+    onResume?: () => void;
 }
 
 /**

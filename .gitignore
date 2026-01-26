@@ -35,5 +35,6 @@ coverage/
 *.tmp
 *.temp
 
-# Developer 
+# Developer
 /dev-notes/
+demo.html

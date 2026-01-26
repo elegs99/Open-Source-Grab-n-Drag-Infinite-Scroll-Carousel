@@ -17,7 +17,7 @@
      * @param {number} options.speed - Scroll speed in pixels per second, clamped to minimum 0 (default: 50)
      * @param {boolean} options.reverseDirection - Scroll in reverse direction (right to left) (default: false)
      * @param {boolean} options.pauseOnHover - Pause scrolling on hover (default: true)
-     * @param {number} options.momentumDecay - Momentum decay factor, clamped to 0.1-0.99 (default: 0.95)
+     * @param {number} options.momentumDecay - Momentum decay factor, clamped to 0.01-0.5 (default: 0.05). Higher values decay quicker.
      * @param {number} options.maxMomentumSpeed - Max momentum speed in px/ms, clamped to 0.5-25 (default: 2.0)
      * @param {string} options.fadeColor - Color of the fade gradient in hex, rgb, or rgba format (default: #ffffff)
      * @param {number} options.fadeWidth - Width of the fade gradient in pixels (default: 50)
@@ -39,7 +39,7 @@
             speed: options && options.speed !== undefined ? options.speed : 50,
             reverseDirection: options && options.reverseDirection === true,
             pauseOnHover: options?.pauseOnHover !== false,
-            momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.95,
+            momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.05,
             maxMomentumSpeed: options && options.maxMomentumSpeed !== undefined ? options.maxMomentumSpeed : 2.0,
             fadeColor: options && options.fadeColor !== undefined ? options.fadeColor : '#ffffff',
             fadeWidth: options && options.fadeWidth !== undefined ? options.fadeWidth : 50,
@@ -83,6 +83,9 @@
         this.sizeObserverTimeout = null;
         this.lastMeasurement = null;
         
+        // Callback throttling state
+        this.onDragCallbackFrame = null;
+        
         // Event handler references for cleanup
         this.boundHandlers = {
             mouseenter: null,
@@ -99,6 +102,23 @@
         
         this.init();
     }
+    
+    /**
+     * Safely invoke a callback function if it exists
+     * @param {string} name - Callback name
+     * @param {...*} args - Arguments to pass to callback
+     */
+    InfiniteScrollCarousel.prototype.invokeCallback = function(name) {
+        const callback = this.options[name];
+        if (typeof callback === 'function') {
+            try {
+                const args = Array.prototype.slice.call(arguments, 1);
+                callback.apply(null, args);
+            } catch (error) {
+                console.error('InfiniteScrollCarousel: Error in ' + name + ' callback:', error);
+            }
+        }
+    };
     
     /**
      * Validate and clamp option values to valid ranges
@@ -122,13 +142,13 @@
             this.options.speed = 0;
         }
         
-        // Validate momentumDecay: must be between 0.5 and 0.99
-        if (this.options.momentumDecay < 0.5 || this.options.momentumDecay > 0.99) {
+        // Validate momentumDecay: must be between 0.01 and 0.5
+        if (this.options.momentumDecay < 0.01 || this.options.momentumDecay > 0.5) {
             const originalValue = this.options.momentumDecay;
-            this.options.momentumDecay = Math.max(0.5, Math.min(0.99, this.options.momentumDecay));
+            this.options.momentumDecay = Math.max(0.01, Math.min(0.5, this.options.momentumDecay));
             console.warn(
                 'InfiniteScrollCarousel: momentumDecay value ' + originalValue + 
-                ' is outside valid range (0.5 - 0.99). Clamped to ' + this.options.momentumDecay + '.'
+                ' is outside valid range (0.01 - 0.5). Clamped to ' + this.options.momentumDecay + '.'
             );
         }
         
@@ -183,9 +203,16 @@
             // Calculate distance first, then start scrolling after measurement completes
                 this.calculateScrollDistance(function() {
                 this.setInitialPosition();
-                this.resume();
+                this.isPaused = false;
+                this.isScrolling = true;
+                this.lastTimestamp = 0; // Reset timestamp for accurate delta calculation
+                if (!this.animationId && !this.isMomentumActive) {
+                    this.animate();
+                }
                 // Setup ResizeObserver to monitor for size changes after initial load
                 this.setupSizeObserver();
+                // Fire onReady callback after initialization is complete
+                this.invokeCallback('onReady');
             }.bind(this));
         }.bind(this));
     };
@@ -710,7 +737,9 @@
     InfiniteScrollCarousel.prototype.startDragging = function(event) {
         this.isDragging = true;
         this.isMomentumActive = false;
-        this.pause();
+        if (!this.isPaused) {
+            this.pause();
+        }
         
         // Get the starting position
         let clientX = event.clientX || (event.touches && event.touches[0].clientX);
@@ -730,6 +759,9 @@
         
         // Change cursor
         this.container.style.cursor = 'grabbing';
+        
+        // Fire onDragStart callback
+        this.invokeCallback('onDragStart');
         
         // Prevent default behavior
         event.preventDefault();
@@ -795,6 +827,14 @@
         this.currentPosition = newPosition;
         this.container.style.transform = 'translateX(' + this.currentPosition + 'px)';
         
+        // Fire onDrag callback (throttled to once per frame)
+        if (this.onDragCallbackFrame === null) {
+            this.onDragCallbackFrame = requestAnimationFrame(function() {
+                this.invokeCallback('onDrag', this.currentPosition, deltaX);
+                this.onDragCallbackFrame = null;
+            }.bind(this));
+        }
+        
         // Prevent default behavior
         event.preventDefault();
     };
@@ -804,11 +844,19 @@
      */
     InfiniteScrollCarousel.prototype.endDragging = function() {
         if (!this.isDragging) {
-            this.resume();
             return;
         }
         
         this.isDragging = false;
+        
+        // Cancel any pending onDrag callback
+        if (this.onDragCallbackFrame !== null) {
+            cancelAnimationFrame(this.onDragCallbackFrame);
+            this.onDragCallbackFrame = null;
+        }
+        
+        // Fire onDragEnd callback
+        this.invokeCallback('onDragEnd');
         
         // Ensure velocity is valid
         const validVelocity = (this.velocity !== null && this.velocity !== undefined && !isNaN(this.velocity)) ? this.velocity : 0;
@@ -837,6 +885,8 @@
     InfiniteScrollCarousel.prototype.startMomentum = function() {
         this.isMomentumActive = true;
         this.container.style.cursor = 'grab';
+        // Fire onMomentumStart callback with velocity
+        this.invokeCallback('onMomentumStart', this.velocity);
         this.animateMomentum();
     };
     
@@ -849,8 +899,8 @@
         // Apply velocity (assuming 60fps = 16ms per frame)
         this.currentPosition += this.velocity * 16;
         
-        // Decay velocity
-        this.velocity *= this.options.momentumDecay;
+        // Decay velocity (use 1 - decayRate, so higher decayRate values decay quicker)
+        this.velocity *= (1 - this.options.momentumDecay);
         
         // Handle boundaries during momentum
         if (this.resetPosition !== null) {
@@ -868,6 +918,8 @@
         if (Math.abs(this.velocity) < 0.02) {
             this.isMomentumActive = false;
             this.velocity = 0;
+            // Fire onMomentumEnd callback before resuming
+            this.invokeCallback('onMomentumEnd');
             this.snapToValidPosition();
             this.resume();
             return;
@@ -889,12 +941,16 @@
             if (this.currentPosition >= 0) {
                 this.currentPosition = this.resetPosition; // -totalSetWidth
                 this.container.style.transform = 'translateX(' + this.currentPosition + 'px)';
+                // Fire onPositionReset callback
+                this.invokeCallback('onPositionReset');
             }
         } else {
             // Forward direction: snap if we're too far left (<= resetPosition)
             if (this.currentPosition <= this.resetPosition) {
                 this.currentPosition = 0;
                 this.container.style.transform = 'translateX(0px)';
+                // Fire onPositionReset callback
+                this.invokeCallback('onPositionReset');
             }
         }
     };
@@ -904,6 +960,8 @@
      */
     InfiniteScrollCarousel.prototype.pause = function() {
         this.isPaused = true;
+        // Fire onPause callback
+        this.invokeCallback('onPause');
     };
     
     /**
@@ -911,12 +969,15 @@
      * This method handles both resuming from a paused state and starting from a stopped state.
      */
     InfiniteScrollCarousel.prototype.resume = function() {
+        if (!this.isPaused) return;
         this.isPaused = false;
         this.isScrolling = true;
         this.lastTimestamp = 0; // Reset timestamp for accurate delta calculation
         if (!this.animationId && !this.isMomentumActive) {
             this.animate();
         }
+        // Fire onResume callback
+        this.invokeCallback('onResume');
     };
     
     /**
@@ -967,6 +1028,8 @@
                     // Reverse direction: moving right (increasing), reset when >= 0 - buffer
                     if (newPosition >= 0 - resetBuffer) {
                         this.currentPosition = this.resetPosition; // -totalSetWidth
+                        // Fire onPositionReset callback
+                        this.invokeCallback('onPositionReset');
                     } else {
                         this.currentPosition = newPosition;
                     }
@@ -974,6 +1037,8 @@
                     // Forward direction: moving left (decreasing), reset when <= resetPosition + buffer
                     if (newPosition <= this.resetPosition + resetBuffer) {
                         this.currentPosition = 0;
+                        // Fire onPositionReset callback
+                        this.invokeCallback('onPositionReset');
                     } else {
                         this.currentPosition = newPosition;
                     }
