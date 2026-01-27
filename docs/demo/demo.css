@@ -150,7 +150,7 @@ header p {
     background: #000;
 }
 
-.icon-container-wrapper {
+.carousels-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
