@@ -6,8 +6,8 @@ const sourceFiles = [
   'grab-n-drag-infinite-carousel.min.js'
 ];
 
-const sourceDir = path.join(__dirname, 'dist');
-const targetDir = path.join(__dirname, 'docs', 'demo', 'assets');
+const sourceDir = path.join(__dirname, '..', 'dist');
+const targetDir = path.join(__dirname, '..', 'docs', 'demo', 'assets');
 
 // Ensure directories exist
 if (!fs.existsSync(sourceDir)) {
