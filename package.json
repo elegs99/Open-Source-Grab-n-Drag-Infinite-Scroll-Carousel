@@ -7,17 +7,16 @@
   "types": "grab-n-drag-infinite-carousel.d.ts",
   "files": [
     "grab-n-drag-infinite-carousel.js",
-    "grab-n-drag-infinite-carousel.min.js",
     "grab-n-drag-infinite-carousel.css",
-    "grab-n-drag-infinite-carousel.min.css",
     "grab-n-drag-infinite-carousel.d.ts",
+    "dist/",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "npm run minify:js && npm run minify:css && npm run copy:assets",
-    "minify:js": "terser grab-n-drag-infinite-carousel.js -o grab-n-drag-infinite-carousel.min.js -c -m --source-map \"url='grab-n-drag-infinite-carousel.min.js.map'\"",
-    "minify:css": "postcss grab-n-drag-infinite-carousel.css -o grab-n-drag-infinite-carousel.min.css --use cssnano",
+    "minify:js": "terser grab-n-drag-infinite-carousel.js -o dist/grab-n-drag-infinite-carousel.min.js -c -m --source-map \"url='grab-n-drag-infinite-carousel.min.js.map'\"",
+    "minify:css": "postcss grab-n-drag-infinite-carousel.css -o dist/grab-n-drag-infinite-carousel.min.css --use cssnano",
     "copy:assets": "node copy-assets.js",
     "test": "jest",
     "test:watch": "jest --watch",

@@ -26,5 +26,5 @@ jobs:
       - run: npm run build
       - name: Verify build outputs
         run: |
-          test -f grab-n-drag-infinite-carousel.min.js
-          test -f grab-n-drag-infinite-carousel.min.css
+          test -f dist/grab-n-drag-infinite-carousel.min.js
+          test -f dist/grab-n-drag-infinite-carousel.min.css

@@ -2,12 +2,11 @@
 node_modules/
 
 # Build outputs
-# Note: *.min.js and *.min.css in root are needed for npm publishing
+# Note: Build outputs are in dist/ directory
 # Only ignore source maps and build directories
 *.min.js.map
 *.min.css.map
 *.tgz
-dist/
 build/
 
 # IDE

@@ -740,12 +740,20 @@ A production-ready e-commerce product carousel that tracks user engagement, inte
 
 The carousel works with any framework or vanilla JavaScript. Here are examples for popular frameworks:
 
+> 💡 **Tip:** For production builds, use the minified files from the `dist/` folder:
+> - `grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js`
+> - `grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css`
+
 ### React
 
 ```jsx
 import { useEffect, useRef } from 'react';
+// Development (unminified)
 import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
 import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
+// Production (minified)
+// import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js';
+// import 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css';
 
 function Carousel({ items }) {
   const containerRef = useRef(null);
@@ -799,8 +807,12 @@ function Carousel({ items }) {
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+// Development (unminified)
 import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
 import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
+// Production (minified)
+// import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js';
+// import 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css';
 
 const props = defineProps({
   items: Array

@@ -8,7 +8,8 @@ module.exports = {
     '!grab-n-drag-infinite-carousel.min.js',
     '!**/node_modules/**',
     '!**/test/**',
-    '!**/coverage/**'
+    '!**/coverage/**',
+    '!**/dist/**'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: [
@@ -19,7 +20,8 @@ module.exports = {
   coveragePathIgnorePatterns: [
     '/node_modules/',
     '/test/',
-    '/coverage/'
+    '/coverage/',
+    '/dist/'
   ],
   setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
   testTimeout: 10000

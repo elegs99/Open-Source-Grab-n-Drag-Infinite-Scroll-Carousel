@@ -38,33 +38,51 @@ Perfect for showcasing logos, skills, testimonials, or any scrollable content. F
 npm install grab-n-drag-infinite-carousel
 ```
 
-Then import in your project:
+Then import using one of the following:
 
 ```javascript
-// ES Modules
+// ES Modules (development - unminified)
 import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
 import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
-// or
-// CommonJS
+
+// ES Modules (production - minified)
+import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js';
+import 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css';
+
+// CommonJS (development - unminified)
 const InfiniteScrollCarousel = require('grab-n-drag-infinite-carousel');
 require('grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css');
+
+// CommonJS (production - minified)
+const InfiniteScrollCarousel = require('grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js');
+require('grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css');
 ```
 
 ### CDN
 
 ```html
-<!-- CSS -->
+<!-- CSS (development - unminified) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/grab-n-drag-infinite-carousel.css">
+<!-- CSS (production - minified) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/dist/grab-n-drag-infinite-carousel.min.css">
 
-<!-- JavaScript -->
+<!-- JavaScript (development - unminified) -->
 <script src="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/grab-n-drag-infinite-carousel.js"></script>
+<!-- JavaScript (production - minified) -->
+<script src="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/dist/grab-n-drag-infinite-carousel.min.js"></script>
 ```
 
 ### Manual Download
 
 Download the files directly from [npm](https://www.npmjs.com/package/grab-n-drag-infinite-carousel) or this repository:
-- `grab-n-drag-infinite-carousel.js` (or `grab-n-drag-infinite-carousel.min.js` for production)
-- `grab-n-drag-infinite-carousel.css` (or `grab-n-drag-infinite-carousel.min.css` for production)
+
+**Development (unminified):**
+- `grab-n-drag-infinite-carousel.js`
+- `grab-n-drag-infinite-carousel.css`
+
+**Production (minified):**
+- `dist/grab-n-drag-infinite-carousel.min.js`
+- `dist/grab-n-drag-infinite-carousel.min.css`
 
 ### TypeScript Support
 
