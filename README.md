@@ -1,13 +1,16 @@
 # Grab-n-Drag Infinite Scrolling Carousel
 
-A lightweight, dependency-free infinite scrolling carousel component with grab-and-drag interaction, momentum scrolling, and seamless looping. Perfect for showcasing logos, skills, testimonials, or any horizontally scrollable content.
+**A lightweight, dependency-free JavaScript library for creating smooth infinite scrolling carousels with grab-and-drag interaction.**
+
+Perfect for showcasing logos, skills, testimonials, or any scrollable content. Features seamless looping, natural momentum physics, and full touch support, all packed into a tiny ~22KB bundle.
 
 ![npm version](https://img.shields.io/npm/v/grab-n-drag-infinite-carousel) ![CI](https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/workflows/CI/badge.svg) ![npm downloads](https://img.shields.io/npm/dm/grab-n-drag-infinite-carousel) ![GitHub issues](https://img.shields.io/github/issues/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel) ![License](https://img.shields.io/npm/l/grab-n-drag-infinite-carousel)
 
 ## Demo
 
 ![Demo GIF of Infinite Scrolling Carousel](docs/demo/assets/demo.gif)
-View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
+
+*[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)*
 
 ## Features
 
@@ -209,6 +212,8 @@ new InfiniteScrollCarousel(container, options)
 </script>
 ```
 
+> **[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)**
+> 
 > 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](docs/DOCS.md)**
 
 
