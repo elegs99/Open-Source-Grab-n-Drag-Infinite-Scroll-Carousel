@@ -83,7 +83,7 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 
 ## Quickstart
 
-### HTML, CSS, JS
+### HTML
 
 ```html
 <!DOCTYPE html>
@@ -212,9 +212,9 @@ new InfiniteScrollCarousel(container, options)
 </script>
 ```
 
-> **[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)**
+> 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](docs/DOCS.md)** 
 > 
-> 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](docs/DOCS.md)**
+> 🌐 **[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)**
 
 
 ## Browser Compatibility
