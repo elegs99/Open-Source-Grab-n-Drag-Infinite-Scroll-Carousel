@@ -16,7 +16,13 @@ jobs:
           node-version: '18'
           cache: 'npm'
       - run: npm ci
-      - run: npm test
+      - run: npm run test:ci
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-reports
+          path: coverage/
       - run: npm run build
       - name: Verify build outputs
         run: |
