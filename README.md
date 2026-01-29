@@ -2,7 +2,7 @@
 
 **A lightweight, dependency-free JavaScript library for creating smooth infinite scrolling carousels with grab-and-drag interaction.**
 
-Perfect for showcasing logos, skills, testimonials, or any scrollable content. Features seamless looping, natural momentum physics, and full touch support, all packed into a tiny ~22KB bundle.
+Perfect for showcasing logos, skills, testimonials, or any scrollable content. Features seamless looping, natural momentum physics, and full touch support, all packed into a tiny ~30KB package.
 
 ![npm version](https://img.shields.io/npm/v/grab-n-drag-infinite-carousel) ![CI](https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/workflows/CI/badge.svg) ![npm downloads](https://img.shields.io/npm/dm/grab-n-drag-infinite-carousel) ![GitHub issues](https://img.shields.io/github/issues/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel) ![License](https://img.shields.io/npm/l/grab-n-drag-infinite-carousel)
 
@@ -25,9 +25,9 @@ Perfect for showcasing logos, skills, testimonials, or any scrollable content. F
 
 ## Bundle Size
 
-- **JavaScript (minified)**: 17 KB
-- **CSS (minified)**: 5 KB  
-- **Total**: ~22 KB
+- **JavaScript (minified)**: 16.8 kB
+- **CSS (minified)**: 4.9 kB  
+- **Package Size**: ~30.1 kB
 - **Zero dependencies** - No additional bundle weight
 
 ## Installation
@@ -172,6 +172,8 @@ new InfiniteScrollCarousel(container, options)
 | `onPositionReset` | `() => void` | Fires when position resets during seamless loop |
 | `onPause` | `() => void` | Fires when carousel is paused |
 | `onResume` | `() => void` | Fires when carousel is resumed |
+
+Callbacks are invoked with no specific `this`. For callback context and duplicated items/event listeners, see [DOCS.md](docs/DOCS.md).
 
 ### Methods
 
