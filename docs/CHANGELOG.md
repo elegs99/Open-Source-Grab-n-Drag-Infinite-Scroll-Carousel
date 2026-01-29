@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-01-29
+
+### Fixed
+- `destroy()` now prevents measurement callbacks (e.g. `onReady`) from running after the instance is destroyed
+- `copies` option now enforces maximum of 100; values above 100 are clamped with a console warning
+- Removed redundant speed validation
+
 ## [1.1.0] - 2026-01-26
 
 ### Added
@@ -11,14 +18,12 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `momentumDecay` parameter to use complement as input (higher number = quicker decay)
 
-
 ## [1.0.1] - 2026-01-13
 
 ### Fixed
 - Incorrect dimension calculations when images load slowly
 - Layout issues when items resize dynamically
 - Memory leaks from ResizeObserver not being cleaned up
-
 ## [1.0.0] - 2026-01-11
 
 ### Added
