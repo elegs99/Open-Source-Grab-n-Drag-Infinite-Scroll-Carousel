@@ -165,6 +165,21 @@ describe('Configuration Options', () => {
       consoleSpy.mockRestore();
       carousel.destroy();
     });
+
+    test('clamps copies above 100 to 100', () => {
+      const { container } = createCarouselContainer(5);
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      
+      const carousel = new InfiniteScrollCarousel(container, {
+        copies: 200
+      });
+      
+      expect(carousel.options.copies).toBe(100);
+      expect(consoleSpy).toHaveBeenCalled();
+      
+      consoleSpy.mockRestore();
+      carousel.destroy();
+    });
   });
 
   describe('FadeColor option', () => {

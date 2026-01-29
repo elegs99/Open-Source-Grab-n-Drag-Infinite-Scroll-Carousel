@@ -118,4 +118,24 @@ describe('Destroy', () => {
       done();
     }, 200);
   });
+
+  test('destroy() called early prevents onReady from firing after destroy', (done) => {
+    const { container } = createCarouselContainer(5);
+    
+    const onReadySpy = jest.fn();
+    carousel = new InfiniteScrollCarousel(container, {
+      speed: 50,
+      onReady: onReadySpy
+    });
+    
+    // Destroy before init/measurement can complete
+    carousel.destroy();
+    
+    // Wait past normal init time; onReady must not be called after destroy
+    setTimeout(() => {
+      expect(onReadySpy).not.toHaveBeenCalled();
+      carousel = null; // already destroyed, skip afterEach destroy
+      done();
+    }, 500);
+  });
 });
