@@ -25,9 +25,9 @@ Perfect for showcasing logos, skills, testimonials, or any scrollable content. F
 
 ## Bundle Size
 
-- **JavaScript (minified)**: 16.8 kB
-- **CSS (minified)**: 4.9 kB  
-- **Package Size**: ~30.1 kB
+- **JavaScript (minified)**: 16.9kB
+- **CSS (minified)**: 4.9kB
+- **Package Size**: ~30kB
 - **Zero dependencies** - No additional bundle weight
 
 ## Installation
