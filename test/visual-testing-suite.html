@@ -105,10 +105,6 @@
         .test-notice.show {
             display: flex;
         }
-        .test-notice::before {
-            content: "⚠️";
-            font-size: 18px;
-        }
         .callback-logging {
             margin-top: 20px;
         }
@@ -205,6 +201,19 @@
         .run-all-tests-btn:disabled {
             background: #6c757d !important;
             opacity: 0.6;
+        }
+        .test-notice .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(133, 100, 4, 0.3);
+            border-top-color: #28a745;
+            border-radius: 50%;
+            animation: test-spinner 0.5s linear infinite;
+            flex-shrink: 0;
+        }
+        @keyframes test-spinner {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -313,6 +322,7 @@
             </div>
         </div>
         <div class="test-notice" id="testNotice">
+            <span class="loading-spinner" id="testNoticeSpinner" aria-hidden="true"></span>
             <strong>Important:</strong> Tests are running. Please do not click away or interact with the page until tests complete.
         </div>
     </div>
