@@ -100,6 +100,8 @@
             selectstart: null
         };
         
+        this.destroyed = false;
+        
         this.init();
     }
     
@@ -132,20 +134,14 @@
             this.options.reverseDirection = true;
             console.warn(
                 'InfiniteScrollCarousel: Negative speed value ' + originalValue + 
-                ' is deprecated. Use positive speed with reverseDirection: true instead. ' +
-                'Speed clamped to ' + this.options.speed + ' and reverseDirection set to true.'
+                'Speed updated to ' + this.options.speed + ' and reverseDirection set to true.'
             );
-        }
-        
-        // Ensure speed is at least 0
-        if (this.options.speed < 0) {
-            this.options.speed = 0;
         }
         
         // Validate momentumDecay: must be between 0.01 and 0.5
         if (this.options.momentumDecay < 0.01 || this.options.momentumDecay > 0.5) {
             const originalValue = this.options.momentumDecay;
-            this.options.momentumDecay = Math.max(0.01, Math.min(0.5, this.options.momentumDecay));
+            this.options.momentumDecay = Math.max(0.01, Math.min(0.5, originalValue));
             console.warn(
                 'InfiniteScrollCarousel: momentumDecay value ' + originalValue + 
                 ' is outside valid range (0.01 - 0.5). Clamped to ' + this.options.momentumDecay + '.'
@@ -163,12 +159,12 @@
         }
 
         // Validate copies: must be between 3 and 100
-        if (this.options.copies < 3) {
+        if (this.options.copies < 3 || this.options.copies > 100) {
             const originalValue = this.options.copies;
             this.options.copies = Math.max(3, Math.min(100, this.options.copies));
             console.warn(
                 'InfiniteScrollCarousel: copies value ' + originalValue + 
-                ' must be greater than or equal to 3. Clamped to ' + this.options.copies + '.'
+                ' is outside valid range (3 - 100). Clamped to ' + this.options.copies + '.'
             );
         }
     };
@@ -451,6 +447,8 @@
      * @param {Function} callback - Callback to execute after calculation
      */
     InfiniteScrollCarousel.prototype.calculateScrollDistance = function(callback) {
+        if (this.destroyed) return;
+        
         // Prevent concurrent measurements
         if (this.isMeasuring) {
             // If already measuring, queue the callback
@@ -458,7 +456,7 @@
                 const checkInterval = setInterval(function() {
                     if (!this.isMeasuring) {
                         clearInterval(checkInterval);
-                        callback();
+                        if (!this.destroyed && callback) callback();
                     }
                 }.bind(this), 10);
             }
@@ -471,7 +469,7 @@
             const items = Array.from(this.container.children);
             if (items.length === 0) {
                 this.isMeasuring = false;
-                if (callback) callback();
+                if (!this.destroyed && callback) callback();
                 return;
             }
             
@@ -480,7 +478,7 @@
             if (!this.originalItemCount || this.originalItemCount === 0) {
                 console.warn('InfiniteScrollCarousel: No items to scroll');
                 this.isMeasuring = false;
-                if (callback) callback();
+                if (!this.destroyed && callback) callback();
                 return;
             }
             
@@ -545,6 +543,10 @@
                 
                 // Finalize calculation with the measured width
                 const finalizeCalculation = function(totalSetWidth) {
+                    if (this.destroyed) {
+                        this.isMeasuring = false;
+                        return;
+                    }
                     // Round to avoid sub-pixel issues, but keep precision for smooth animation
                     const newTotalSetWidth = Math.round(totalSetWidth * 100) / 100;
                     
@@ -603,7 +605,7 @@
                     this.isMeasuring = false;
                     
                     // Call callback if provided
-                    if (callback) {
+                    if (!this.destroyed && callback) {
                         callback();
                     }
                 }.bind(this);
@@ -632,7 +634,7 @@
         } catch (error) {
             console.error('InfiniteScrollCarousel: Error calculating scroll distance:', error);
             this.isMeasuring = false;
-            if (callback) callback();
+            if (!this.destroyed && callback) callback();
         }
     };
     
@@ -1058,6 +1060,10 @@
      * Cleanup method for proper resource management
      */
     InfiniteScrollCarousel.prototype.destroy = function() {
+        // Mark destroyed and stop measurement so no callbacks run after destroy
+        this.destroyed = true;
+        this.isMeasuring = false;
+        
         // Stop scrolling and cancel animation
         this.isScrolling = false;
         if (this.animationId) {
