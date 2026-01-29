@@ -121,7 +121,6 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 
     <script src="grab-n-drag-infinite-carousel.js"></script>
     <script>
-    <script>
         const container = document.querySelector('#myCarousel');
         const carousel = new InfiniteScrollCarousel(container, {
             speed: 50
