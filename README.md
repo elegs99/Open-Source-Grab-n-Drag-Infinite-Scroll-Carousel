@@ -240,14 +240,7 @@ Callbacks are invoked with no specific `this`. For callback context and duplicat
 
 ✅ Chrome 64+, Firefox 69+, Safari 13.1+, Edge 79+  
 ✅ Mobile support (iOS Safari 13.1+, Android Chrome 64+)  
-✅ Requires: `requestAnimationFrame`, CSS `transform`, `addEventListener` (ResizeObserver has fallback support)
-
-## Accessibility
-
-✅ Keyboard navigation support  
-✅ Screen reader compatible  
-✅ Touch gesture support  
-✅ Focus management
+Requires: `requestAnimationFrame`, CSS `transform`, `addEventListener` (ResizeObserver has fallback support)
 
 ## Troubleshooting
 
