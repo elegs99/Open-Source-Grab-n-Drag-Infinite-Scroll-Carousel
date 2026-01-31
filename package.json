@@ -1,10 +1,18 @@
 {
   "name": "grab-n-drag-infinite-carousel",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A lightweight, dependency-free infinite scrolling carousel component with grab-and-drag interaction, momentum scrolling, and seamless looping",
   "main": "grab-n-drag-infinite-carousel.js",
   "style": "grab-n-drag-infinite-carousel.css",
   "types": "grab-n-drag-infinite-carousel.d.ts",
+  "exports": {
+    ".": {
+      "require": "./grab-n-drag-infinite-carousel.js",
+      "import": "./grab-n-drag-infinite-carousel.js",
+      "types": "./grab-n-drag-infinite-carousel.d.ts"
+    },
+    "./grab-n-drag-infinite-carousel.css": "./grab-n-drag-infinite-carousel.css"
+  },
   "files": [
     "grab-n-drag-infinite-carousel.js",
     "grab-n-drag-infinite-carousel.css",
