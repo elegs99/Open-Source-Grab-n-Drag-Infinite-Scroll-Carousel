@@ -268,7 +268,7 @@ Callbacks are invoked with no specific `this`. For callback context and duplicat
 
 ## License
 
-This project is licensed under CC0 1.0 Universal - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Changelog
 
