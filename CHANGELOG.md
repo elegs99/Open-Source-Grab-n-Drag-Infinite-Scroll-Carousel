@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Incorrect dimension calculations when images load slowly
 - Layout issues when items resize dynamically
 - Memory leaks from ResizeObserver not being cleaned up
+
 ## [1.0.0] - 2026-01-11
 
 ### Added
