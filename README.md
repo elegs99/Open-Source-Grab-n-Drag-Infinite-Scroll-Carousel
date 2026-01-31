@@ -272,7 +272,7 @@ This project is licensed under CC0 1.0 Universal - see the [LICENSE](LICENSE) fi
 
 ## Changelog
 
-See [CHANGELOG.md](docs/CHANGELOG.md) for a list of changes and version history.
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
 
 ## Support & Contributing
 
