@@ -134,7 +134,7 @@
             this.options.reverseDirection = true;
             console.warn(
                 'InfiniteScrollCarousel: Negative speed value ' + originalValue + 
-                'Speed updated to ' + this.options.speed + ' and reverseDirection set to true.'
+                ' Speed updated to ' + this.options.speed + ' and reverseDirection set to true.'
             );
         }
         
