@@ -35,18 +35,39 @@
         }
         
         this.container = container;
+        // Build from defaults only; overwrite only with valid typed values from options
         this.options = {
-            speed: options && options.speed !== undefined ? options.speed : 50,
-            reverseDirection: options && options.reverseDirection === true,
-            pauseOnHover: options?.pauseOnHover !== false,
-            momentumDecay: options && options.momentumDecay !== undefined ? options.momentumDecay : 0.05,
-            maxMomentumSpeed: options && options.maxMomentumSpeed !== undefined ? options.maxMomentumSpeed : 2.0,
-            fadeColor: options && options.fadeColor !== undefined ? options.fadeColor : '#ffffff',
-            fadeWidth: options && options.fadeWidth !== undefined ? options.fadeWidth : 50,
-            interactable: options?.interactable !== false,
-            copies: options && options.copies !== undefined ? options.copies : 3,
-            ...options
+            speed: 50,
+            reverseDirection: false,
+            pauseOnHover: true,
+            momentumDecay: 0.05,
+            maxMomentumSpeed: 2.0,
+            fadeColor: '#ffffff',
+            fadeWidth: 50,
+            interactable: true,
+            copies: 3
         };
+        if (options && typeof options === 'object') {
+            var o = options;
+            if (typeof o.speed === 'number' && Number.isFinite(o.speed)) { this.options.speed = o.speed; }
+            if (typeof o.reverseDirection === 'boolean') { this.options.reverseDirection = o.reverseDirection; }
+            if (typeof o.pauseOnHover === 'boolean') { this.options.pauseOnHover = o.pauseOnHover; }
+            if (typeof o.momentumDecay === 'number' && Number.isFinite(o.momentumDecay)) { this.options.momentumDecay = o.momentumDecay; }
+            if (typeof o.maxMomentumSpeed === 'number' && Number.isFinite(o.maxMomentumSpeed)) { this.options.maxMomentumSpeed = o.maxMomentumSpeed; }
+            if (typeof o.fadeColor === 'string') { this.options.fadeColor = o.fadeColor; }
+            if (typeof o.fadeWidth === 'number' && Number.isFinite(o.fadeWidth)) { this.options.fadeWidth = o.fadeWidth; }
+            if (typeof o.interactable === 'boolean') { this.options.interactable = o.interactable; }
+            if (typeof o.copies === 'number' && Number.isFinite(o.copies)) { this.options.copies = o.copies; }
+            if (typeof o.onReady === 'function') { this.options.onReady = o.onReady; }
+            if (typeof o.onDragStart === 'function') { this.options.onDragStart = o.onDragStart; }
+            if (typeof o.onDrag === 'function') { this.options.onDrag = o.onDrag; }
+            if (typeof o.onDragEnd === 'function') { this.options.onDragEnd = o.onDragEnd; }
+            if (typeof o.onMomentumStart === 'function') { this.options.onMomentumStart = o.onMomentumStart; }
+            if (typeof o.onMomentumEnd === 'function') { this.options.onMomentumEnd = o.onMomentumEnd; }
+            if (typeof o.onPositionReset === 'function') { this.options.onPositionReset = o.onPositionReset; }
+            if (typeof o.onPause === 'function') { this.options.onPause = o.onPause; }
+            if (typeof o.onResume === 'function') { this.options.onResume = o.onResume; }
+        }
         
         // Validate and clamp option values
         this.validateOptions();
@@ -100,6 +121,8 @@
             selectstart: null
         };
         
+        this.destroyed = false;
+        
         this.init();
     }
     
@@ -132,20 +155,14 @@
             this.options.reverseDirection = true;
             console.warn(
                 'InfiniteScrollCarousel: Negative speed value ' + originalValue + 
-                ' is deprecated. Use positive speed with reverseDirection: true instead. ' +
-                'Speed clamped to ' + this.options.speed + ' and reverseDirection set to true.'
+                ' Speed updated to ' + this.options.speed + ' and reverseDirection set to true.'
             );
-        }
-        
-        // Ensure speed is at least 0
-        if (this.options.speed < 0) {
-            this.options.speed = 0;
         }
         
         // Validate momentumDecay: must be between 0.01 and 0.5
         if (this.options.momentumDecay < 0.01 || this.options.momentumDecay > 0.5) {
             const originalValue = this.options.momentumDecay;
-            this.options.momentumDecay = Math.max(0.01, Math.min(0.5, this.options.momentumDecay));
+            this.options.momentumDecay = Math.max(0.01, Math.min(0.5, originalValue));
             console.warn(
                 'InfiniteScrollCarousel: momentumDecay value ' + originalValue + 
                 ' is outside valid range (0.01 - 0.5). Clamped to ' + this.options.momentumDecay + '.'
@@ -163,12 +180,12 @@
         }
 
         // Validate copies: must be between 3 and 100
-        if (this.options.copies < 3) {
+        if (this.options.copies < 3 || this.options.copies > 100) {
             const originalValue = this.options.copies;
             this.options.copies = Math.max(3, Math.min(100, this.options.copies));
             console.warn(
                 'InfiniteScrollCarousel: copies value ' + originalValue + 
-                ' must be greater than or equal to 3. Clamped to ' + this.options.copies + '.'
+                ' is outside valid range (3 - 100). Clamped to ' + this.options.copies + '.'
             );
         }
     };
@@ -394,15 +411,14 @@
             this.sizeObserverTimeout = null;
         }
         
-        // Create observer to watch for size changes
+        // Create observer to watch for size changes.
+        // For future maintainers: recalculation is debounced (100ms after last change) and skipped when isMeasuring is true to avoid re-entry and redundant work during layout measurement.
         this.sizeObserver = new ResizeObserver(function(entries) {
-            // Debounce: wait 100ms after last change before recalculating
             if (this.sizeObserverTimeout) {
                 clearTimeout(this.sizeObserverTimeout);
             }
             
             this.sizeObserverTimeout = setTimeout(function() {
-                // Only recalculate if we're not currently measuring
                 if (!this.isMeasuring) {
                     this.calculateScrollDistance();
                 }
@@ -451,6 +467,8 @@
      * @param {Function} callback - Callback to execute after calculation
      */
     InfiniteScrollCarousel.prototype.calculateScrollDistance = function(callback) {
+        if (this.destroyed) return;
+        
         // Prevent concurrent measurements
         if (this.isMeasuring) {
             // If already measuring, queue the callback
@@ -458,7 +476,7 @@
                 const checkInterval = setInterval(function() {
                     if (!this.isMeasuring) {
                         clearInterval(checkInterval);
-                        callback();
+                        if (!this.destroyed && callback) callback();
                     }
                 }.bind(this), 10);
             }
@@ -471,7 +489,7 @@
             const items = Array.from(this.container.children);
             if (items.length === 0) {
                 this.isMeasuring = false;
-                if (callback) callback();
+                if (!this.destroyed && callback) callback();
                 return;
             }
             
@@ -480,7 +498,7 @@
             if (!this.originalItemCount || this.originalItemCount === 0) {
                 console.warn('InfiniteScrollCarousel: No items to scroll');
                 this.isMeasuring = false;
-                if (callback) callback();
+                if (!this.destroyed && callback) callback();
                 return;
             }
             
@@ -545,6 +563,10 @@
                 
                 // Finalize calculation with the measured width
                 const finalizeCalculation = function(totalSetWidth) {
+                    if (this.destroyed) {
+                        this.isMeasuring = false;
+                        return;
+                    }
                     // Round to avoid sub-pixel issues, but keep precision for smooth animation
                     const newTotalSetWidth = Math.round(totalSetWidth * 100) / 100;
                     
@@ -603,7 +625,7 @@
                     this.isMeasuring = false;
                     
                     // Call callback if provided
-                    if (callback) {
+                    if (!this.destroyed && callback) {
                         callback();
                     }
                 }.bind(this);
@@ -632,7 +654,7 @@
         } catch (error) {
             console.error('InfiniteScrollCarousel: Error calculating scroll distance:', error);
             this.isMeasuring = false;
-            if (callback) callback();
+            if (!this.destroyed && callback) callback();
         }
     };
     
@@ -880,53 +902,15 @@
     };
     
     /**
-     * Start momentum animation after drag
+     * Start momentum animation after drag. Momentum is driven by the main animate() loop.
      */
     InfiniteScrollCarousel.prototype.startMomentum = function() {
         this.isMomentumActive = true;
         this.container.style.cursor = 'grab';
-        // Fire onMomentumStart callback with velocity
         this.invokeCallback('onMomentumStart', this.velocity);
-        this.animateMomentum();
-    };
-    
-    /**
-     * Animate momentum scrolling
-     */
-    InfiniteScrollCarousel.prototype.animateMomentum = function() {
-        if (!this.isMomentumActive) return;
-        
-        // Apply velocity (assuming 60fps = 16ms per frame)
-        this.currentPosition += this.velocity * 16;
-        
-        // Decay velocity (use 1 - decayRate, so higher decayRate values decay quicker)
-        this.velocity *= (1 - this.options.momentumDecay);
-        
-        // Handle boundaries during momentum
-        if (this.resetPosition !== null) {
-            if (this.currentPosition <= this.minDragBoundary) {
-                this.currentPosition = this.maxDragBoundary + (this.currentPosition - this.minDragBoundary);
-            } else if (this.currentPosition >= this.maxDragBoundary) {
-                this.currentPosition = this.minDragBoundary + (this.currentPosition - this.maxDragBoundary);
-            }
+        if (!this.animationId) {
+            this.animate();
         }
-        
-        // Update transform with sub-pixel precision
-        this.container.style.transform = 'translateX(' + this.currentPosition + 'px)';
-        
-        // Stop momentum when velocity is too low
-        if (Math.abs(this.velocity) < 0.02) {
-            this.isMomentumActive = false;
-            this.velocity = 0;
-            // Fire onMomentumEnd callback before resuming
-            this.invokeCallback('onMomentumEnd');
-            this.snapToValidPosition();
-            this.resume();
-            return;
-        }
-        
-        // Continue momentum animation
-        requestAnimationFrame(this.animateMomentum.bind(this));
     };
     
     /**
@@ -1000,11 +984,34 @@
         const deltaTime = (timestamp || 0) - this.lastTimestamp;
         this.lastTimestamp = timestamp || 0;
         
+        // Cap deltaTime to prevent large jumps when animation is throttled
+        const maxDeltaTime = 100; // Maximum 100ms between frames
+        const clampedDeltaTime = Math.min(deltaTime, maxDeltaTime);
+        
+        // Momentum runs in this loop; use same deltaTime for consistency
+        if (this.isMomentumActive && deltaTime > 0) {
+            this.currentPosition += this.velocity * clampedDeltaTime;
+            this.velocity *= (1 - this.options.momentumDecay);
+            if (this.resetPosition !== null) {
+                if (this.currentPosition <= this.minDragBoundary) {
+                    this.currentPosition = this.maxDragBoundary + (this.currentPosition - this.minDragBoundary);
+                } else if (this.currentPosition >= this.maxDragBoundary) {
+                    this.currentPosition = this.minDragBoundary + (this.currentPosition - this.maxDragBoundary);
+                }
+            }
+            this.container.style.transform = 'translateX(' + this.currentPosition + 'px)';
+            if (Math.abs(this.velocity) < 0.02) {
+                this.isMomentumActive = false;
+                this.velocity = 0;
+                this.invokeCallback('onMomentumEnd');
+                this.snapToValidPosition();
+                this.resume();
+            }
+            this.animationId = requestAnimationFrame(this.animate.bind(this));
+            return;
+        }
+        
         if (!this.isPaused && deltaTime > 0 && !this.isDragging && !this.isMomentumActive) {
-            // Cap deltaTime to prevent large jumps when animation is throttled
-            const maxDeltaTime = 100; // Maximum 100ms between frames
-            const clampedDeltaTime = Math.min(deltaTime, maxDeltaTime);
-            
             const speed = this.options.speed;
             const pixelsPerFrame = (speed / 1000) * clampedDeltaTime;
             
@@ -1058,6 +1065,10 @@
      * Cleanup method for proper resource management
      */
     InfiniteScrollCarousel.prototype.destroy = function() {
+        // Mark destroyed and stop measurement so no callbacks run after destroy
+        this.destroyed = true;
+        this.isMeasuring = false;
+        
         // Stop scrolling and cancel animation
         this.isScrolling = false;
         if (this.animationId) {
@@ -1096,6 +1107,20 @@
         if (this.boundHandlers.selectstart) {
             this.container.removeEventListener('selectstart', this.boundHandlers.selectstart);
         }
+        
+        // Clear handler references so no references to bound functions remain
+        this.boundHandlers = {
+            mouseenter: null,
+            mouseleave: null,
+            mousedown: null,
+            mousemove: null,
+            mouseup: null,
+            mouseleaveWindow: null,
+            touchstart: null,
+            touchmove: null,
+            touchend: null,
+            selectstart: null
+        };
         
         // Disconnect ResizeObserver if it exists
         if (this.sizeObserver) {

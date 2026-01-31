@@ -105,10 +105,6 @@
         .test-notice.show {
             display: flex;
         }
-        .test-notice::before {
-            content: "⚠️";
-            font-size: 18px;
-        }
         .callback-logging {
             margin-top: 20px;
         }
@@ -206,10 +202,23 @@
             background: #6c757d !important;
             opacity: 0.6;
         }
+        .test-notice .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(133, 100, 4, 0.3);
+            border-top-color: #28a745;
+            border-radius: 50%;
+            animation: test-spinner 0.5s linear infinite;
+            flex-shrink: 0;
+        }
+        @keyframes test-spinner {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <h1>🧪 InfiniteScrollCarousel - Visual Testing Suite</h1>
+    <h1>Infinite Scrolling Carousel - Visual Testing Suite</h1>
     <p>This page runs basic functionality tests in the browser.</p>
 
     <div class="test-section">
@@ -281,7 +290,7 @@
                     </div>
                     <div class="toggle-container">
                         <label class="toggle-switch">
-                            <input type="checkbox" id="toggleOnMomentumEnd" checked onchange="updateCallbackLogging()">
+                            <input type="checkbox" id="toggleOnMomentumEnd" onchange="updateCallbackLogging()">
                             <span class="toggle-slider"></span>
                         </label>
                         <span class="toggle-label">onMomentumEnd</span>
@@ -290,7 +299,7 @@
                 <div class="toggle-row">
                     <div class="toggle-container">
                         <label class="toggle-switch">
-                            <input type="checkbox" id="toggleOnPositionReset" onchange="updateCallbackLogging()">
+                            <input type="checkbox" id="toggleOnPositionReset" checked onchange="updateCallbackLogging()">
                             <span class="toggle-slider"></span>
                         </label>
                         <span class="toggle-label">onPositionReset</span>
@@ -313,6 +322,7 @@
             </div>
         </div>
         <div class="test-notice" id="testNotice">
+            <span class="loading-spinner" id="testNoticeSpinner" aria-hidden="true"></span>
             <strong>Important:</strong> Tests are running. Please do not click away or interact with the page until tests complete.
         </div>
     </div>
@@ -702,7 +712,7 @@
                                'init', 'initialize', 'colorToRgba', 'applyFadeColor', 'duplicateItems', 
                                'calculateScrollDistance', 'setInitialPosition', 'calculateDragBoundaries',
                                'setupEventListeners', 'startDragging', 'handleDrag', 'endDragging',
-                               'startMomentum', 'animateMomentum', 'snapToValidPosition', 'animate'];
+                               'startMomentum', 'snapToValidPosition', 'animate'];
                 const missingMethods = [];
                 methods.forEach(method => {
                     if (typeof carousel[method] !== 'function') {

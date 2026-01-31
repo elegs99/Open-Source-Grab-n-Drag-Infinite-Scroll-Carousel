@@ -61,6 +61,8 @@ new InfiniteScrollCarousel(container, options)
 
 Event callbacks allow you to hook into carousel lifecycle events and user interactions. All callbacks are optional.
 
+**Callback context:** Callbacks are invoked with no specific `this` (global/undefined). Use arrow functions or close over your carousel variable if you need the instance inside a callback.
+
 #### `onReady()`
 Fires once when the carousel has finished initializing (after items are duplicated, measurements are complete, and scrolling has started).
 
@@ -186,7 +188,7 @@ carousel.resume();
 ```
 
 #### `destroy()`
-Clean up event listeners and reset the carousel. Call this when removing the carousel from an active page.
+Clean up event listeners and reset the carousel. Call this when removing the carousel from the page. Does not remove duplicated DOM nodes.
 
 ```javascript
 carousel.destroy();
@@ -740,12 +742,20 @@ A production-ready e-commerce product carousel that tracks user engagement, inte
 
 The carousel works with any framework or vanilla JavaScript. Here are examples for popular frameworks:
 
+> 💡 **Tip:** For production builds, use the minified files from the `dist/` folder:
+> - `grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js`
+> - `grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css`
+
 ### React
 
 ```jsx
 import { useEffect, useRef } from 'react';
+// Development (unminified)
 import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
 import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
+// Production (minified)
+// import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js';
+// import 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css';
 
 function Carousel({ items }) {
   const containerRef = useRef(null);
@@ -799,8 +809,12 @@ function Carousel({ items }) {
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+// Development (unminified)
 import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
 import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
+// Production (minified)
+// import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js';
+// import 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css';
 
 const props = defineProps({
   items: Array
@@ -992,6 +1006,20 @@ const carousel = new InfiniteScrollCarousel(container, {
     copies: 4  // Increase this number (default is 3)
 });
 ```
+
+### Clicks or events only work on some items, not the duplicated copies
+
+**Problem**: You attached a click (or other) listener to items before creating the carousel; only the original items respond, not the cloned copies.
+
+**Solution**: Items are cloned for the loop; listeners attached before init are not on the clones. Attach listeners *after* creating the carousel, or use event delegation on the wrapper/container.
+
+### `this` is undefined in my callbacks
+
+**Problem**: You expect `this` to be the carousel inside a callback, but it's undefined or the global object.
+
+**Solution**: Callbacks are invoked with no specific `this`. Use an arrow function and close over your carousel variable, or pass the carousel in via options.
+
+---
 
 ## Browser Compatibility
 

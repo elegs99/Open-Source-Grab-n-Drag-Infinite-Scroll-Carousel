@@ -199,14 +199,9 @@ declare class InfiniteScrollCarousel {
     endDragging(): void;
     
     /**
-     * Start momentum animation after drag
+     * Start momentum animation after drag. Momentum is driven by the main animate() loop.
      */
     startMomentum(): void;
-    
-    /**
-     * Animate momentum scrolling
-     */
-    animateMomentum(): void;
     
     /**
      * Snap to valid position after interaction

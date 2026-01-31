@@ -1,13 +1,16 @@
 # Grab-n-Drag Infinite Scrolling Carousel
 
-A lightweight, dependency-free infinite scrolling carousel component with grab-and-drag interaction, momentum scrolling, and seamless looping. Perfect for showcasing logos, skills, testimonials, or any horizontally scrollable content.
+**A lightweight, dependency-free JavaScript library for creating smooth infinite scrolling carousels with grab-and-drag interaction.**
+
+Perfect for showcasing logos, skills, testimonials, or any scrollable content. Features seamless looping, natural momentum physics, and full touch support, all packed into a tiny ~30KB package.
 
 ![npm version](https://img.shields.io/npm/v/grab-n-drag-infinite-carousel) ![CI](https://github.com/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/workflows/CI/badge.svg) ![npm downloads](https://img.shields.io/npm/dm/grab-n-drag-infinite-carousel) ![GitHub issues](https://img.shields.io/github/issues/elegs99/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel) ![License](https://img.shields.io/npm/l/grab-n-drag-infinite-carousel)
 
 ## Demo
 
 ![Demo GIF of Infinite Scrolling Carousel](docs/demo/assets/demo.gif)
-View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/) for live examples and usage.
+
+*[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)*
 
 ## Features
 
@@ -22,9 +25,9 @@ View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-D
 
 ## Bundle Size
 
-- **JavaScript (minified)**: 16 KB
-- **CSS (minified)**: 5 KB  
-- **Total (gzipped)**: ~22 KB
+- **JavaScript (minified)**: 16.9kB
+- **CSS (minified)**: 4.9kB
+- **Package Size**: ~30kB
 - **Zero dependencies** - No additional bundle weight
 
 ## Installation
@@ -35,33 +38,51 @@ View the interactive [demo page](https://www.ethanlegum.com/Open-Source-Grab-n-D
 npm install grab-n-drag-infinite-carousel
 ```
 
-Then import in your project:
+Then import using one of the following:
 
 ```javascript
-// ES Modules
+// ES Modules (development - unminified)
 import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel';
 import 'grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css';
-// or
-// CommonJS
+
+// ES Modules (production - minified)
+import InfiniteScrollCarousel from 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js';
+import 'grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css';
+
+// CommonJS (development - unminified)
 const InfiniteScrollCarousel = require('grab-n-drag-infinite-carousel');
 require('grab-n-drag-infinite-carousel/grab-n-drag-infinite-carousel.css');
+
+// CommonJS (production - minified)
+const InfiniteScrollCarousel = require('grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js');
+require('grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css');
 ```
 
 ### CDN
 
 ```html
-<!-- CSS -->
+<!-- CSS (development - unminified) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/grab-n-drag-infinite-carousel.css">
+<!-- CSS (production - minified) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/dist/grab-n-drag-infinite-carousel.min.css">
 
-<!-- JavaScript -->
+<!-- JavaScript (development - unminified) -->
 <script src="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/grab-n-drag-infinite-carousel.js"></script>
+<!-- JavaScript (production - minified) -->
+<script src="https://cdn.jsdelivr.net/npm/grab-n-drag-infinite-carousel@latest/dist/grab-n-drag-infinite-carousel.min.js"></script>
 ```
 
 ### Manual Download
 
 Download the files directly from [npm](https://www.npmjs.com/package/grab-n-drag-infinite-carousel) or this repository:
-- `grab-n-drag-infinite-carousel.js` (or `grab-n-drag-infinite-carousel.min.js` for production)
-- `grab-n-drag-infinite-carousel.css` (or `grab-n-drag-infinite-carousel.min.css` for production)
+
+**Development (unminified):**
+- `grab-n-drag-infinite-carousel.js`
+- `grab-n-drag-infinite-carousel.css`
+
+**Production (minified):**
+- `dist/grab-n-drag-infinite-carousel.min.js`
+- `dist/grab-n-drag-infinite-carousel.min.css`
 
 ### TypeScript Support
 
@@ -80,7 +101,7 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 
 ## Quickstart
 
-### HTML, CSS, JS
+### HTML
 
 ```html
 <!DOCTYPE html>
@@ -99,7 +120,6 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
     </div>
 
     <script src="grab-n-drag-infinite-carousel.js"></script>
-    <script>
     <script>
         const container = document.querySelector('#myCarousel');
         const carousel = new InfiniteScrollCarousel(container, {
@@ -151,6 +171,8 @@ new InfiniteScrollCarousel(container, options)
 | `onPositionReset` | `() => void` | Fires when position resets during seamless loop |
 | `onPause` | `() => void` | Fires when carousel is paused |
 | `onResume` | `() => void` | Fires when carousel is resumed |
+
+Callbacks are invoked with no specific `this`. For callback context and duplicated items/event listeners, see [DOCS.md](docs/DOCS.md).
 
 ### Methods
 
@@ -209,7 +231,9 @@ new InfiniteScrollCarousel(container, options)
 </script>
 ```
 
-> 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](docs/DOCS.md)**
+> 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](docs/DOCS.md)** 
+> 
+> 🌐 **[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)**
 
 
 ## Browser Compatibility
@@ -248,7 +272,7 @@ This project is licensed under CC0 1.0 Universal - see the [LICENSE](LICENSE) fi
 
 ## Changelog
 
-See [CHANGELOG.md](docs/CHANGELOG.md) for a list of changes and version history.
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
 
 ## Support & Contributing
 
