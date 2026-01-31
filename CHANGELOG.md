@@ -9,17 +9,8 @@ All notable changes to this project will be documented in this file.
 - `copies` option now enforces maximum of 100; values above 100 are clamped with a console warning
 - Removed redundant speed validation
 - Options built from defaults only; user values overwrite only when type-valid (numbers, booleans, strings, callbacks)
-- `reverseDirection` now defaults to `false` instead of `undefined`
 - Momentum runs inside the main `animate()` loop using frame `deltaTime` instead of a separate rAF chain
 - `destroy()` clears `boundHandlers` so no references to bound functions remain
-
-### Changed
-- CI workflow runs on `main` and `dev` only (removed `master`)
-- README changelog link now points to root `CHANGELOG.md`
-- Package version set to 1.1.1; added `exports` field for explicit entry points and CSS subpath
-
-### Documentation
-- Maintainer comments added: ResizeObserver debounce/skip logic, copy-assets build prerequisite, test cleanup single-env note
 
 ## [1.1.0] - 2026-01-26
 
