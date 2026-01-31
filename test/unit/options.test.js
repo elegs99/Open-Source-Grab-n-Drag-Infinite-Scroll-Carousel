@@ -268,15 +268,12 @@ describe('Configuration Options', () => {
       carousel.destroy();
     });
 
-    test('defaults to undefined when options not provided', () => {
+    test('defaults to false when options not provided', () => {
       const { container } = createCarouselContainer(5);
       
       const carousel = new InfiniteScrollCarousel(container);
       
-      // reverseDirection is undefined when options is undefined
-      // The code does: options && options.reverseDirection === true
-      // When options is undefined, this evaluates to undefined
-      expect(carousel.options.reverseDirection).toBeUndefined();
+      expect(carousel.options.reverseDirection).toBe(false);
       carousel.destroy();
     });
   });

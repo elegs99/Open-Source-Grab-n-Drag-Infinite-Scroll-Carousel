@@ -50,10 +50,7 @@ describe('Constructor', () => {
     const carousel = new InfiniteScrollCarousel(container);
     
     expect(carousel.options.speed).toBe(50);
-    // reverseDirection is undefined when options is undefined (only set to true if explicitly true)
-    // The code does: options && options.reverseDirection === true
-    // When options is undefined, this evaluates to undefined
-    expect(carousel.options.reverseDirection).toBeUndefined();
+    expect(carousel.options.reverseDirection).toBe(false);
     expect(carousel.options.pauseOnHover).toBe(true);
     expect(carousel.options.momentumDecay).toBe(0.05);
     expect(carousel.options.maxMomentumSpeed).toBe(2.0);
