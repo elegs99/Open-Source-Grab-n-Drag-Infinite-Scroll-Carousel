@@ -179,7 +179,10 @@ function simulateDrag(element, options = {}) {
 }
 
 /**
- * Cleans up test DOM by removing all test elements
+ * Cleans up test DOM by removing all test elements.
+ * For future maintainers: cleanup targets test-only elements by id/class and is
+ * intended for a single test environment; if tests are ever run in a shared DOM,
+ * consider isolating test roots to avoid removing non-test elements.
  */
 function cleanup() {
   // Remove all elements with test IDs or classes

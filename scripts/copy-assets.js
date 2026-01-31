@@ -1,3 +1,8 @@
+/**
+ * Copies built minified assets from dist/ to docs/demo/assets/ for the demo.
+ * For future maintainers: run npm run build (or minify:js and minify:css) first
+ * so dist/ contains the minified files before running this script.
+ */
 const fs = require('fs');
 const path = require('path');
 
