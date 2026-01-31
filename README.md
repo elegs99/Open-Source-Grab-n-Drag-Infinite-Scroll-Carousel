@@ -249,12 +249,6 @@ Callbacks are invoked with no specific `this`. For callback context and duplicat
 ✅ Touch gesture support  
 ✅ Focus management
 
-## Performance
-
-✅ 60fps smooth animations using `requestAnimationFrame`  
-✅ Efficient event handling with proper cleanup  
-✅ Minimal DOM manipulation
-
 ## Troubleshooting
 
 **Items not scrolling?** Ensure CSS is loaded and container has direct children.  
