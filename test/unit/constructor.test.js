@@ -58,6 +58,7 @@ describe('Constructor', () => {
     expect(carousel.options.fadeWidth).toBe(50);
     expect(carousel.options.interactable).toBe(true);
     expect(carousel.options.copies).toBe(3);
+    expect(carousel.options.disableMomentum).toBe(false);
   });
 
   test('validates custom options', () => {
@@ -72,7 +73,8 @@ describe('Constructor', () => {
       fadeColor: '#000000',
       fadeWidth: 100,
       interactable: false,
-      copies: 5
+      copies: 5,
+      disableMomentum: true
     });
     
     expect(carousel.options.speed).toBe(100);
@@ -84,6 +86,7 @@ describe('Constructor', () => {
     expect(carousel.options.fadeWidth).toBe(100);
     expect(carousel.options.interactable).toBe(false);
     expect(carousel.options.copies).toBe(5);
+    expect(carousel.options.disableMomentum).toBe(true);
   });
 
   test('clamps negative speed and sets reverseDirection', () => {

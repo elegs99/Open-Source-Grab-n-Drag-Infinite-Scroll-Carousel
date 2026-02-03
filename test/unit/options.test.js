@@ -3,7 +3,7 @@
  * Tests configuration options validation and behavior
  */
 
-const { createCarouselContainer, cleanup } = require('./helpers');
+const { createCarouselContainer, cleanup, triggerEvent } = require('./helpers');
 
 // InfiniteScrollCarousel is loaded globally via test/setup.js
 const InfiniteScrollCarousel = global.InfiniteScrollCarousel;
@@ -299,6 +299,53 @@ describe('Configuration Options', () => {
       
       expect(carousel.options.pauseOnHover).toBe(false);
       carousel.destroy();
+    });
+  });
+
+  describe('disableMomentum option', () => {
+    test('defaults to false when not provided', () => {
+      const { container } = createCarouselContainer(5);
+      const carousel = new InfiniteScrollCarousel(container);
+      expect(carousel.options.disableMomentum).toBe(false);
+      carousel.destroy();
+    });
+
+    test('accepts disableMomentum true', () => {
+      const { container } = createCarouselContainer(5);
+      const carousel = new InfiniteScrollCarousel(container, { disableMomentum: true });
+      expect(carousel.options.disableMomentum).toBe(true);
+      carousel.destroy();
+    });
+
+    test('accepts disableMomentum false', () => {
+      const { container } = createCarouselContainer(5);
+      const carousel = new InfiniteScrollCarousel(container, { disableMomentum: false });
+      expect(carousel.options.disableMomentum).toBe(false);
+      carousel.destroy();
+    });
+
+    test('when disableMomentum true, drag end does not start momentum', (done) => {
+      const { container } = createCarouselContainer(5);
+      const carousel = new InfiniteScrollCarousel(container, {
+        speed: 50,
+        interactable: true,
+        disableMomentum: true,
+        momentumDecay: 0.05
+      });
+      setTimeout(() => {
+        triggerEvent(container, 'mousedown', { clientX: 100, clientY: 50 });
+        setTimeout(() => {
+          triggerEvent(document, 'mousemove', { clientX: 200, clientY: 50 });
+          setTimeout(() => {
+            triggerEvent(document, 'mouseup', { clientX: 250, clientY: 50 });
+            setTimeout(() => {
+              expect(carousel.isMomentumActive).toBe(false);
+              carousel.destroy();
+              done();
+            }, 50);
+          }, 50);
+        }, 50);
+      }, 300);
     });
   });
 });
