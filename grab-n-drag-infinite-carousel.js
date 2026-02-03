@@ -23,6 +23,7 @@
      * @param {number} options.fadeWidth - Width of the fade gradient in pixels (default: 50)
      * @param {boolean} options.interactable - Enable grab-and-drag interaction (default: true)
      * @param {number} options.copies - Number of item copies for seamless loop (default: 3)
+     * @param {boolean} options.disableMomentum - Disable momentum after drag release (default: false)
      */
     function InfiniteScrollCarousel(container, options) {
         // Resolve container element
@@ -45,7 +46,8 @@
             fadeColor: '#ffffff',
             fadeWidth: 50,
             interactable: true,
-            copies: 3
+            copies: 3,
+            disableMomentum: false
         };
         if (options && typeof options === 'object') {
             var o = options;
@@ -58,6 +60,7 @@
             if (typeof o.fadeWidth === 'number' && Number.isFinite(o.fadeWidth)) { this.options.fadeWidth = o.fadeWidth; }
             if (typeof o.interactable === 'boolean') { this.options.interactable = o.interactable; }
             if (typeof o.copies === 'number' && Number.isFinite(o.copies)) { this.options.copies = o.copies; }
+            if (typeof o.disableMomentum === 'boolean') { this.options.disableMomentum = o.disableMomentum; }
             if (typeof o.onReady === 'function') { this.options.onReady = o.onReady; }
             if (typeof o.onDragStart === 'function') { this.options.onDragStart = o.onDragStart; }
             if (typeof o.onDrag === 'function') { this.options.onDrag = o.onDrag; }
@@ -883,8 +886,8 @@
         // Ensure velocity is valid
         const validVelocity = (this.velocity !== null && this.velocity !== undefined && !isNaN(this.velocity)) ? this.velocity : 0;
         
-        // Start momentum animation if velocity is significant
-        if (Math.abs(validVelocity) > 0.01) {
+        // Start momentum animation if velocity is significant and momentum is not disabled
+        if (Math.abs(validVelocity) > 0.01 && !this.options.disableMomentum) {
             this.velocity = validVelocity;
             this.startMomentum();
         } else {
@@ -1059,6 +1062,51 @@
         }
         
         this.animationId = requestAnimationFrame(this.animate.bind(this));
+    };
+    
+    /**
+     * Set scroll speed (pixels per second). No-op if destroyed.
+     * @param {number} value - Speed in pixels per second (will be validated/clamped)
+     */
+    InfiniteScrollCarousel.prototype.setSpeed = function(value) {
+        if (this.destroyed) return;
+        if (typeof value === 'number' && Number.isFinite(value)) {
+            this.options.speed = value;
+            this.validateOptions();
+        }
+    };
+    
+    /**
+     * Set scroll direction. No-op if destroyed.
+     * @param {boolean} value - true for reverse (right to left), false for forward (left to right)
+     */
+    InfiniteScrollCarousel.prototype.setReverseDirection = function(value) {
+        if (this.destroyed) return;
+        this.options.reverseDirection = !!value;
+    };
+    
+    /**
+     * Set fade color and re-apply to wrapper. No-op if destroyed or invalid input.
+     * @param {string} color - Color in hex, rgb, or rgba format
+     */
+    InfiniteScrollCarousel.prototype.setFadeColor = function(color) {
+        if (this.destroyed) return;
+        if (typeof color === 'string') {
+            this.options.fadeColor = color;
+            this.applyFadeColor();
+        }
+    };
+    
+    /**
+     * Set fade width and re-apply to wrapper. No-op if destroyed or invalid input.
+     * @param {number} value - Width of fade gradient in pixels
+     */
+    InfiniteScrollCarousel.prototype.setFadeWidth = function(value) {
+        if (this.destroyed) return;
+        if (typeof value === 'number' && Number.isFinite(value)) {
+            this.options.fadeWidth = value;
+            this.applyFadeColor();
+        }
     };
     
     /**

@@ -64,6 +64,12 @@ export interface InfiniteScrollCarouselOptions {
     copies?: number;
     
     /**
+     * Disable momentum after drag release. When true, drag end snaps and resumes auto-scroll without momentum.
+     * @default false
+     */
+    disableMomentum?: boolean;
+    
+    /**
      * Fires when carousel initialization completes
      */
     onReady?: () => void;
@@ -225,6 +231,30 @@ declare class InfiniteScrollCarousel {
      * @param timestamp - Animation frame timestamp
      */
     animate(timestamp?: number): void;
+    
+    /**
+     * Set scroll speed (pixels per second). No-op if destroyed.
+     * @param value - Speed in pixels per second (will be validated/clamped)
+     */
+    setSpeed(value: number): void;
+    
+    /**
+     * Set scroll direction. No-op if destroyed.
+     * @param value - true for reverse (right to left), false for forward (left to right)
+     */
+    setReverseDirection(value: boolean): void;
+    
+    /**
+     * Set fade color and re-apply to wrapper. No-op if destroyed or invalid input.
+     * @param color - Color in hex, rgb, or rgba format
+     */
+    setFadeColor(color: string): void;
+    
+    /**
+     * Set fade width and re-apply to wrapper. No-op if destroyed or invalid input.
+     * @param value - Width of fade gradient in pixels
+     */
+    setFadeWidth(value: number): void;
     
     /**
      * Cleanup method for proper resource management
