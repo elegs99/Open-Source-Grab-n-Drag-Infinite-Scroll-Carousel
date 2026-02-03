@@ -148,15 +148,28 @@ new InfiniteScrollCarousel(container, options)
 
 | Option | Type | Default | Description |
 |------|------|---------|-------------|
-| `speed` | number | `50` | Auto-scroll speed (pixels/sec). Set to `0` to disable auto-scroll. |
-| `reverseDirection` | boolean | `false` | Scroll direction. `false`: right to left ←, `true`: left to right → |
-| `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer hovers an element. |
-| `momentumDecay` | number | `0.05` | Drag momentum decay rate (Range: `0.01–0.5`). Higher values decay quicker. |
-| `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed in px/ms (Range: `0.5–25`). |
-| `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`). Use `transparent` to disable. |
-| `fadeWidth` | number | `50` | Width of the fade gradient in pixels. |
-| `interactable` | boolean | `true` | Enable grab-and-drag interaction. Set to `false` to disable dragging. |
-| `copies` | number | `3` | Number of duplicated item sets for seamless looping. |
+| `speed` | number | `50` | Auto-scroll speed in pixels per second. Use `0` to turn off auto-scroll. |
+| `reverseDirection` | boolean | `false` | If `true`, content scrolls left to right; if `false`, right to left. |
+| `pauseOnHover` | boolean | `true` | If `true`, auto-scroll pauses while the pointer is over the carousel. |
+| `momentumDecay` | number | `0.05` | How quickly drag momentum fades after release (0.01–0.5). Higher = stops sooner. |
+| `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed after release, in px/ms (0.5–25). |
+| `disableMomentum` | boolean | `false` | If `true`, no momentum after release; position snaps and auto-scroll resumes. |
+| `fadeColor` | string | `#ffffff` | Color of the left/right edge fade (hex, rgb, or rgba). Use `transparent` to hide. |
+| `fadeWidth` | number | `50` | Width of the edge fade in pixels. |
+| `interactable` | boolean | `true` | If `true`, users can drag; if `false`, drag is disabled. |
+| `copies` | number | `3` | Number of full item sets cloned for the infinite loop (3–100). |
+
+### Methods
+
+| Method | Description |
+|--------|-------------|
+| `pause()` | Pause automatic scrolling. |
+| `resume()` | Resume paused scrolling. |
+| `setSpeed(value)` | Set scroll speed in pixels per second (validated/clamped). No-op if destroyed. |
+| `setReverseDirection(value)` | Set scroll direction (`true` = reverse, `false` = forward). No-op if destroyed. |
+| `setFadeColor(color)` | Set edge fade color and re-apply to wrapper. No-op if destroyed or invalid input. |
+| `setFadeWidth(value)` | Set fade width in pixels and re-apply to wrapper. No-op if destroyed or invalid input. |
+| `destroy()` | Clean up event listeners and reset the carousel. Call when removing the carousel from the page. |
 
 ### Event Callbacks
 
@@ -173,12 +186,6 @@ new InfiniteScrollCarousel(container, options)
 | `onResume` | `() => void` | Fires when carousel is resumed |
 
 Callbacks are invoked with no specific `this`. For callback context and duplicated items/event listeners, see [DOCS.md](docs/DOCS.md).
-
-### Methods
-
-- `pause()` - Pause automatic scrolling
-- `resume()` - Resume paused scrolling
-- `destroy()` - Clean up event listeners and reset the carousel
 
 > 📖 **For detailed API documentation, examples, and advanced usage, see [DOCS.md](docs/DOCS.md)**
 

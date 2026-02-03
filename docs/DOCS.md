@@ -33,15 +33,40 @@ new InfiniteScrollCarousel(container, options)
 
 | Option | Type | Default | Description |
 |------|------|---------|-------------|
-| `speed` | number | `50` | Auto-scroll speed (pixels/sec).<br>Set to `0` to disable auto-scroll. |
-| `reverseDirection` | boolean | `false` | Scroll direction.<br>`false`: right to left ←<br>`true`: left to right → |
-| `pauseOnHover` | boolean | `true` | Pauses scrolling when the pointer hovers an element. |
-| `momentumDecay` | number | `0.05` | Drag momentum decay rate.<br>Range: `0.01–0.5`<br>`0.01`: slow decay (keeps momentum longer)<br>`0.5`: quick decay (loses momentum quickly)<br>Higher values decay quicker. |
-| `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed (px/ms).<br>Range: `0.5–25` |
-| `fadeColor` | string | `#ffffff` | Edge fade color (`hex`, `rgb`, `rgba`).<br>Use `transparent` to disable. |
-| `fadeWidth` | number | `50` | Width of the fade gradient in pixels. |
-| `interactable` | boolean | `true` | Enable grab-and-drag interaction. Set to `false` to disable dragging. |
-| `copies` | number | `3` | Number of duplicated item sets for seamless looping. |
+| `speed` | number | `50` | Auto-scroll speed in pixels per second. Use `0` to turn off auto-scroll. |
+| `reverseDirection` | boolean | `false` | If `true`, content scrolls left to right; if `false`, right to left. |
+| `pauseOnHover` | boolean | `true` | If `true`, auto-scroll pauses while the pointer is over the carousel. |
+| `momentumDecay` | number | `0.05` | How quickly drag momentum fades after release (0.01–0.5). Higher = stops sooner. |
+| `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed after release, in px/ms (0.5–25). |
+| `disableMomentum` | boolean | `false` | If `true`, no momentum after release; position snaps and auto-scroll resumes. |
+| `fadeColor` | string | `#ffffff` | Color of the left/right edge fade (hex, rgb, or rgba). Use `transparent` to hide. |
+| `fadeWidth` | number | `50` | Width of the edge fade in pixels. |
+| `interactable` | boolean | `true` | If `true`, users can drag; if `false`, drag is disabled. |
+| `copies` | number | `3` | Number of full item sets cloned for the infinite loop (3–100). |
+
+### Methods
+
+| Method | Description |
+|--------|-------------|
+| `pause()` | Pause automatic scrolling. The animation loop continues but position updates are paused. |
+| `resume()` | Resume paused scrolling or start scrolling if stopped. Handles both resuming from pause and starting from stop. |
+| `setSpeed(value)` | Set scroll speed in pixels per second. Value is validated and clamped (negative becomes positive with reverse direction). No-op if destroyed. |
+| `setReverseDirection(value)` | Set scroll direction. `true` = reverse (right to left), `false` = forward (left to right). No-op if destroyed. |
+| `setFadeColor(color)` | Set edge fade color (hex, rgb, or rgba) and re-apply to the wrapper. No-op if destroyed or invalid input. |
+| `setFadeWidth(value)` | Set fade gradient width in pixels and re-apply to the wrapper. No-op if destroyed or invalid input. |
+| `destroy()` | Clean up event listeners and reset the carousel. Call when removing the carousel from the page. Does not remove duplicated DOM nodes. |
+
+**Example usage:**
+
+```javascript
+carousel.pause();
+carousel.resume();
+carousel.setSpeed(75);
+carousel.setReverseDirection(true);
+carousel.setFadeColor('#ff0000');
+carousel.setFadeWidth(80);
+carousel.destroy();
+```
 
 ### Event Callbacks
 
@@ -170,29 +195,6 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', {
 ```
 
 **Note:** Callbacks that throw errors will not break the carousel. Errors are caught internally to ensure stability.
-
-### Methods
-
-#### `pause()`
-Pause automatic scrolling. The animation loop continues but position updates are paused.
-
-```javascript
-carousel.pause();
-```
-
-#### `resume()`
-Resume paused scrolling or start scrolling if stopped. This method handles both resuming from a paused state and starting from a stopped state.
-
-```javascript
-carousel.resume();
-```
-
-#### `destroy()`
-Clean up event listeners and reset the carousel. Call this when removing the carousel from the page. Does not remove duplicated DOM nodes.
-
-```javascript
-carousel.destroy();
-```
 
 ---
 

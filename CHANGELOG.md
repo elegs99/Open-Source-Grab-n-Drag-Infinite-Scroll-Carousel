@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-01-31
+
+### Added
+- `disableMomentum` option - when true, drag end snaps and resumes auto-scroll without momentum
+- `setSpeed(value)` - set scroll speed at runtime (validated/clamped)
+- `setReverseDirection(boolean)` - set scroll direction at runtime
+- `setFadeColor(color)` - set fade color at runtime and re-apply to wrapper
+- `setFadeWidth(value)` - set fade width at runtime and re-apply to wrapper
+
 ## [1.1.1] - 2026-01-30
 
 ### Fixed
