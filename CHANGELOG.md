@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.2.0] - 2026-XX-XX
+## [1.2.0] - 2026-02-04
 
 ### Added
 - `disableMomentum` option - when true, drag end snaps and resumes auto-scroll without momentum
