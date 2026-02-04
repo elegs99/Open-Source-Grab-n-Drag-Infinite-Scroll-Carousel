@@ -186,8 +186,6 @@ new InfiniteScrollCarousel(container, options)
 | `onPause` | `() => void` | Fires when carousel is paused |
 | `onResume` | `() => void` | Fires when carousel is resumed |
 
-Callbacks are invoked with no specific `this`. For callback context and duplicated items/event listeners, see [DOCS.md](docs/DOCS.md).
-
 > 📖 **For detailed API documentation, examples, and advanced usage, see [DOCS.md](docs/DOCS.md)**
 
 ## Examples
@@ -238,11 +236,9 @@ Callbacks are invoked with no specific `this`. For callback context and duplicat
     });
 </script>
 ```
+[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)
 
 > 📖 **For more examples including React/Vue integration, advanced use cases, and styling guides, see [DOCS.md](docs/DOCS.md)** 
-> 
-> 🌐 **[View interactive examples with code →](https://www.ethanlegum.com/Open-Source-Grab-n-Drag-Infinite-Scroll-Carousel/)**
-
 
 ## Browser Compatibility
 
