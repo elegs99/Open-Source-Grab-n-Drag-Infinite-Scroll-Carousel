@@ -25,7 +25,7 @@ Perfect for showcasing logos, skills, testimonials, or any scrollable content. F
 
 ## Bundle Size
 
-- **JavaScript (minified)**: 16.9kB
+- **JavaScript (minified)**: 18.9kB
 - **CSS (minified)**: 4.9kB
 - **Package Size**: ~30kB
 - **Zero dependencies** - No additional bundle weight
@@ -149,13 +149,13 @@ new InfiniteScrollCarousel(container, options)
 | Option | Type | Default | Description |
 |------|------|---------|-------------|
 | `speed` | number | `50` | Auto-scroll speed in pixels per second. Use `0` to turn off auto-scroll. |
-| `reverseDirection` | boolean | `false` | If `true`, content scrolls left to right; if `false`, right to left. |
-| `pauseOnHover` | boolean | `true` | If `true`, auto-scroll pauses while the pointer is over the carousel. |
+| `reverseDirection` | boolean | `false` | If `false`, content scrolls right to left; if `true`, scrolls left to right. |
+| `fadeColor` | string | `#ffffff` | Color of the left/right edge fade (hex, rgb, or rgba). Use `'transparent'` to hide. |
+| `fadeWidth` | number | `50` | Width of the edge fade in pixels. |
 | `momentumDecay` | number | `0.05` | How quickly drag momentum fades after release (0.01–0.5). Higher = stops sooner. |
 | `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed after release, in px/ms (0.5–25). |
 | `disableMomentum` | boolean | `false` | If `true`, no momentum after release; position snaps and auto-scroll resumes. |
-| `fadeColor` | string | `#ffffff` | Color of the left/right edge fade (hex, rgb, or rgba). Use `transparent` to hide. |
-| `fadeWidth` | number | `50` | Width of the edge fade in pixels. |
+| `pauseOnHover` | boolean | `true` | If `true`, auto-scroll pauses while the pointer is over the carousel. |
 | `interactable` | boolean | `true` | If `true`, users can drag; if `false`, drag is disabled. |
 | `copies` | number | `3` | Number of full item sets cloned for the infinite loop (3–100). |
 
@@ -165,10 +165,10 @@ new InfiniteScrollCarousel(container, options)
 |--------|-------------|
 | `pause()` | Pause automatic scrolling. |
 | `resume()` | Resume paused scrolling. |
-| `setSpeed(value)` | Set scroll speed in pixels per second (validated/clamped). No-op if destroyed. |
-| `setReverseDirection(value)` | Set scroll direction (`true` = reverse, `false` = forward). No-op if destroyed. |
-| `setFadeColor(color)` | Set edge fade color and re-apply to wrapper. No-op if destroyed or invalid input. |
-| `setFadeWidth(value)` | Set fade width in pixels and re-apply to wrapper. No-op if destroyed or invalid input. |
+| `setSpeed(value)` | Set scroll speed in pixels per second. |
+| `setReverseDirection(value)` | Set scroll direction. |
+| `setFadeColor(color)` | Set edge fade color and re-apply to wrapper. |
+| `setFadeWidth(value)` | Set fade width in pixels and re-apply to wrapper. |
 | `destroy()` | Clean up event listeners and reset the carousel. Call when removing the carousel from the page. |
 
 ### Event Callbacks
