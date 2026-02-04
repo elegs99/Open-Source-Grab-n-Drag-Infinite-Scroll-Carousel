@@ -1,6 +1,6 @@
 # Complete Documentation
 
-> 📖 **Full API reference, examples, and advanced usage guide**
+**Full API reference, examples, and advanced usage guide**
 
 For [quickstart](../README.md#quickstart) and [installation](../README.md#installation), see the [README](../README.md).
 
