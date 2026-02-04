@@ -34,13 +34,13 @@ new InfiniteScrollCarousel(container, options)
 | Option | Type | Default | Description |
 |------|------|---------|-------------|
 | `speed` | number | `50` | Auto-scroll speed in pixels per second. Use `0` to turn off auto-scroll. |
-| `reverseDirection` | boolean | `false` | If `true`, content scrolls left to right; if `false`, right to left. |
-| `pauseOnHover` | boolean | `true` | If `true`, auto-scroll pauses while the pointer is over the carousel. |
+| `reverseDirection` | boolean | `false` | If `false`, content scrolls right to left; if `true`, scrolls left to right. |
+| `fadeColor` | string | `#ffffff` | Color of the left/right edge fade (hex, rgb, or rgba). Use `'transparent'` to hide. |
+| `fadeWidth` | number | `50` | Width of the edge fade in pixels. |
 | `momentumDecay` | number | `0.05` | How quickly drag momentum fades after release (0.01–0.5). Higher = stops sooner. |
 | `maxMomentumSpeed` | number | `2.0` | Maximum momentum speed after release, in px/ms (0.5–25). |
 | `disableMomentum` | boolean | `false` | If `true`, no momentum after release; position snaps and auto-scroll resumes. |
-| `fadeColor` | string | `#ffffff` | Color of the left/right edge fade (hex, rgb, or rgba). Use `transparent` to hide. |
-| `fadeWidth` | number | `50` | Width of the edge fade in pixels. |
+| `pauseOnHover` | boolean | `true` | If `true`, auto-scroll pauses while the pointer is over the carousel. |
 | `interactable` | boolean | `true` | If `true`, users can drag; if `false`, drag is disabled. |
 | `copies` | number | `3` | Number of full item sets cloned for the infinite loop (3–100). |
 
@@ -54,6 +54,7 @@ new InfiniteScrollCarousel(container, options)
 | `setReverseDirection(value)` | Set scroll direction. `true` = reverse (right to left), `false` = forward (left to right). No-op if destroyed. |
 | `setFadeColor(color)` | Set edge fade color (hex, rgb, or rgba) and re-apply to the wrapper. No-op if destroyed or invalid input. |
 | `setFadeWidth(value)` | Set fade gradient width in pixels and re-apply to the wrapper. No-op if destroyed or invalid input. |
+| `calculateScrollDistance(callback?)` | Recalculate scroll distance for seamless looping (e.g. after DOM/filter changes). Optional callback runs after calculation completes. No-op if destroyed. |
 | `destroy()` | Clean up event listeners and reset the carousel. Call when removing the carousel from the page. Does not remove duplicated DOM nodes. |
 
 **Example usage:**
@@ -65,6 +66,7 @@ carousel.setSpeed(75);
 carousel.setReverseDirection(true);
 carousel.setFadeColor('#ff0000');
 carousel.setFadeWidth(80);
+carousel.calculateScrollDistance(() => { /* optional: run after recalc */ });
 carousel.destroy();
 ```
 
@@ -240,32 +242,59 @@ The simplest implementation using default settings. Perfect for getting started 
 
 ---
 
-### Example 2: Reverse Direction with Custom Fade
+### Example 2: Reverse Direction with Custom Fade and Runtime Controls
 
-A carousel scrolling in reverse direction with custom fade gradient to match your design.
+A carousel with custom fade and reverse direction (options). The buttons call `setSpeed(value)` (20, 50, 100) and `setReverseDirection(boolean)` (L►R true, L◄R false). The carousel can be read-only (`interactable: false`) so that speed and direction change only via the API.
 
 ```html
 <style>
     .testimonial-carousel .infinite-scroll-item {
-        padding: 20px;
+        padding: 10px 20px;
         margin-right: 30px;
         background: #1a1a2e;
         border-radius: 12px;
         color: white;
-        min-width: 300px;
+        min-width: 200px;
     }
+    .carousel-controls { text-align: center; margin-bottom: 16px; }
+    .carousel-controls button {
+        padding: 8px 16px;
+        margin: 0 4px;
+        border: 2px solid #1a1a2e;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    .carousel-controls button.active { background: #1a1a2e; color: white; }
+    .carousel-controls .control-group { margin-bottom: 8px; }
+    .carousel-controls .control-group:last-child { margin-bottom: 0; }
+    .carousel-controls .control-group .control-label { margin-left: 30px; }
+    .carousel-controls .control-label { font-size: 12px; color: #666; margin-right: 8px; }
 </style>
+
+<div class="carousel-controls">
+    <div class="control-group">
+        <span class="control-label">setSpeed(value):</span>
+        <button type="button" data-speed="20">Slower (20)</button>
+        <button type="button" data-speed="50" class="active">Normal (50)</button>
+        <button type="button" data-speed="100">Faster (100)</button>
+        <span class="control-label">setReverseDirection(boolean):</span>
+        <button type="button" data-direction="true" class="active">L►R (true)</button>
+        <button type="button" data-direction="false">L◄R (false)</button>
+    </div>
+</div>
 
 <div class="infinite-scroll-wrapper testimonial-carousel">
     <div class="infinite-scroll-container" id="testimonialCarousel">
         <div class="infinite-scroll-item">
-            <p>"Amazing product!" - John Doe</p>
+            <p>"Amazing product!" – John Doe</p>
         </div>
         <div class="infinite-scroll-item">
-            <p>"Best service ever!" - Jane Smith</p>
+            <p>"Best service ever!" – Jane Smith</p>
         </div>
         <div class="infinite-scroll-item">
-            <p>"Highly recommended!" - Bob Johnson</p>
+            <p>"Highly recommended!" – Bob Johnson</p>
         </div>
     </div>
 </div>
@@ -273,470 +302,156 @@ A carousel scrolling in reverse direction with custom fade gradient to match you
 <script>
     const carousel = new InfiniteScrollCarousel('#testimonialCarousel', {
         speed: 40,
-        reverseDirection: true,        // Scroll left to right (→)
-        pauseOnHover: true,
-        fadeColor: '#1a1a2e',          // Match background color
-        fadeWidth: 80                  // Wider fade gradient
+        reverseDirection: true,
+        pauseOnHover: false,
+        fadeColor: '#1a1a2e',
+        fadeWidth: 80,
+        interactable: false
+    });
+
+    document.querySelectorAll('[data-speed]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            carousel.setSpeed(Number(this.dataset.speed));
+            document.querySelectorAll('[data-speed]').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    document.querySelectorAll('[data-direction]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            carousel.setReverseDirection(this.dataset.direction === 'true');
+            document.querySelectorAll('[data-direction]').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
     });
 </script>
 ```
 
 **Features demonstrated:**
-- `reverseDirection: true` - Reverse scroll direction
-- `fadeColor` - Custom fade gradient color
-- `fadeWidth` - Custom fade width
+- `reverseDirection`, `fadeColor`, `fadeWidth` (options)
+- `interactable: false` (read-only; speed and direction change only via API)
+- **setSpeed()** and **setReverseDirection()** at runtime
 - Custom styling integration
 
 ---
 
-### Example 3: Gallery with Manual Browsing & Display Modes
+### Example 3: Real-world Carousel with Analytics
 
-A flexible gallery carousel that can switch between manual-only browsing (user-controlled) and auto-display mode (read-only). Perfect for portfolios, image galleries, or kiosk displays.
-
-```html
-<style>
-    .gallery-item {
-        margin-right: 20px;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    .gallery-item img {
-        display: block;
-        width: 300px;
-        height: 200px;
-        object-fit: cover;
-    }
-    
-    .mode-toggle {
-        text-align: center;
-        margin: 20px 0;
-    }
-    
-    .mode-btn {
-        padding: 10px 24px;
-        margin: 0 10px;
-        border: 2px solid #333;
-        background: white;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: all 0.3s;
-    }
-    
-    .mode-btn.active {
-        background: #333;
-        color: white;
-    }
-</style>
-
-<div class="mode-toggle">
-    <button class="mode-btn active" data-mode="manual">Manual Browse</button>
-    <button class="mode-btn" data-mode="display">Auto Display</button>
-</div>
-
-<div class="infinite-scroll-wrapper">
-    <div class="infinite-scroll-container" id="galleryCarousel">
-        <div class="infinite-scroll-item gallery-item">
-            <img src="photo1.jpg" alt="Gallery Image 1">
-        </div>
-        <div class="infinite-scroll-item gallery-item">
-            <img src="photo2.jpg" alt="Gallery Image 2">
-        </div>
-        <div class="infinite-scroll-item gallery-item">
-            <img src="photo3.jpg" alt="Gallery Image 3">
-        </div>
-        <div class="infinite-scroll-item gallery-item">
-            <img src="photo4.jpg" alt="Gallery Image 4">
-        </div>
-        <div class="infinite-scroll-item gallery-item">
-            <img src="photo5.jpg" alt="Gallery Image 5">
-        </div>
-    </div>
-</div>
-
-<script>
-    let carousel;
-    
-    function initializeCarousel(mode) {
-        // Destroy existing carousel if it exists
-        if (carousel) {
-            carousel.destroy();
-        }
-        
-        if (mode === 'manual') {
-            // Manual browsing mode: user controls via drag, no auto-scroll
-            carousel = new InfiniteScrollCarousel('#galleryCarousel', {
-                speed: 0,                      // No auto-scroll (manual only)
-                pauseOnHover: false,            // Not needed since no auto-scroll
-                momentumDecay: 0.02,            // Lower decay rate (keeps momentum longer)
-                maxMomentumSpeed: 3.5,          // Higher max speed for smooth browsing
-                copies: 4,                      // More copies for smoother infinite loop
-                fadeColor: 'transparent',       // Disable fade effect
-                interactable: true              // Enable drag interaction
-            });
-        } else {
-            // Auto-display mode: continuous scrolling, no user interaction
-            carousel = new InfiniteScrollCarousel('#galleryCarousel', {
-                speed: 60,                      // Faster scroll speed for display
-                reverseDirection: false,
-                pauseOnHover: false,            // Never pause (continuous)
-                interactable: false,            // Disable drag interaction (read-only)
-                fadeColor: '#ffffff',
-                fadeWidth: 60,
-                copies: 3
-            });
-        }
-    }
-    
-    // Initialize with manual mode by default
-    initializeCarousel('manual');
-    
-    // Mode toggle functionality
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            const mode = this.dataset.mode;
-            initializeCarousel(mode);
-        });
-    });
-    
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-        if (carousel) {
-            carousel.destroy();
-        }
-    });
-</script>
-```
-
-**Features demonstrated:**
-- **Manual mode**: `speed: 0` (no auto-scroll), custom momentum physics (`momentumDecay`, `maxMomentumSpeed`), `copies` configuration, `fadeColor: 'transparent'`
-- **Display mode**: `interactable: false` (read-only), `pauseOnHover: false` (continuous), higher speed for display
-- **Dynamic reinitialization**: Switching between modes with proper cleanup using `destroy()`
-- **Real-world use case**: Gallery/portfolio that adapts to different viewing contexts
-
----
-
-### Example 4: Product Showcase with Analytics and Smart Controls
-
-A production-ready e-commerce product carousel that tracks user engagement, integrates with filters, and provides analytics insights. Demonstrates real-world business value.
+A simple product strip with a single analytics row. All metrics come from callbacks: Views (onReady, onPositionReset), Interactions (onDragStart), Drags done (onDragEnd), Pauses (onPause), Resumes (onResume).
 
 ```html
 <style>
-    .product-carousel-wrapper {
+    .carousel-wrap {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 40px 0;
+        padding: 32px 0;
+        border-radius: 12px;
     }
-    
     .product-card {
         background: white;
-        border-radius: 16px;
-        padding: 24px;
-        margin-right: 24px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        min-width: 280px;
+        border-radius: 12px;
+        padding: 20px;
+        margin-right: 20px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        min-width: 220px;
         transition: transform 0.2s;
-        cursor: pointer;
     }
-    
-    .product-card:hover {
-        transform: translateY(-5px);
-    }
-    
+    .product-card:hover { transform: translateY(-4px); }
     .product-card img {
         width: 100%;
-        height: 200px;
+        height: 140px;
         object-fit: cover;
         border-radius: 8px;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
-    
-    .product-card h4 {
-        margin: 0 0 8px 0;
-        color: #333;
-    }
-    
-    .product-card .price {
-        font-size: 24px;
-        font-weight: bold;
-        color: #667eea;
-    }
-    
-    .controls {
-        text-align: center;
-        margin: 20px 0;
-    }
-    
-    .filter-btn {
-        padding: 10px 20px;
-        margin: 0 10px;
-        border: 2px solid #667eea;
-        background: white;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    
-    .filter-btn.active {
-        background: #667eea;
-        color: white;
-    }
-    
-    .analytics {
-        text-align: center;
-        color: white;
+    .product-card h4 { margin: 0 0 6px 0; font-size: 1rem; color: #333; }
+    .product-card .price { font-size: 1.1rem; font-weight: bold; color: #667eea; }
+    .analytics-row {
         margin-top: 20px;
-        font-size: 14px;
+        margin-left: 20px;
+        margin-right: 20px;
+        padding: 12px 16px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        display: flex;
+        flex-wrap: wrap;
     }
+    .analytics-row .cell {
+        flex: 1;
+        min-width: 0;
+        padding: 8px 12px;
+        text-align: center;
+        color: white;
+        font-size: 13px;
+    }
+    .analytics-row .cell .value { font-weight: 700; }
 </style>
 
-<div class="product-carousel-wrapper">
-    <div class="controls">
-        <button class="filter-btn active" data-filter="all">All Products</button>
-        <button class="filter-btn" data-filter="featured">Featured</button>
-        <button class="filter-btn" data-filter="sale">On Sale</button>
-    </div>
-    
+<div class="carousel-wrap">
     <div class="infinite-scroll-wrapper">
-        <div class="infinite-scroll-container" id="productCarousel">
-            <div class="infinite-scroll-item" data-category="featured">
-                <div class="product-card" data-product-id="1">
+        <div class="infinite-scroll-container" id="showcaseCarousel">
+            <div class="infinite-scroll-item">
+                <div class="product-card">
                     <img src="product1.jpg" alt="Product 1">
                     <h4>Premium Headphones</h4>
                     <p class="price">$199.99</p>
                 </div>
             </div>
-            <div class="infinite-scroll-item" data-category="sale">
-                <div class="product-card" data-product-id="2">
+            <div class="infinite-scroll-item">
+                <div class="product-card">
                     <img src="product2.jpg" alt="Product 2">
                     <h4>Wireless Speaker</h4>
-                    <p class="price">$79.99 <span style="text-decoration: line-through; color: #999;">$99.99</span></p>
+                    <p class="price">$79.99</p>
                 </div>
             </div>
-            <div class="infinite-scroll-item" data-category="featured">
-                <div class="product-card" data-product-id="3">
+            <div class="infinite-scroll-item">
+                <div class="product-card">
                     <img src="product3.jpg" alt="Product 3">
                     <h4>Smart Watch</h4>
                     <p class="price">$299.99</p>
                 </div>
             </div>
-            <div class="infinite-scroll-item" data-category="sale">
-                <div class="product-card" data-product-id="4">
-                    <img src="product4.jpg" alt="Product 4">
-                    <h4>Tablet Stand</h4>
-                    <p class="price">$29.99 <span style="text-decoration: line-through; color: #999;">$39.99</span></p>
-                </div>
-            </div>
         </div>
     </div>
-    
-    <div class="analytics">
-        <span id="viewCount">Views: 0</span> | 
-        <span id="interactionCount">Interactions: 0</span> | 
-        <span id="avgMomentum">Avg Momentum: 0 px/ms</span>
+    <div class="analytics-row">
+        <div class="cell">Views <span class="value" id="showcaseViews">0</span></div>
+        <div class="cell">Interactions <span class="value" id="showcaseInteractions">0</span></div>
+        <div class="cell">Drags done <span class="value" id="showcaseDragsDone">0</span></div>
+        <div class="cell">Pauses <span class="value" id="showcasePauses">0</span></div>
+        <div class="cell">Resumes <span class="value" id="showcaseResumes">0</span></div>
     </div>
 </div>
 
 <script>
-    // Analytics tracking
-    const analytics = {
-        views: 0,
-        interactions: 0,
-        momentumVelocities: [],
-        productViews: new Map(),
-        lastViewTime: null
-    };
-    
-    // Track which product is currently in view
-    function updateProductViews() {
-        const container = document.getElementById('productCarousel');
-        const items = container.querySelectorAll('.product-card');
-        const containerRect = container.getBoundingClientRect();
-        const viewportCenter = containerRect.left + containerRect.width / 2;
-        
-        items.forEach(item => {
-            const itemRect = item.getBoundingClientRect();
-            const itemCenter = itemRect.left + itemRect.width / 2;
-            const distance = Math.abs(itemCenter - viewportCenter);
-            
-            // If product is near center of viewport
-            if (distance < 150) {
-                const productId = item.dataset.productId;
-                const now = Date.now();
-                
-                // Only count as new view if not recently viewed
-                if (!analytics.lastViewTime || now - analytics.lastViewTime > 1000) {
-                    const currentViews = analytics.productViews.get(productId) || 0;
-                    analytics.productViews.set(productId, currentViews + 1);
-                    analytics.views++;
-                    analytics.lastViewTime = now;
-                    updateAnalyticsDisplay();
-                }
-            }
-        });
+    const analytics = { views: 0, interactions: 0, dragsDone: 0, pauses: 0, resumes: 0 };
+
+    function updateAnalytics() {
+        document.getElementById('showcaseViews').textContent = analytics.views;
+        document.getElementById('showcaseInteractions').textContent = analytics.interactions;
+        document.getElementById('showcaseDragsDone').textContent = analytics.dragsDone;
+        document.getElementById('showcasePauses').textContent = analytics.pauses;
+        document.getElementById('showcaseResumes').textContent = analytics.resumes;
     }
-    
-    function updateAnalyticsDisplay() {
-        document.getElementById('viewCount').textContent = `Views: ${analytics.views}`;
-        document.getElementById('interactionCount').textContent = `Interactions: ${analytics.interactions}`;
-        
-        if (analytics.momentumVelocities.length > 0) {
-            const avg = analytics.momentumVelocities.reduce((a, b) => a + b, 0) / analytics.momentumVelocities.length;
-            document.getElementById('avgMomentum').textContent = `Avg Momentum: ${avg.toFixed(2)} px/ms`;
-        }
-    }
-    
-    // Initialize carousel with comprehensive callbacks
-    const carousel = new InfiniteScrollCarousel('#productCarousel', {
-        speed: 35,
-        reverseDirection: false,
-        pauseOnHover: true,              // Pause when user hovers to view product
-        momentumDecay: 0.04,              // Smooth momentum for browsing (slower decay)
-        maxMomentumSpeed: 2.8,
-        fadeColor: 'rgba(102, 126, 234, 0.8)',  // Match gradient theme
-        fadeWidth: 100,
-        copies: 3,
-        interactable: true,
-        
-        // Initialize and start tracking
-        onReady: () => {
-            console.log('Product carousel ready');
-            // Start periodic view tracking
-            setInterval(updateProductViews, 500);
-            
-            // Send analytics to server (example)
-            // fetch('/api/carousel/init', { method: 'POST' });
-        },
-        
-        // Track user engagement
-        onDragStart: () => {
-            analytics.interactions++;
-            updateAnalyticsDisplay();
-            console.log('User started browsing products');
-        },
-        
-        onDrag: (position, deltaX) => {
-            // Real-time position tracking for analytics
-            // Could be used to determine browsing patterns
-        },
-        
-        onDragEnd: () => {
-            // User finished manual browsing
-            console.log('Browse session ended');
-        },
-        
-        // Track browsing velocity patterns
-        onMomentumStart: (velocity) => {
-            analytics.momentumVelocities.push(velocity);
-            // Keep only last 50 for average calculation
-            if (analytics.momentumVelocities.length > 50) {
-                analytics.momentumVelocities.shift();
-            }
-            updateAnalyticsDisplay();
-            console.log(`Browsing momentum: ${velocity.toFixed(2)} px/ms`);
-        },
-        
-        onMomentumEnd: () => {
-            console.log('Momentum browsing ended');
-        },
-        
-        // Pause/resume for better UX
-        onPause: () => {
-            console.log('Carousel paused - user viewing product');
-        },
-        
-        onResume: () => {
-            console.log('Carousel resumed - user browsing');
-        },
-        
-        onPositionReset: () => {
-            // Seamless loop - invisible to user
-            // Could track loop cycles for analytics
-        }
+
+    const carousel = new InfiniteScrollCarousel('#showcaseCarousel', {
+        speed: 50,
+        pauseOnHover: true,
+        fadeColor: 'rgba(102, 126, 234, 0.8)',
+        fadeWidth: 80,
+        onReady: () => { analytics.views++; updateAnalytics(); },
+        onDragStart: () => { analytics.interactions++; updateAnalytics(); },
+        onDragEnd: () => { analytics.dragsDone++; updateAnalytics(); },
+        onPause: () => { analytics.pauses++; updateAnalytics(); },
+        onResume: () => { analytics.resumes++; updateAnalytics(); },
+        onPositionReset: () => { analytics.views++; updateAnalytics(); }
     });
-    
-    // Filter functionality with programmatic control
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Update active state
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            const filter = this.dataset.filter;
-            
-            // Pause carousel during filter transition
-            carousel.pause();
-            
-            // Filter products (simplified - in real app, you'd filter DOM or fetch new data)
-            const items = document.querySelectorAll('.infinite-scroll-item');
-            items.forEach(item => {
-                if (filter === 'all' || item.dataset.category === filter) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // Recalculate and resume after brief delay
-            setTimeout(() => {
-                carousel.calculateScrollDistance(() => {
-                    carousel.resume();
-                });
-            }, 300);
-            
-            // Track filter usage
-            console.log(`Filter applied: ${filter}`);
-        });
-    });
-    
-    // Product click handling
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const productId = this.dataset.productId;
-            console.log(`Product clicked: ${productId}`);
-            
-            // Pause carousel when viewing product details
-            carousel.pause();
-            
-            // In real app: open modal, navigate to product page, etc.
-            // For demo: resume after 3 seconds
-            setTimeout(() => {
-                carousel.resume();
-            }, 3000);
-        });
-    });
-    
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-        // Send final analytics
-        console.log('Final analytics:', {
-            totalViews: analytics.views,
-            totalInteractions: analytics.interactions,
-            productViews: Object.fromEntries(analytics.productViews),
-            avgMomentum: analytics.momentumVelocities.length > 0 
-                ? analytics.momentumVelocities.reduce((a, b) => a + b, 0) / analytics.momentumVelocities.length 
-                : 0
-        });
-        
-        carousel.destroy();
-    });
+
+    window.addEventListener('beforeunload', () => carousel.destroy());
 </script>
 ```
 
 **Features demonstrated:**
-- **Analytics tracking** - Product views, user interactions, browsing patterns
-- **Smart filtering** - Programmatic pause/resume with `calculateScrollDistance()` callback
-- **Event callbacks** - All callbacks used for real business logic
-- **User engagement** - Tracks momentum velocity patterns
-- **Product interaction** - Click handling with carousel state management
-- **Production patterns** - Analytics collection, cleanup, and data reporting
-- **Real-world integration** - Combines carousel with filters, modals, and analytics
-- **Custom fade** - Themed gradient matching design
-- **Proper lifecycle** - Clean initialization and destruction
+- **Callbacks** — onReady, onDragStart, onDragEnd, onPause, onResume, onPositionReset used to drive a simple analytics row (views, interactions, drags done, pauses, resumes).
+- Custom fade and styling.
+- Lifecycle — `destroy()` on beforeunload.
 
 ---
 
