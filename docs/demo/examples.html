@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel examples – Grab &amp; Drag Infinite Carousel</title>
+    <link rel="stylesheet" href="assets/grab-n-drag-infinite-carousel.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 24px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #ddd;
+        }
+        .page-header h1 { font-size: 1.75rem; margin: 0 0 8px 0; }
+        .page-header p { margin: 0; color: #666; font-size: 0.95rem; }
+        .demo-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .demo-section h2 {
+            font-size: 1.25rem;
+            margin: 0 0 6px 0;
+            color: #222;
+        }
+        .demo-section .desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1>Carousel examples</h1>
+        <p>Three examples: basic, options + runtime API, and a real-world carousel with analytics from callbacks.</p>
+    </header>
+
+    <!-- Example 1: Simple Logo Carousel -->
+    <section class="demo-section" id="example-1">
+        <h2>Example 1: Simple Logo Carousel (Basic Setup)</h2>
+        <p class="desc">Default settings: auto-scroll, pause on hover, grab &amp; drag.</p>
+        <div class="infinite-scroll-wrapper">
+            <div class="infinite-scroll-container" id="logoCarousel">
+                <div class="infinite-scroll-item">
+                    <img src="https://placehold.co/120x60/eee/999?text=Logo+1" alt="Company 1" width="120" height="60">
+                </div>
+                <div class="infinite-scroll-item">
+                    <img src="https://placehold.co/120x60/eee/999?text=Logo+2" alt="Company 2" width="120" height="60">
+                </div>
+                <div class="infinite-scroll-item">
+                    <img src="https://placehold.co/120x60/eee/999?text=Logo+3" alt="Company 3" width="120" height="60">
+                </div>
+                <div class="infinite-scroll-item">
+                    <img src="https://placehold.co/120x60/eee/999?text=Logo+4" alt="Company 4" width="120" height="60">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Example 2: Reverse direction, custom fade, runtime controls -->
+    <section class="demo-section" id="example-2">
+        <h2>Example 2: Testimonial Carousel with Custom Fade and Runtime Controls</h2>
+        <p class="desc">Custom fade and reverse direction (options). Carousel is read-only (<code>interactable: false</code>); speed and direction change only via the API.</p>
+        <style>
+            #example-2 .testimonial-carousel .infinite-scroll-item {
+                padding: 10px 20px;
+                margin-right: 30px;
+                background: #1a1a2e;
+                border-radius: 12px;
+                color: white;
+                min-width: 200px;
+            }
+            #example-2 .example-2-controls { text-align: center; margin-bottom: 16px; }
+            #example-2 .example-2-controls button {
+                padding: 8px 16px;
+                margin: 0 4px;
+                border: 2px solid #1a1a2e;
+                background: white;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+            }
+            #example-2 .example-2-controls button.active { background: #1a1a2e; color: white; }
+            #example-2 .example-2-controls .control-group { margin-bottom: 8px; }
+            #example-2 .example-2-controls .control-group:last-child { margin-bottom: 0; }
+            #example-2 .example-2-controls .control-group .control-label { margin-left: 30px; }
+            #example-2 .example-2-controls .control-label { font-size: 12px; color: #666; margin-right: 8px; }
+        </style>
+        <div class="example-2-controls">
+            <div class="control-group">
+                <span class="control-label">setSpeed(value):</span>
+                <button type="button" data-speed="20">Slower (20)</button>
+                <button type="button" data-speed="50" class="active">Normal (50)</button>
+                <button type="button" data-speed="100">Faster (100)</button>
+                <span class="control-label">setReverseDirection(boolean):</span>
+                <button type="button" data-direction="true" class="active">L►R (true)</button>
+                <button type="button" data-direction="false">L◄R (false)</button>
+            </div>
+        </div>
+        <div class="infinite-scroll-wrapper testimonial-carousel">
+            <div class="infinite-scroll-container" id="testimonialCarousel">
+                <div class="infinite-scroll-item">
+                    <p>"Amazing product!" – John Doe</p>
+                </div>
+                <div class="infinite-scroll-item">
+                    <p>"Best service ever!" – Jane Smith</p>
+                </div>
+                <div class="infinite-scroll-item">
+                    <p>"Highly recommended!" – Bob Johnson</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Example 3: Real-world carousel with analytics (all from callbacks) -->
+    <section class="demo-section" id="example-3">
+        <h2>Example 3: Real-world carousel with analytics</h2>
+        <p class="desc">All metrics come from callbacks: Views (onReady, onPositionReset), Interactions (onDragStart), Drags done (onDragEnd), Pauses (onPause), Resumes (onResume).</p>
+        <style>
+            #example-3 .carousel-wrap {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 32px 0;
+                border-radius: 12px;
+            }
+            #example-3 .product-card {
+                background: white;
+                border-radius: 12px;
+                padding: 20px;
+                margin-right: 20px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+                min-width: 220px;
+                transition: transform 0.2s;
+            }
+            #example-3 .product-card:hover { transform: translateY(-4px); }
+            #example-3 .product-card img {
+                width: 100%;
+                height: 140px;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+            #example-3 .product-card h4 { margin: 0 0 6px 0; font-size: 1rem; color: #333; }
+            #example-3 .product-card .price { font-size: 1.1rem; font-weight: bold; color: #667eea; }
+            #example-3 .analytics-row {
+                margin-top: 20px;
+                margin-left: 20px;
+                margin-right: 20px;
+                padding: 12px 16px;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0;
+            }
+            #example-3 .analytics-row .cell {
+                flex: 1;
+                min-width: 0;
+                padding: 8px 12px;
+                text-align: center;
+                color: white;
+                font-size: 13px;
+            }
+            #example-3 .analytics-row .cell .value { font-weight: 700; }
+        </style>
+        <div class="carousel-wrap">
+            <div class="infinite-scroll-wrapper">
+                <div class="infinite-scroll-container" id="showcaseCarousel">
+                    <div class="infinite-scroll-item">
+                        <div class="product-card">
+                            <img src="https://placehold.co/220x140/eee/333?text=img-1" alt="Product 1" width="220" height="140">
+                            <h4>Premium Headphones</h4>
+                            <p class="price">$199.99</p>
+                        </div>
+                    </div>
+                    <div class="infinite-scroll-item">
+                        <div class="product-card">
+                            <img src="https://placehold.co/220x140/eee/333?text=img-2" alt="Product 2" width="220" height="140">
+                            <h4>Wireless Speaker</h4>
+                            <p class="price">$79.99</p>
+                        </div>
+                    </div>
+                    <div class="infinite-scroll-item">
+                        <div class="product-card">
+                            <img src="https://placehold.co/220x140/eee/333?text=img-3" alt="Product 3" width="220" height="140">
+                            <h4>Smart Watch</h4>
+                            <p class="price">$299.99</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="analytics-row">
+                <div class="cell">Views <span class="value" id="showcaseViews">0</span></div>
+                <div class="cell">Interactions <span class="value" id="showcaseInteractions">0</span></div>
+                <div class="cell">Drags done <span class="value" id="showcaseDragsDone">0</span></div>
+                <div class="cell">Pauses <span class="value" id="showcasePauses">0</span></div>
+                <div class="cell">Resumes <span class="value" id="showcaseResumes">0</span></div>
+            </div>
+        </div>
+    </section>
+
+    <script src="assets/grab-n-drag-infinite-carousel.min.js"></script>
+    <script>
+        // Example 1
+        const carousel1 = new InfiniteScrollCarousel('#logoCarousel');
+
+        // Example 2
+        const carousel2 = new InfiniteScrollCarousel('#testimonialCarousel', {
+            speed: 40,
+            reverseDirection: true,
+            pauseOnHover: false,
+            fadeColor: '#1a1a2e',
+            fadeWidth: 80,
+            interactable: false
+        });
+        document.querySelectorAll('#example-2 [data-speed]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                carousel2.setSpeed(Number(this.dataset.speed));
+                document.querySelectorAll('#example-2 [data-speed]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        document.querySelectorAll('#example-2 [data-direction]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                carousel2.setReverseDirection(this.dataset.direction === 'true');
+                document.querySelectorAll('#example-2 [data-direction]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Example 3: real-world carousel – analytics from all relevant callbacks
+        const showcaseAnalytics = {
+            views: 0,
+            interactions: 0,
+            dragsDone: 0,
+            pauses: 0,
+            resumes: 0
+        };
+        function updateShowcaseAnalytics() {
+            document.getElementById('showcaseViews').textContent = showcaseAnalytics.views;
+            document.getElementById('showcaseInteractions').textContent = showcaseAnalytics.interactions;
+            document.getElementById('showcaseDragsDone').textContent = showcaseAnalytics.dragsDone;
+            document.getElementById('showcasePauses').textContent = showcaseAnalytics.pauses;
+            document.getElementById('showcaseResumes').textContent = showcaseAnalytics.resumes;
+        }
+        const carousel3 = new InfiniteScrollCarousel('#showcaseCarousel', {
+            speed: 50,
+            pauseOnHover: true,
+            fadeColor: 'rgba(102, 126, 234, 0.8)',
+            fadeWidth: 80,
+            onReady: () => { showcaseAnalytics.views++; updateShowcaseAnalytics(); },
+            onDragStart: () => { showcaseAnalytics.interactions++; updateShowcaseAnalytics(); },
+            onDragEnd: () => { showcaseAnalytics.dragsDone++; updateShowcaseAnalytics(); },
+            onPause: () => { showcaseAnalytics.pauses++; updateShowcaseAnalytics(); },
+            onResume: () => { showcaseAnalytics.resumes++; updateShowcaseAnalytics(); },
+            onPositionReset: () => { showcaseAnalytics.views++; updateShowcaseAnalytics(); }
+        });
+
+        // Cleanup on unload
+        window.addEventListener('beforeunload', () => {
+            carousel1.destroy();
+            carousel2.destroy();
+            carousel3.destroy();
+        });
+    </script>
+</body>
+</html>

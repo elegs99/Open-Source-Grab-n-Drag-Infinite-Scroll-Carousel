@@ -238,7 +238,13 @@
         <div style="margin-top: 5px;">
             <button onclick="testPause()">Test Pause</button>
             <button onclick="testResume()">Test Resume</button>
+            <button id="btnReverseDirection" onclick="testSetReverseDirection()">Reverse direction (current: false)</button>
             <button onclick="testDestroy()">Test Destroy</button>
+        </div>
+        <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">Speed (px/s): <input type="number" id="inputSetSpeed" value="50" min="0" step="1" style="width: 60px;"><button onclick="testSetSpeed()">Set Speed</button></span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">Fade color: <input type="text" id="inputSetFadeColor" value="#ffffff" placeholder="#ffffff" style="width: 80px;"><button onclick="testSetFadeColor()">Set Fade Color</button></span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">Fade width (px): <input type="number" id="inputSetFadeWidth" value="50" min="0" step="1" style="width: 60px;"><button onclick="testSetFadeWidth()">Set Fade Width</button></span>
         </div>
         <div class="callback-logging">
             <strong>Callback Logging:</strong>
@@ -411,6 +417,18 @@
             };
 
             carousel = new InfiniteScrollCarousel('#testCarousel', options);
+            updateReverseDirectionButtonLabel();
+        }
+
+        function updateReverseDirectionButtonLabel() {
+            const btn = document.getElementById('btnReverseDirection');
+            if (!btn) return;
+            if (!carousel || carousel.destroyed) {
+                btn.textContent = 'Reverse direction (N/A)';
+                return;
+            }
+            const current = carousel.options.reverseDirection;
+            btn.textContent = 'Reverse direction (current: ' + current + ')';
         }
 
         function toggleAllCallbacks(checked) {
@@ -533,7 +551,8 @@
                 
                 // Destroy the carousel
                 carousel.destroy();
-                
+                updateReverseDirectionButtonLabel();
+
                 // Verify it's destroyed (scrolling should be stopped)
                 if (!carousel.isScrolling && wasScrolling) {
                     addResult('Method:', true, 'Carousel destroyed successfully');
@@ -545,6 +564,74 @@
                 } else {
                     addResult('Method:', false, 'Destroy did not stop scrolling');
                 }
+            } catch (e) {
+                addResult('Method:', false, e.message);
+            }
+        }
+
+        function testSetSpeed() {
+            try {
+                if (!carousel || carousel.destroyed) {
+                    addResult('Method:', false, 'setSpeed: carousel missing or destroyed');
+                    return;
+                }
+                const input = document.getElementById('inputSetSpeed');
+                const value = input ? parseInt(input.value, 10) : 50;
+                if (!Number.isFinite(value)) {
+                    addResult('Method:', false, 'setSpeed: invalid number');
+                    return;
+                }
+                carousel.setSpeed(value);
+                addResult('Method:', true, 'setSpeed(' + value + ') applied');
+            } catch (e) {
+                addResult('Method:', false, e.message);
+            }
+        }
+
+        function testSetReverseDirection() {
+            try {
+                if (!carousel || carousel.destroyed) {
+                    addResult('Method:', false, 'setReverseDirection: carousel missing or destroyed');
+                    return;
+                }
+                const next = !carousel.options.reverseDirection;
+                carousel.setReverseDirection(next);
+                updateReverseDirectionButtonLabel();
+                addResult('Method:', carousel.options.reverseDirection === next, 'setReverseDirection(' + next + ') applied');
+            } catch (e) {
+                addResult('Method:', false, e.message);
+            }
+        }
+
+        function testSetFadeColor() {
+            try {
+                if (!carousel || carousel.destroyed) {
+                    addResult('Method:', false, 'setFadeColor: carousel missing or destroyed');
+                    return;
+                }
+                const input = document.getElementById('inputSetFadeColor');
+                const value = input ? input.value : '#ffffff';
+                carousel.setFadeColor(value);
+                addResult('Method:', carousel.options.fadeColor === value, 'setFadeColor(' + value + ') applied');
+            } catch (e) {
+                addResult('Method:', false, e.message);
+            }
+        }
+
+        function testSetFadeWidth() {
+            try {
+                if (!carousel || carousel.destroyed) {
+                    addResult('Method:', false, 'setFadeWidth: carousel missing or destroyed');
+                    return;
+                }
+                const input = document.getElementById('inputSetFadeWidth');
+                const value = input ? parseInt(input.value, 10) : 50;
+                if (!Number.isFinite(value)) {
+                    addResult('Method:', false, 'setFadeWidth: invalid number');
+                    return;
+                }
+                carousel.setFadeWidth(value);
+                addResult('Method:', carousel.options.fadeWidth === value, 'setFadeWidth(' + value + ') applied');
             } catch (e) {
                 addResult('Method:', false, e.message);
             }
@@ -709,10 +796,11 @@
             // Test 3: Methods exist
             try {
                 const methods = ['pause', 'resume', 'destroy', 'validateOptions', 
-                               'init', 'initialize', 'colorToRgba', 'applyFadeColor', 'duplicateItems', 
+                               'init', 'initialize', 'colorToRgba', 'applyFadeProperties', 'duplicateItems', 
                                'calculateScrollDistance', 'setInitialPosition', 'calculateDragBoundaries',
                                'setupEventListeners', 'startDragging', 'handleDrag', 'endDragging',
-                               'startMomentum', 'snapToValidPosition', 'animate'];
+                               'startMomentum', 'snapToValidPosition', 'animate',
+                               'setSpeed', 'setReverseDirection', 'setFadeColor', 'setFadeWidth'];
                 const missingMethods = [];
                 methods.forEach(method => {
                     if (typeof carousel[method] !== 'function') {
