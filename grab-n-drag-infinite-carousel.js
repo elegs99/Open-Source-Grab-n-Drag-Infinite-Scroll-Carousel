@@ -210,7 +210,7 @@
      */
     InfiniteScrollCarousel.prototype.initialize = function() {
         // Apply fade color to wrapper
-        this.applyFadeColor();
+        this.applyFadeProperties();
         
         // Duplicate items to create seamless loop
         this.duplicateItems();
@@ -289,7 +289,7 @@
     /**
      * Apply fade color to the wrapper element
      */
-    InfiniteScrollCarousel.prototype.applyFadeColor = function() {
+    InfiniteScrollCarousel.prototype.applyFadeProperties = function() {
         // Find the wrapper element (parent of container with class infinite-scroll-wrapper)
         let wrapper = this.container.parentElement;
         
@@ -1093,7 +1093,7 @@
         if (this.destroyed) return;
         if (typeof color === 'string') {
             this.options.fadeColor = color;
-            this.applyFadeColor();
+            this.applyFadeProperties();
         }
     };
     
@@ -1105,7 +1105,7 @@
         if (this.destroyed) return;
         if (typeof value === 'number' && Number.isFinite(value)) {
             this.options.fadeWidth = value;
-            this.applyFadeColor();
+            this.applyFadeProperties();
         }
     };
     
