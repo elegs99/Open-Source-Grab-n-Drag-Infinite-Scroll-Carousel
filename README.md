@@ -39,6 +39,7 @@ npm install grab-n-drag-infinite-carousel
 ```
 
 Then import using one of the following:
+Use the **root** entry (package default) for development/unminified; use **dist/** paths for production/minified.
 
 ```javascript
 // ES Modules (development - unminified)
@@ -130,7 +131,7 @@ const carousel = new InfiniteScrollCarousel('#myCarousel', options);
 </html>
 ```
 
-That's it! The carousel will automatically start scrolling.
+That's it! The carousel will automatically start scrolling. For production, use the **dist/** paths or the CDN minified links from the [Installation](#installation) section above.
 
 ## API Reference
 
@@ -254,8 +255,8 @@ Requires: `requestAnimationFrame`, CSS `transform`, `addEventListener` (ResizeOb
 **Items not scrolling?** Ensure CSS is loaded and container has direct children.  
 **Drag not working?** Check that `interactable: true` and no CSS is blocking pointer events.  
 **Items too close?** Add margin: `.infinite-scroll-item { margin-right: 30px; }`  
-**Speed issues?** Adjust the `speed` option (set to `0` to disable auto-scroll).  
-**Visible gap at end of items?** The carousel runs out of duplicated copies to fill the infinite loop. Increase the `copies` option to add more item duplicates (default: 3).
+**Speed issues?** Adjust the [speed](#options) option (set to `0` to disable auto-scroll).  
+**Visible gap at end of items?** The carousel runs out of duplicated copies to fill the infinite loop. Increase the [copies](#options) option to add more item duplicates (default: 3).
 
 > 📖 **For detailed troubleshooting, styling guides, framework integration, and more examples, see [DOCS.md](docs/DOCS.md)**
 
