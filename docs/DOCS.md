@@ -2,7 +2,7 @@
 
 > 📖 **Full API reference, examples, and advanced usage guide**
 
-For quickstart and installation, see the [README.md](../README.md).
+For [quickstart](../README.md#quickstart) and [installation](../README.md#installation), see the [README](../README.md).
 
 ## Table of Contents
 
@@ -459,9 +459,7 @@ A simple product strip with a single analytics row. All metrics come from callba
 
 The carousel works with any framework or vanilla JavaScript. Here are examples for popular frameworks:
 
-> 💡 **Tip:** For production builds, use the minified files from the `dist/` folder:
-> - `grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.js`
-> - `grab-n-drag-infinite-carousel/dist/grab-n-drag-infinite-carousel.min.css`
+> 💡 **Tip:** Use the **root** entry (package default) for development/unminified; use **dist/** for production/minified. See [README Installation](../README.md#installation) for import and CDN patterns.
 
 ### React
 
@@ -559,7 +557,7 @@ onBeforeUnmount(() => {
 
 ### Vanilla JavaScript
 
-The carousel works perfectly with vanilla JavaScript - see the [Quickstart](README.md#quickstart) section in the README for examples.
+The carousel works perfectly with vanilla JavaScript - see the [Quickstart](../README.md#quickstart) section in the README for examples.
 
 ---
 
@@ -602,7 +600,7 @@ Style individual items (such as background, border, typography):
 
 **3. Fade Gradient Colors:**
 
-Override the fade color (defaults to white) on the wrapper edges, either via the API or by customizing CSS if needed. (Set `fadeColor` option in JS.)
+Override the fade color (defaults to white) on the wrapper edges, either via the API or by customizing CSS if needed. Set the [fadeColor](#options) option in JS.
 
 **4. Carousel Height and Alignment:**
 
@@ -686,7 +684,7 @@ For more advanced interactivity, combine with your JS events or frameworks—jus
 **Problem**: Can't drag the carousel.
 
 **Solutions**:
-- Ensure `interactable` option is set to true
+- Ensure the [interactable](#options) option is set to true
 - Check for CSS that might be blocking pointer events
 - Verify JavaScript file is loaded
 - Check for JavaScript errors in console
@@ -706,7 +704,7 @@ For more advanced interactivity, combine with your JS events or frameworks—jus
 
 **Problem**: Scrolling speed is not right.
 
-**Solution**: Adjust the `speed` option:
+**Solution**: Adjust the [speed](#options) option:
 ```javascript
 const carousel = new InfiniteScrollCarousel(container, {
     speed: 30 // 0 = doesnt scroll automatically
@@ -717,7 +715,7 @@ const carousel = new InfiniteScrollCarousel(container, {
 
 **Problem**: You see a visible gap because the carousel runs out of duplicated copies to fill the infinite loop.
 
-**Solution**: Increase the `copies` option to add more item duplicates:
+**Solution**: Increase the [copies](#options) option to add more item duplicates:
 ```javascript
 const carousel = new InfiniteScrollCarousel(container, {
     copies: 4  // Increase this number (default is 3)
@@ -734,7 +732,7 @@ const carousel = new InfiniteScrollCarousel(container, {
 
 **Problem**: You expect `this` to be the carousel inside a callback, but it's undefined or the global object.
 
-**Solution**: Callbacks are invoked with no specific `this`. Use an arrow function and close over your carousel variable, or pass the carousel in via options.
+**Solution**: Callbacks are invoked with no specific `this` (see [Event Callbacks Details](#event-callbacks-details)). Use an arrow function and close over your carousel variable, or pass the carousel in via options.
 
 ---
 
