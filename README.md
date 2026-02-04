@@ -32,7 +32,7 @@ Perfect for showcasing logos, skills, testimonials, or any scrollable content. F
 
 ## Installation
 
-### npm (Recommended)
+### npm
 
 ```bash
 npm install grab-n-drag-infinite-carousel
