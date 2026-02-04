@@ -238,20 +238,13 @@
         <div style="margin-top: 5px;">
             <button onclick="testPause()">Test Pause</button>
             <button onclick="testResume()">Test Resume</button>
+            <button id="btnReverseDirection" onclick="testSetReverseDirection()">Reverse direction (current: false)</button>
             <button onclick="testDestroy()">Test Destroy</button>
         </div>
-        <div style="margin-top: 15px;">
-            <strong>Setters:</strong>
-        </div>
         <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
-            <span>Speed (px/s): <input type="number" id="inputSetSpeed" value="50" min="0" step="1" style="width: 60px;"></span>
-            <button onclick="testSetSpeed()">Set Speed</button>
-            <span>Reverse direction: <input type="checkbox" id="inputSetReverseDirection"></span>
-            <button onclick="testSetReverseDirection()">Set Reverse</button>
-            <span>Fade color: <input type="text" id="inputSetFadeColor" value="#ffffff" placeholder="#ffffff" style="width: 80px;"></span>
-            <button onclick="testSetFadeColor()">Set Fade Color</button>
-            <span>Fade width (px): <input type="number" id="inputSetFadeWidth" value="50" min="0" step="1" style="width: 60px;"></span>
-            <button onclick="testSetFadeWidth()">Set Fade Width</button>
+            <span style="display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">Speed (px/s): <input type="number" id="inputSetSpeed" value="50" min="0" step="1" style="width: 60px;"><button onclick="testSetSpeed()">Set Speed</button></span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">Fade color: <input type="text" id="inputSetFadeColor" value="#ffffff" placeholder="#ffffff" style="width: 80px;"><button onclick="testSetFadeColor()">Set Fade Color</button></span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">Fade width (px): <input type="number" id="inputSetFadeWidth" value="50" min="0" step="1" style="width: 60px;"><button onclick="testSetFadeWidth()">Set Fade Width</button></span>
         </div>
         <div class="callback-logging">
             <strong>Callback Logging:</strong>
@@ -424,6 +417,18 @@
             };
 
             carousel = new InfiniteScrollCarousel('#testCarousel', options);
+            updateReverseDirectionButtonLabel();
+        }
+
+        function updateReverseDirectionButtonLabel() {
+            const btn = document.getElementById('btnReverseDirection');
+            if (!btn) return;
+            if (!carousel || carousel.destroyed) {
+                btn.textContent = 'Reverse direction (N/A)';
+                return;
+            }
+            const current = carousel.options.reverseDirection;
+            btn.textContent = 'Reverse direction (current: ' + current + ')';
         }
 
         function toggleAllCallbacks(checked) {
@@ -546,7 +551,8 @@
                 
                 // Destroy the carousel
                 carousel.destroy();
-                
+                updateReverseDirectionButtonLabel();
+
                 // Verify it's destroyed (scrolling should be stopped)
                 if (!carousel.isScrolling && wasScrolling) {
                     addResult('Method:', true, 'Carousel destroyed successfully');
@@ -588,10 +594,10 @@
                     addResult('Method:', false, 'setReverseDirection: carousel missing or destroyed');
                     return;
                 }
-                const input = document.getElementById('inputSetReverseDirection');
-                const checked = input ? input.checked : false;
-                carousel.setReverseDirection(checked);
-                addResult('Method:', carousel.options.reverseDirection === checked, 'setReverseDirection(' + checked + ') applied');
+                const next = !carousel.options.reverseDirection;
+                carousel.setReverseDirection(next);
+                updateReverseDirectionButtonLabel();
+                addResult('Method:', carousel.options.reverseDirection === next, 'setReverseDirection(' + next + ') applied');
             } catch (e) {
                 addResult('Method:', false, e.message);
             }
